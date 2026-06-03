@@ -10,7 +10,57 @@ It also helps teams that only have a rough PRD or product idea. In that case, AC
 
 OpenACP is not for replacing tests, CI, code review, security review, legal review, release ownership, or engineering judgment. The validator checks structure and common unsafe claims; it does not decide whether the product is correct or whether a change should merge.
 
-## 5-Minute Quick Start
+## Start With Codex Or Claude Code
+
+Ask Codex/Claude Code:
+
+```text
+Install https://github.com/0fuk/OpenACP as a skill + workflow kit, then follow the README startup flow.
+```
+
+The agent should install the OpenACP skills and Python workflow kit, run validation, and then produce a formal report automatically. The formal report is part of the startup flow; the user should not need to ask for it separately.
+
+After installation and validation, there will be a formal report. In the next step, I will ask you for:
+
+- your working directory
+- your current source pack, PRD, spec, or facts path
+
+After you provide those, I will return one Primary Orchestrator launcher and two Frontier Orchestrator launchers for this project.
+
+Expected agent startup flow:
+
+1. Clone `https://github.com/0fuk/OpenACP`.
+2. Install or load every skill under `skills/`.
+3. Install the Python workflow kit with `python -m pip install -e .`.
+4. Run validation:
+   - `python tools/openacp_validate_selftest.py`
+   - `python tools/openacp_validate.py --artifact . --ruleset public-package --strict`
+   - `openacp --version`
+   - `openacp-validate --version`
+5. Read the installed skills plus the shortest docs path.
+6. Produce a formal report using `templates/formal-report.md`.
+7. Ask for the user's real working directory and source pack, PRD, spec, or facts path.
+8. After the user provides those paths, return one Primary Orchestrator launcher and two Frontier Orchestrator launchers.
+
+Skills to install or load:
+
+- `skills/primary-orchestrator-openacp/`
+- `skills/frontier-orchestrator-openacp/`
+- `skills/worker-openacp/`
+- `skills/reviewer-openacp/`
+- `skills/formal-report-openacp/`
+- `skills/human-explain-openacp/`
+- `skills/handoff-consume-openacp/`
+- `skills/source-pack-openacp/`
+- `skills/bootstrap-openacp/`
+- `skills/discovery-openacp/`
+- `skills/validator-openacp/`
+
+Do not create a demo package by default. Use `openacp init` only when the user has no current source pack, PRD package, spec, or facts path and explicitly wants bootstrap artifacts.
+
+Read the detailed startup contract in `docs/codex-install-and-start.md`.
+
+## Developer Validation
 
 Prerequisite: Python 3.10 or newer.
 
@@ -42,14 +92,14 @@ openacp-validate --help
 openacp-validate --version
 ```
 
-Create a starter package from a vague PRD or product note:
+If you do not have a source pack, PRD package, spec, or facts path, create a starter package from a vague PRD or product note:
 
 ```bash
 openacp init ./my-openacp-package
 openacp init ./my-openacp-package --write
 ```
 
-`openacp init` is a dry run by default. Use `--write` only when the target directory is correct.
+`openacp init` is a dry run by default. It is a bootstrap fallback, not the default startup path. Use `--write` only when the target directory is correct.
 
 ## Core Flow
 
@@ -66,11 +116,13 @@ rough idea or PRD
 
 Read the shortest path first:
 
-1. `docs/getting-started.md`
-2. `docs/role-model.md`
-3. `docs/authority-boundary.md`
-4. `docs/validator.md`
-5. `examples/single-worker-flow/README.md`
+1. `docs/codex-install-and-start.md`
+2. `docs/getting-started.md`
+3. `docs/role-model.md`
+4. `docs/authority-boundary.md`
+5. `docs/validator.md`
+6. `examples/primary-two-frontier-kickoff/README.md`
+7. `examples/single-worker-flow/README.md`
 
 Do not read every template before starting. Use the source pack and task card to decide what context is actually needed.
 
@@ -125,6 +177,7 @@ For B2/B3 task cards, strict validation requires `authorityCharterRef`. This kee
 
 - `examples/single-worker-flow/`: complete strict-validation fixture.
 - `examples/prd-only-bootstrap/`: strict bootstrap fixture for teams starting from a rough PRD.
+- `examples/primary-two-frontier-kickoff/`: startup example for one Primary and two Frontier launchers.
 - `examples/primary-orchestrator-flow/`: concept example for final-authority dispatch and consume.
 - `examples/frontier-lane-flow/`: concept example for lane authority.
 - `examples/multi-worktree-review/`: concept example for multiple workers and reviewer sidecars.

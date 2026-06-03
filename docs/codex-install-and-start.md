@@ -1,0 +1,103 @@
+# Codex And Claude Code Install Startup
+
+This is the default OpenACP startup path for an agent that can install skills or load workflow instructions.
+
+## User Prompt
+
+Ask Codex/Claude Code:
+
+```text
+Install https://github.com/0fuk/OpenACP as a skill + workflow kit, then follow the README startup flow.
+```
+
+## Agent Startup Contract
+
+The agent should:
+
+1. Clone or open `https://github.com/0fuk/OpenACP`.
+2. Install or load all OpenACP skills from `skills/`.
+3. Install the Python workflow kit with `python -m pip install -e .`.
+4. Run validation:
+   - `python tools/openacp_validate_selftest.py`
+   - `python tools/openacp_validate.py --artifact . --ruleset public-package --strict`
+   - `openacp --version`
+   - `openacp-validate --version`
+5. Read:
+   - `README.md`
+   - `docs/getting-started.md`
+   - `docs/role-model.md`
+   - `docs/authority-boundary.md`
+   - `docs/validator.md`
+   - `skills/primary-orchestrator-openacp/SKILL.md`
+   - `skills/frontier-orchestrator-openacp/SKILL.md`
+   - `skills/formal-report-openacp/SKILL.md`
+   - `templates/primary-orchestrator-launcher.md`
+   - `templates/frontier-orchestrator-launcher.md`
+6. Produce a formal report automatically after installation and validation.
+7. Ask the user for the real project inputs.
+
+## Skills To Install Or Load
+
+- `skills/primary-orchestrator-openacp/`
+- `skills/frontier-orchestrator-openacp/`
+- `skills/worker-openacp/`
+- `skills/reviewer-openacp/`
+- `skills/formal-report-openacp/`
+- `skills/human-explain-openacp/`
+- `skills/handoff-consume-openacp/`
+- `skills/source-pack-openacp/`
+- `skills/bootstrap-openacp/`
+- `skills/discovery-openacp/`
+- `skills/validator-openacp/`
+
+## Automatic Formal Report
+
+The formal report is not a separate user command. It is the required post-install output.
+
+The report should include:
+
+- what was installed or loaded,
+- which validation commands passed or failed,
+- whether OpenACP skills are available,
+- whether the CLI is available,
+- current startup state,
+- gaps,
+- next step.
+
+The next step must ask for:
+
+- your working directory,
+- your current source pack, PRD, spec, or facts path.
+
+## After The User Provides Paths
+
+After the user provides a working directory and facts path, the agent should return:
+
+- one Primary Orchestrator launcher,
+- two Frontier Orchestrator launchers.
+
+Use:
+
+- `templates/primary-orchestrator-launcher.md`
+- `templates/frontier-orchestrator-launcher.md`
+- `examples/primary-two-frontier-kickoff/`
+
+The launchers must name:
+
+- role,
+- authority level,
+- working directory,
+- source pack or facts path,
+- writable paths,
+- read-only references,
+- forbidden paths or side effects,
+- validation expectations,
+- handoff or report expectations.
+
+If the user has no source pack, PRD, spec, or facts path, do not invent one. Offer the bootstrap path and use `openacp init` only after the user explicitly approves creating starter artifacts.
+
+## Skill Install Notes
+
+For Codex, install the directories under `skills/` as local skills if skill installation is available. If native skill installation is unavailable, load the relevant `SKILL.md` files as workflow instructions for the current session.
+
+For Claude Code or another coding agent, treat `skills/*/SKILL.md` as the workflow instructions to load before starting orchestration.
