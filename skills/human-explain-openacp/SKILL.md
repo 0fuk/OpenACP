@@ -1,9 +1,9 @@
 ---
-name: openacp-human-explain
+name: human-explain-openacp
 description: Explain OpenACP project, lane, handoff, review, blocker, authority, or multi-agent status in plain human language. Use when an owner needs to know what is proven, provisional, missing, and next.
 ---
 
-# OpenACP Human Explain
+# Human Explain OpenACP
 
 Explain:
 

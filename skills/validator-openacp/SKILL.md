@@ -1,9 +1,9 @@
 ---
-name: openacp-validator
+name: validator-openacp
 description: Validate OpenACP artifacts for structure, encoding, required fields, source status, authority boundary, verification evidence, overclaiming, and public-package hygiene before dispatch, handoff consume, reports, or release packaging.
 ---
 
-# OpenACP Validator
+# Validator OpenACP
 
 Run:
 

@@ -1,9 +1,9 @@
 ---
-name: openacp-reviewer
+name: reviewer-openacp
 description: Perform read-only OpenACP sidecar review of a task card, branch, diff, handoff, prompt, or status artifact. Use to check scope compliance, correctness, verification evidence, side effects, overclaiming, and readiness for final-authority consume.
 ---
 
-# OpenACP Reviewer
+# Reviewer OpenACP
 
 Reviewer provides read-only evidence.
 

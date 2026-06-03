@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "openacp-status-report.v1",
+  "artifactType": "status-report",
+  "reportId": "STAT-PRIMARY-CONSUME-001",
+  "basisRefs": [
+    "source-pack.json",
+    "authority-charter.json",
+    "task-card.json",
+    "handoff.json",
+    "review-report.json",
+    "validator-result"
+  ],
+  "currentState": "Reviewed evidence is ready for a final-authority consume decision.",
+  "completedWork": [
+    "The worker produced a bounded handoff.",
+    "The reviewer checked scope, evidence, and unsupported claims.",
+    "The validator passed for the relevant artifacts."
+  ],
+  "unverifiedClaims": [
+    "Product correctness still depends on owner acceptance.",
+    "Release readiness still depends on the project release checklist."
+  ],
+  "blockers": [
+    "No final acceptance has been recorded yet."
+  ],
+  "nextActions": [
+    "Primary or human owner should accept, amend, reject, or waive the reviewed evidence.",
+    "After owner approval, record the final decision and run the release gate required by the project."
+  ],
+  "authorityLimits": [
+    "Worker and reviewer evidence is provisional until Primary or human owner consumes it.",
+    "Validator pass is structural evidence, not final acceptance."
+  ]
+}

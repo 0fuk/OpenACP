@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "openacp-authority-charter.v1",
+  "artifactType": "authority-charter",
+  "charterId": "CHARTER-PRIMARY-FINAL",
+  "grantedRole": "primary",
+  "authorityLevel": "B3",
+  "allowedActions": [
+    "Assign authority charters.",
+    "Dispatch Frontier, worker, or reviewer roles.",
+    "Consume handoffs and reviewer reports.",
+    "Accept, reject, amend, waive, merge, publish, or release when the owner basis is sufficient."
+  ],
+  "forbiddenActions": [
+    "Treat missing evidence as verified.",
+    "Use private or deprecated sources as current truth.",
+    "Hide waivers or unresolved blockers from the final status."
+  ],
+  "delegationRules": [
+    "Frontier may receive B0, B1, or scoped B2 authority.",
+    "Workers may receive scoped B2 authority only through a task card and authority charter.",
+    "Reviewers provide recommendations but do not own final acceptance.",
+    "B3 final authority is not delegated to downstream roles."
+  ],
+  "finalAuthorityReservedTo": "Primary or human owner",
+  "scopeLimits": [
+    "Final decisions must name the source pack, task card, handoff, reviewer report, validator result, or waiver basis used.",
+    "Publication, merge, and release decisions require the owner-defined release standard."
+  ],
+  "expiresWhen": "The final decision is recorded or the owner revokes Primary authority."
+}

@@ -1,9 +1,9 @@
 ---
-name: openacp-worker
+name: worker-openacp
 description: Execute a narrow OpenACP task as a scoped worker. Use when an agent must work inside assigned files, effects, workspace or branch, run focused verification, and produce a structured handoff without expanding scope.
 ---
 
-# OpenACP Worker
+# Worker OpenACP
 
 Confirm source pack, task card, authority source, workspace boundary, allowed scope, forbidden scope, verification, handoff path, and stop conditions before editing.
 

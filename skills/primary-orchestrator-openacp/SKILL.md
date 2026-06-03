@@ -1,9 +1,9 @@
 ---
-name: openacp-primary
+name: primary-orchestrator-openacp
 description: Run final-authority OpenACP coordination. Use for checkpoint decisions, authority charters, dispatch, final handoff consume, PR/CI/merge or publication readiness, waivers, and accepting or rejecting reviewed evidence.
 ---
 
-# OpenACP Primary
+# Primary Orchestrator OpenACP
 
 Primary owns final authority.
 

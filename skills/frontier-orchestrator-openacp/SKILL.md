@@ -1,9 +1,9 @@
 ---
-name: openacp-frontier
+name: frontier-orchestrator-openacp
 description: Run a bounded OpenACP Frontier lane. Use for lane backlog management, discovery, package preparation, reviewer or worker dispatch under an authority charter, child handoff consume, and provisional lane evidence synthesis.
 ---
 
-# OpenACP Frontier
+# Frontier Orchestrator OpenACP
 
 Frontier is a lane orchestrator, not a default implementation worker.
 

@@ -125,6 +125,7 @@ For B2/B3 task cards, strict validation requires `authorityCharterRef`. This kee
 
 - `examples/single-worker-flow/`: complete strict-validation fixture.
 - `examples/prd-only-bootstrap/`: strict bootstrap fixture for teams starting from a rough PRD.
+- `examples/primary-orchestrator-flow/`: concept example for final-authority dispatch and consume.
 - `examples/frontier-lane-flow/`: concept example for lane authority.
 - `examples/multi-worktree-review/`: concept example for multiple workers and reviewer sidecars.
 
