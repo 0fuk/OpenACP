@@ -69,18 +69,18 @@ For chat readability, keep the report table short. Long paths, commit hashes, UR
 The startup report must use `formal-report-openaccp` rows. For a Chinese post-install report, use this exact table shape:
 
 ```text
-| 类型/状态 | 内容 |
+| 类型和状态 | 内容 |
 |---|---|
-| 做了什么　　 | |
-| 总体进度　　 | |
-| 验证　　　　 | 验证通过 / 验证失败。 |
-| 范围　　　　 | |
-| 目标　　　　 | |
-| 缺口　　　　 | |
-| 下一步　　　 | |
+| 做了什么 | |
+| 总体进度 | |
+| 验证 | 验证通过 / 验证失败。 |
+| 范围 | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 ```
 
-Use only the OpenACCP report header: `| 类型/状态 | 内容 |` for Chinese or `| Item/Status | Content |` for English. Keep row labels to the standard OpenACCP set: `做了什么`, `总体进度`, `验证`, `范围`, `目标`, `缺口`, `下一步` for Chinese startup reports. In Codex chat, append full-width ideographic spaces to Chinese first-column row labels so `类型/状态` stays on one line.
+Use only the OpenACCP report header: `| 类型和状态 | 内容 |` for Chinese or `| Item/Status | Content |` for English. Keep row labels to the standard OpenACCP set: `做了什么`, `总体进度`, `验证`, `范围`, `目标`, `缺口`, `下一步` for Chinese startup reports. Do not use `<nobr>`, HTML wrappers, invisible characters, or spacing tricks.
 
 Do not print PowerShell blocks, bash blocks, command lists, executable paths, local install paths, or temporary install directories in the user-facing post-install report. The `验证` row should simply say `验证通过` or `验证失败`; if a note is useful, write one short natural-language sentence after the table.
 

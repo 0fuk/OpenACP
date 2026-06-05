@@ -21,37 +21,37 @@ Response log path:
 
 Use these rows for a Chinese Primary report:
 
-| 类型/状态 | 内容 |
+| 类型和状态 | 内容 |
 |---|---|
-| 做了什么　　 | |
-| 总体进度　　 | Include a numeric estimate. |
+| 做了什么 | |
+| 总体进度 | Include a numeric estimate. |
 | Frontier | |
-| 目标　　　　 | |
-| 缺口　　　　 | |
-| 下一步　　　 | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 
 Use these rows for a Chinese post-install or generic startup report:
 
-| 类型/状态 | 内容 |
+| 类型和状态 | 内容 |
 |---|---|
-| 做了什么　　 | |
-| 总体进度　　 | Include a numeric estimate. |
-| 验证　　　　 | 验证通过 / 验证失败。 |
-| 范围　　　　 | |
-| 目标　　　　 | |
-| 缺口　　　　 | |
-| 下一步　　　 | |
+| 做了什么 | |
+| 总体进度 | Include a numeric estimate. |
+| 验证 | 验证通过 / 验证失败。 |
+| 范围 | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 
 Use these rows for a Chinese Frontier report:
 
-| 类型/状态 | 内容 |
+| 类型和状态 | 内容 |
 |---|---|
-| 做了什么　　 | |
-| 总体进度　　 | Include a numeric estimate. |
+| 做了什么 | |
+| 总体进度 | Include a numeric estimate. |
 | Lane | |
-| 目标　　　　 | |
-| 缺口　　　　 | |
-| 下一步　　　 | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 
 ## Evidence and Validation
 
@@ -71,7 +71,7 @@ Do not include shell command blocks, PowerShell blocks, bash blocks, command dum
 
 For Chinese reports, name the evidence section `依据与验证` and the final section `下一步建议`. For English reports, use `Evidence and Validation` and `Recommended Next Step`.
 
-For Chinese chat reports, keep the header `类型/状态` and append full-width ideographic spaces to Chinese row labels in the first column. This preserves the requested visible labels while preventing the chat UI from compressing the left column.
+For Chinese chat reports, use the pure Markdown header `类型和状态`. Do not use `<nobr>`, HTML wrappers, invisible characters, or spacing tricks.
 
 ## Post-Install Startup Note
 

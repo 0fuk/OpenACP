@@ -375,7 +375,7 @@ PROMPT_RECORD_RE = re.compile(r"(?im)^\s*-\s*Prompt Record\s*:\s*(.+?)\s*$")
 JSON_FENCE_RE = re.compile(r"```(?:json|JSON)?\s*(\{.*?\})\s*```", re.DOTALL)
 PROMPT_FENCE_RE = re.compile(r"```prompt\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 ZH_ITEM = "\u9879"
-ZH_TYPE_STATUS = "\u7c7b\u578b/\u72b6\u6001"
+ZH_TYPE_STATUS = "\u7c7b\u578b\u548c\u72b6\u6001"
 ZH_FIELD = "\u5b57\u6bb5"
 ZH_PROGRESS = "\u603b\u4f53\u8fdb\u5ea6"
 ZH_EVIDENCE = "\u8bc1\u636e"
@@ -658,22 +658,6 @@ def parse_formal_table(text: str, report: Report) -> tuple[list[tuple[str, str]]
     if all(len(split_table_cells(line)) == 2 for line in group[2:]):
         report.add("FORMAL_ROW_COLUMNS", "blocking", "pass", "Formal report data rows have exactly two columns.")
     return rows, header
-
-
-def chinese_labels_without_width_padding(text: str) -> list[str]:
-    groups = extract_table_groups(text)
-    if len(groups) != 1:
-        return []
-    missing: list[str] = []
-    for line in groups[0][2:]:
-        raw_cells = line.strip().strip("|").split("|")
-        if len(raw_cells) != 2:
-            continue
-        raw_label = raw_cells[0]
-        label = normalize_table_label(raw_label)
-        if _has_cjk(label) and "\u3000" not in raw_label:
-            missing.append(label)
-    return missing
 
 
 PLACEHOLDER_CELL_VALUES = {
@@ -1223,9 +1207,9 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
     wants_chinese = preferred in {"chinese", "zh", "zh-cn", "\u4e2d\u6587"} or (header and header[0] == ZH_TYPE_STATUS)
 
     if header in FORMAL_HEADERS:
-        report.add("FORMAL_HEADER", "blocking", "pass", "Formal report uses the standard Item/Status or 类型/状态 header.")
+        report.add("FORMAL_HEADER", "blocking", "pass", "Formal report uses the standard Item/Status or 类型和状态 header.")
     else:
-        report.add("FORMAL_HEADER", "blocking", "fail", "Formal report must use `| Item/Status | Content |` or `| 类型/状态 | 内容 |`.")
+        report.add("FORMAL_HEADER", "blocking", "fail", "Formal report must use `| Item/Status | Content |` or `| 类型和状态 | 内容 |`.")
     labels = [label for label, _ in rows]
     if any(labels == required for required in FORMAL_ROW_SEQUENCES):
         report.add("FORMAL_ROWS", "blocking", "pass", "Formal report has an exact role-aware row set in the required order.")
@@ -1284,16 +1268,10 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
         report.add("PREFERRED_LANGUAGE_HEADER", "blocking", "fail", "Chinese reports must use the Chinese formal-report header.")
     elif wants_chinese:
         report.add("PREFERRED_LANGUAGE_HEADER", "blocking", "pass", "Chinese report uses the Chinese formal-report header.")
-        missing_padding = chinese_labels_without_width_padding(text)
-        if missing_padding:
-            report.add(
-                "FORMAL_LABEL_WIDTH_PADDING",
-                "blocking",
-                "fail",
-                "Chinese row labels need full-width padding to keep the first column readable in Codex chat: " + ", ".join(missing_padding[:5]),
-            )
-        else:
-            report.add("FORMAL_LABEL_WIDTH_PADDING", "blocking", "pass", "Chinese row labels include width padding for chat rendering.")
+    if re.search(r"</?\s*nobr\b", text, re.IGNORECASE):
+        report.add("FORMAL_REPORT_NO_HTML_NOWRAP", "blocking", "fail", "Formal reports must not use <nobr> or HTML no-wrap wrappers.")
+    else:
+        report.add("FORMAL_REPORT_NO_HTML_NOWRAP", "blocking", "pass", "Formal report does not use HTML no-wrap wrappers.")
     if wants_chinese or any(_has_cjk(label) for label in labels):
         english_offenders = _long_english_dominant_lines(text)
         if english_offenders:
