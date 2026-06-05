@@ -656,7 +656,7 @@ def assert_text_rules(tmp: Path) -> None:
                 "Response ID: RESP-001",
                 "Response log path: chat reply",
                 "",
-                "| Item/Status | Content |",
+                "| Item | Content |",
                 "|---|---|",
                 "| Changed | Primary created startup artifacts. |",
                 "| Progress | 80%. Startup is ready but final acceptance is pending. |",
@@ -666,10 +666,10 @@ def assert_text_rules(tmp: Path) -> None:
                 "| Gaps | User project execution has not started. |",
                 "| Next | Start the Primary launcher. |",
                 "",
-                "## Evidence Details",
+                "## Evidence and Validation",
                 "- Basis: validator selftest fixture.",
                 "",
-                "## Human Next Step",
+                "## Recommended Next Step",
                 "Create a new Primary thread and paste the short launcher.",
             ]
         ),
@@ -684,7 +684,7 @@ def assert_text_rules(tmp: Path) -> None:
                 "Response ID: RESP-ZH-001",
                 "Response log path: chat reply",
                 "",
-                "| 类型/状态 | 内容 |",
+                "| 报告项 | 内容 |",
                 "|---|---|",
                 "| 做了什么 | Frontier 刷新了 lane backlog。 |",
                 "| 总体进度 | 60%。仍有 B2 子任务未 consume。 |",
@@ -693,10 +693,10 @@ def assert_text_rules(tmp: Path) -> None:
                 "| 缺口 | 需要继续 consume worker handoff。 |",
                 "| 下一步 | Frontier 继续派发 reviewer 并 consume 结果。 |",
                 "",
-                "## 依据",
+                "## 依据与验证",
                 "- 本报告来自中文 selftest 样例。",
                 "",
-                "## 给人的下一步",
+                "## 下一步建议",
                 "你现在不用新开 worker 线程；Frontier 会在当前 lane 内继续收口。",
             ]
         ),
@@ -711,13 +711,34 @@ def assert_text_rules(tmp: Path) -> None:
     )
     assert_exit("formal report rejects checkpoint row", run(["--artifact", str(bad_checkpoint_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
 
+    bad_legacy_header_report_path = tmp / "bad-legacy-header-formal-report.md"
+    bad_legacy_header_report_path.write_text(
+        zh_frontier_report_path.read_text(encoding="utf-8").replace("| 报告项 | 内容 |", "| 类型/状态 | 内容 |"),
+        encoding="utf-8",
+    )
+    assert_exit("Chinese formal report rejects legacy header", run(["--artifact", str(bad_legacy_header_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
+
+    bad_legacy_evidence_report_path = tmp / "bad-legacy-evidence-formal-report.md"
+    bad_legacy_evidence_report_path.write_text(
+        zh_frontier_report_path.read_text(encoding="utf-8").replace("## 依据与验证", "## Evidence Details"),
+        encoding="utf-8",
+    )
+    assert_exit("Chinese formal report rejects English evidence heading", run(["--artifact", str(bad_legacy_evidence_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
+
+    bad_legacy_next_step_report_path = tmp / "bad-legacy-next-step-formal-report.md"
+    bad_legacy_next_step_report_path.write_text(
+        zh_frontier_report_path.read_text(encoding="utf-8").replace("## 下一步建议", "## 给人的下一步"),
+        encoding="utf-8",
+    )
+    assert_exit("Chinese formal report rejects old next-step heading", run(["--artifact", str(bad_legacy_next_step_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
+
     bad_command_report_path = tmp / "bad-command-formal-report.md"
     bad_command_report_path.write_text(zh_frontier_report_path.read_text(encoding="utf-8") + "\n```powershell\nopenacp --version\n```\n", encoding="utf-8")
     assert_exit("formal report rejects command dumps", run(["--artifact", str(bad_command_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
 
     bad_tail_report_path = tmp / "bad-tail-formal-report.md"
-    bad_tail_report_path.write_text(zh_frontier_report_path.read_text(encoding="utf-8") + "\n## Extra Section\n- This should not appear after Human Next Step.\n", encoding="utf-8")
-    assert_exit("formal report requires trailing human next step", run(["--artifact", str(bad_tail_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
+    bad_tail_report_path.write_text(zh_frontier_report_path.read_text(encoding="utf-8") + "\n## Extra Section\n- This should not appear after Recommended Next Step.\n", encoding="utf-8")
+    assert_exit("formal report requires trailing recommended next step", run(["--artifact", str(bad_tail_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
 
     bad_english_report_path = tmp / "bad-english-formal-report.md"
     bad_english_report_path.write_text(
@@ -744,7 +765,7 @@ def assert_text_rules(tmp: Path) -> None:
                 "Do not use the human as a thread launcher for B0/B1/B2-safe child work.",
                 "Human-managed child launchers are fallback only when direct subagent dispatch is unavailable, unsafe, explicitly requested, or requires a separately user-managed session.",
                 "Maintain a child ledger with promptId, taskId, role, authority, effects, subagent id, dispatchStatus, handoffStatus, consumeStatus, and remaining risk.",
-                "Every Frontier reply must end with a human next step.",
+                "Every Frontier reply must end with a recommended next step.",
                 "Do not return to Primary merely because a provisional packet, source baseline, handoff, or consume-result was written.",
                 "`blocked on Primary` is valid only when branchReturnGate is satisfied and every visible remaining gap is needs_final_authority or explicitly_out.",
                 "```json",

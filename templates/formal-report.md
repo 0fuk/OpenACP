@@ -7,7 +7,7 @@ status: draft
 Response ID:
 Response log path:
 
-| Item/Status | Content |
+| Item | Content |
 |---|---|
 | Changed | |
 | Progress | Include a numeric estimate. |
@@ -21,7 +21,7 @@ Response log path:
 
 Use these rows for a Chinese Primary report:
 
-| 类型/状态 | 内容 |
+| 报告项 | 内容 |
 |---|---|
 | 做了什么 | |
 | 总体进度 | Include a numeric estimate. |
@@ -32,7 +32,7 @@ Use these rows for a Chinese Primary report:
 
 Use these rows for a Chinese post-install or generic startup report:
 
-| 类型/状态 | 内容 |
+| 报告项 | 内容 |
 |---|---|
 | 做了什么 | |
 | 总体进度 | Include a numeric estimate. |
@@ -44,7 +44,7 @@ Use these rows for a Chinese post-install or generic startup report:
 
 Use these rows for a Chinese Frontier report:
 
-| 类型/状态 | 内容 |
+| 报告项 | 内容 |
 |---|---|
 | 做了什么 | |
 | 总体进度 | Include a numeric estimate. |
@@ -53,21 +53,23 @@ Use these rows for a Chinese Frontier report:
 | 缺口 | |
 | 下一步 | |
 
-## Evidence Details
+## Evidence and Validation
 
 - Validation:
 - Artifacts:
 - Notes:
 
-## Human Next Step
+## Recommended Next Step
 
 Explain what the human should do now. If no human action is needed, say that plainly and name the next Primary-owned or Frontier-owned action.
 
 Do not claim final states without final-authority evidence.
 
-Keep the table cells short. Put long paths, URLs, commit hashes, validation output, and evidence lists in `Evidence Details` instead of the table.
+Keep the table cells short. Put long paths, URLs, commit hashes, validation output, and evidence lists in `Evidence and Validation` instead of the table.
 
 Do not include shell command blocks, PowerShell blocks, bash blocks, command dumps, executable paths, or local install paths in a chat formal report. For validation, write only a short status such as `验证通过` or `Validation passed`.
+
+For Chinese reports, name the evidence section `依据与验证` and the final section `下一步建议`. For English reports, use `Evidence and Validation` and `Recommended Next Step`.
 
 ## Post-Install Startup Note
 
@@ -75,7 +77,7 @@ When this report is used immediately after installing OpenACP, the `Next` cell m
 
 ## Mini Example
 
-| Item/Status | Content |
+| Item | Content |
 |---|---|
 | Changed | A worker handoff and reviewer report are ready for final consume. |
 | Progress | 70%. The work is implemented and reviewed, but final authority has not accepted it. |

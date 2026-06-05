@@ -15,7 +15,7 @@ Every discovery reply must use `human-explain-openacp` style in the preferred la
 
 Every status-like discovery reply must use `formal-report-openacp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, source ids, authority, effects, basisRefs, locators, claims, and nextActions.
 
-End every discovery reply with a short `Human Next Step` / `给人的下一步` paragraph. If discovery unlocked a B0/B1/B2 action, name the agent-owned next action. If human input is needed, name the exact missing source, owner fact, repo boundary, path, approval, or decision.
+End every discovery reply with a short `Recommended Next Step` / `下一步建议` paragraph. If discovery unlocked a B0/B1/B2 action, name the agent-owned next action. If human input is needed, name the exact missing source, owner fact, repo boundary, path, approval, or decision.
 
 ## Evidence And Locator Rules
 

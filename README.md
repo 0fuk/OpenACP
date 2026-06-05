@@ -2,11 +2,11 @@
 
 OpenACP, short for **Open Agent Coordination Protocol**, is a workflow kit for coordinating multiple AI agents around real project work.
 
-It is not an agent runtime, model framework, IDE plugin, or prompt pack. OpenACP does not replace Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, or the OpenAI Agents SDK. Those tools help agents run, code, call tools, or build graphs. OpenACP handles the coordination layer that gets messy once several agents start working at the same time:
+OpenACP focuses on the coordination layer around agent runtimes, model frameworks, IDE tools, and graph frameworks. It works alongside Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK. Those tools help agents run, code, call tools, or build graphs. OpenACP keeps parallel agent work organized once several threads start moving at the same time:
 
 - Which materials are current facts, reference-only material, deprecated material, or invalid sources.
 - Which agent may only read, which agent may prepare packages, and which agent may execute scoped work.
-- What a worker handoff proves, and what it does not prove.
+- What a worker handoff proves, and which acceptance step remains.
 - Whether a reviewer recommendation is final, or only provisional evidence.
 - How multiple threads, worktrees, handoffs, review reports, and launchers connect.
 - When the human owner must make a final decision, and when agents can keep moving without interrupting the human.
@@ -26,7 +26,7 @@ OpenACP is for people who have moved beyond one-off prompts and are starting to 
 | A complex delivery owner | Backend, frontend, tests, security, docs, and launch work move in parallel, but only some agent output should be accepted. | A clean distinction between "an agent produced this" and "the project accepted this." |
 | A team with only a PRD or rough product idea | There is no source pack, spec, scope boundary, or task card, so agents start guessing. | Bootstrap turns rough material into a minimal source pack, scope boundary, assumptions ledger, open questions, starter spec, and first CARDs. |
 
-OpenACP does not replace tests, CI, code review, security review, legal review, release ownership, or engineering judgment. It makes those things easier for humans and agents to coordinate.
+OpenACP keeps tests, CI, code review, security review, legal review, release ownership, and engineering judgment visible inside one coordination flow.
 
 ## Quick Start
 
@@ -40,9 +40,9 @@ The startup agent should:
 
 1. Install or load every OpenACP skill under `skills/`.
 2. Install the Python workflow kit and run basic validation.
-3. Produce a formal report automatically. The user should not need to ask for it separately.
+3. Produce a formal report automatically as part of startup.
 
-The post-install formal report should be short and human-readable. It should say whether validation passed, but it should not print PowerShell blocks, command lists, executable paths, local install paths, or temporary directories in chat.
+The post-install formal report should be short and human-readable. It should summarize validation in words and keep command output, executable paths, local install paths, and temporary directories out of chat.
 
 After installation and validation, the agent should ask you for:
 
@@ -50,7 +50,7 @@ After installation and validation, the agent should ask you for:
 - **Facts input**: a source pack, PRD, spec, design document, facts path, or uploaded project materials.
 - **Preferred language**: the language that every Primary, Frontier, worker, reviewer, and discovery reply should use consistently.
 
-If you do not have a clean facts path, upload or attach the project materials. The agent should treat them as candidate facts until it organizes and validates them. A working directory is still required.
+When the facts path is still rough, upload or attach the project materials. The agent should treat them as candidate facts until it organizes and validates them. A working directory is still required.
 
 After you provide those inputs, the startup agent should:
 
@@ -59,11 +59,11 @@ After you provide those inputs, the startup agent should:
 3. Return one copyable short Primary launcher in the current chat as a fenced `prompt` block.
 4. Tell you, in natural language, to create a new thread from the left sidebar and paste only that short launcher there.
 
-The full prompt body belongs on disk. Chat should contain the short launcher only. A `.short.md` link, file attachment, file list, or `Get-Content` command is not enough.
+The full prompt body belongs on disk. Chat should contain the copyable short launcher itself, with file links or attachments used only as supporting references.
 
 ## What Happens After Startup
 
-GitHub install startup creates **one Primary launcher only**. It does not create Frontier launchers yet.
+GitHub install startup creates **one Primary launcher first**. Primary creates Frontier launchers later after workspace review, CARD creation, and lane analysis.
 
 The Primary thread starts after you paste the short Primary launcher into a new thread. Primary then reviews the real workspace and facts before deciding how much parallel coordination is useful.
 
@@ -82,7 +82,7 @@ Primary should default to **at least two Frontier lanes** for normal or medium-c
 
 ## Manual Primary And Frontier Startup
 
-OpenACP is not only an install script. After the skills are installed, you can manually start a new Primary or Frontier.
+After the skills are installed, you can also manually start a new Primary or Frontier.
 
 Manual Primary launcher:
 
@@ -108,14 +108,14 @@ Facts/source pack: <path or artifact>
 Assigned CARDs: <CARD ids or task cards>
 Preferred language: <same as Primary>
 
-Continue B0/B1/B2 lane-local closure. Dispatch worker, reviewer, discovery, or validation subagents when safe. Do not return to the human unless the next action truly needs final authority or missing user facts.
+Continue B0/B1/B2 lane-local closure. Dispatch worker, reviewer, discovery, or validation subagents when safe. Stay inside the lane until only final authority or missing user facts remain.
 ```
 
-If a full prompt record already exists, use a short launcher. The short launcher tells the new thread which prompt record to read, which Prompt ID to execute, which language to use, and how to stop if the file cannot be read cleanly.
+If a full prompt record already exists, use a short launcher. The short launcher tells the new thread which prompt record to read, which Prompt ID to execute, which language to use, and how to report a clean read failure.
 
 ## How Orchestrators Communicate
 
-OpenACP does not rely on the previous chat thread "remembering" everything. Orchestrators communicate through project artifacts.
+OpenACP uses project artifacts as the shared memory between orchestrators.
 
 ```text
 Primary
@@ -157,21 +157,21 @@ Important artifacts:
 | `prompt record` | The full role prompt saved on disk and executed by Prompt ID. |
 | `short launcher` | The copyable chat block that points a new thread to the full prompt record. |
 | `handoff` | Evidence from a worker, reviewer, or discovery agent. It proves some things and leaves other things unproven. |
-| `consume result` | The orchestrator decision about what a handoff actually proves. A handoff is not acceptance by itself. |
+| `consume result` | The orchestrator decision about what a handoff actually proves before acceptance. |
 | `frontier closure` | The gate proof for whether a Frontier can keep working, close, or return to Primary. |
 | `formal report` | Human-readable status: what changed, progress, area, goal, gaps, next action, and evidence. |
 | `machine summary` | Compact locators for downstream agents and validators. |
 
 ## Role Model
 
-| Role | What it does | What it must not do |
+| Role | What it does | Authority boundary |
 |---|---|---|
-| `Primary` | Owns project-level coordination, CARD decomposition, lane dispatch, final consume, and final acceptance decisions. | Must not treat worker claims, reviewer recommendations, or validator pass as final acceptance by themselves. |
-| `Frontier` | Owns one lane. It keeps closing B0/B1/B2-safe work by refreshing backlog, dispatching subagents, consuming child handoffs, and preparing Primary-ready packets. | Is not the default implementation worker and cannot perform B3 final authority actions. |
-| `worker` | Executes one bounded task card and returns verification evidence. | Must not expand scope, invent authority, or claim final acceptance. |
-| `reviewer` | Performs read-only review of scope, correctness, verification, side effects, and overclaiming. | Must not commit, merge, waive, or final accept. |
-| `discovery` | Reads facts, classifies gaps, and prepares safe next actions. | Must not implement or promote reference-only material to current facts without authority. |
-| `human owner` | Decides product intent, risk acceptance, release, and high-risk exceptions. | Should not be interrupted for work that agents can safely continue under B0/B1/B2. |
+| `Primary` | Owns project-level coordination, CARD decomposition, lane dispatch, final consume, and final acceptance decisions. | Keeps final acceptance separate from worker claims, reviewer recommendations, and validator pass. |
+| `Frontier` | Owns one lane. It keeps closing B0/B1/B2-safe work by refreshing backlog, dispatching subagents, consuming child handoffs, and preparing Primary-ready packets. | Runs lane orchestration and reserves B3 final authority for Primary or the human owner. |
+| `worker` | Executes one bounded task card and returns verification evidence. | Stays inside the assigned task card, authority charter, and stop conditions. |
+| `reviewer` | Performs read-only review of scope, correctness, verification, side effects, and overclaiming. | Stays read-only and returns recommendations as evidence. |
+| `discovery` | Reads facts, classifies gaps, and prepares safe next actions. | Keeps source promotion under explicit authority. |
+| `human owner` | Decides product intent, risk acceptance, release, and high-risk exceptions. | Receives questions only when the next useful step needs owner facts or final authority. |
 
 ## B0 / B1 / B2 / B3
 
@@ -184,13 +184,13 @@ These levels answer one practical question: **how much authority does this agent
 | `B2` | Scoped execution under an authority charter. | Worker dispatch, worktree setup, bounded implementation, focused verification, child handoff consume. |
 | `B3` | Final authority. | Final acceptance, PR/CI/merge, release, publication, final waiver, cross-lane final decisions. |
 
-The key rule: **a B3 blocker does not stop all B0/B1/B2 work.** If agents can still discover facts, narrow scope, prepare packages, dispatch scoped workers, or add review evidence, they should keep moving.
+The key rule: **a B3 blocker still leaves B0/B1/B2 work available.** If agents can still discover facts, narrow scope, prepare packages, dispatch scoped workers, or add review evidence, they should keep moving.
 
 ## CARD Decomposition
 
 Good CARDs are the difference between one overloaded Frontier and several useful lanes.
 
-Primary should not create only five to seven backend-looking CARDs by default. For a normal product or medium-high-complexity project, Primary should usually create **10-20 project-level CARDs**, and those CARDs may later expand into dozens or hundreds of concrete task cards.
+For a normal product or medium-high-complexity project, Primary should usually create **10-20 project-level CARDs**, and those CARDs may later expand into dozens or hundreds of concrete task cards. That gives Frontier lanes enough independent surface area to work in parallel.
 
 Primary should scan the facts for product domains before cutting CARDs. Examples include:
 
@@ -204,13 +204,13 @@ Primary should scan the facts for product domains before cutting CARDs. Examples
 - testing, QA, accessibility, performance, observability, and CI,
 - docs, release, operations, deployment, and rollback.
 
-Do not invent a frontend, UI, Electron, mobile, or compliance lane when the project facts do not mention it. But if the PRD, spec, or source pack explicitly names Electron, UI, frontend, desktop shell, mobile, or another surface, Primary must create CARD coverage for that surface instead of treating the project as backend-only.
+Create frontend, UI, Electron, mobile, or compliance lanes when the project facts name those surfaces. If the PRD, spec, or source pack explicitly names Electron, UI, frontend, desktop shell, mobile, or another surface, Primary should create CARD coverage for that surface instead of treating the project as backend-only.
 
 CARDs should then be grouped into Frontier lanes. A lane can own several related CARDs, but each lane should have a clear objective and enough independence to make parallel work useful.
 
 ## Skills
 
-OpenACP skills are installable agent workflow instructions. They are not decorative folders; each skill maps to a real coordination role or governance action.
+OpenACP skills are installable agent workflow instructions. Each skill maps to a real coordination role or governance action.
 
 | Skill | When to use it | Why it matters |
 |---|---|---|
@@ -230,28 +230,28 @@ OpenACP skills are installable agent workflow instructions. They are not decorat
 
 If the user chooses a preferred language, all Primary, Frontier, worker, reviewer, discovery, and formal report replies should use that language as the main language.
 
-For example, if the preferred language is Chinese, the reply should be Chinese-first. Keep fixed technical terms in English only when they are useful as terms: `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `authority boundary`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `README`, `CLI`, `JSON`, `schema`, `Electron`, or exact file names. Do not write long English paragraphs such as "Primary recommended next action..." when the user asked for Chinese.
+For example, if the preferred language is Chinese, the reply should be Chinese-first. Keep fixed technical terms in English only when they are useful as terms: `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `authority boundary`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `README`, `CLI`, `JSON`, `schema`, `Electron`, or exact file names. A Chinese report should keep long explanatory paragraphs in Chinese.
 
 ## Core Technology
 
-OpenACP is not "more prompts." It is a set of reusable coordination techniques.
+OpenACP is a reusable coordination layer for agent work.
 
 ### Source-Driven Coordination
 
-Work starts from current facts. A PRD, old spec, screenshot, chat note, or draft does not automatically become current truth. OpenACP asks agents to classify source status:
+Work starts from current facts. A PRD, old spec, screenshot, chat note, or draft becomes current truth only after source classification. OpenACP asks agents to classify source status:
 
 - `current`: may drive implementation.
-- `reference`: may provide background but cannot expand scope.
+- `reference`: may provide background while current sources continue to define scope.
 - `deprecated`: replaced by newer material.
 - `invalid`: unreadable, contaminated, role-mismatched, stale, or untrusted.
 
 ### Authority Boundary
 
-Worker output, reviewer recommendations, Frontier synthesis, and validator pass are all evidence. They are not final acceptance. B3 final authority remains explicit.
+Worker output, reviewer recommendations, Frontier synthesis, and validator pass remain evidence until B3 final authority accepts them.
 
 ### Active Closure
 
-Primary and Frontier should not only list blockers. They should ask:
+Primary and Frontier should turn blockers into the next safe B0/B1/B2 action whenever possible:
 
 - Can this gap be reduced by B0 discovery?
 - Can it be turned into a B1 package?
@@ -262,13 +262,13 @@ Only when all visible remaining gaps are final-authority-only or explicitly out 
 
 ### Handoff Consume
 
-A handoff is evidence, not completion. The consuming orchestrator checks scope, changed files, verification evidence, skipped checks, reviewer findings, data risk, authority limits, and overclaims.
+A handoff is evidence that becomes completion only after consume and acceptance. The consuming orchestrator checks scope, changed files, verification evidence, skipped checks, reviewer findings, data risk, authority limits, and overclaims.
 
 ### Human-Readable Status
 
 OpenACP rejects machine-log replies as the main user-facing answer. A useful status says what changed, what is proven, what is provisional, what is missing, and what happens next.
 
-Every Primary, Frontier, worker, reviewer, discovery, bootstrap, and validation reply should use `human-explain-openacp` style. Status-like replies must end with a practical human next step. If no human action is needed, the answer should say that clearly and name the next Primary-owned or Frontier-owned action. If human input is needed, it should name the exact path, fact, repo boundary, branch, source root, test entrypoint, approval, or decision.
+Every Primary, Frontier, worker, reviewer, discovery, bootstrap, and validation reply should use `human-explain-openacp` style. Status-like replies must end with a practical recommended next step. If the agent can continue, the answer should say so and name the next Primary-owned or Frontier-owned action. If human input is needed, it should name the exact path, fact, repo boundary, branch, source root, test entrypoint, approval, or decision.
 
 ## Minimum Useful Setup
 
@@ -295,7 +295,7 @@ frontier closure
 formal report
 ```
 
-If you do not have these yet, start with `bootstrap-openacp`. Do not ask an implementation worker to guess requirements without a task card, acceptance criteria, verification plan, and stop conditions.
+When these inputs are missing, start with `bootstrap-openacp` so implementation begins from task cards, acceptance criteria, verification plans, and stop conditions.
 
 ## Repository Map
 
@@ -318,7 +318,7 @@ examples/    Strict fixtures and concept examples.
 - `examples/multi-frontier-closure/`: strict fixture for runtime boundary, lane registry, child ledger, source status, decision registry, and Frontier closure.
 - `examples/multi-worktree-review/`: concept example for multiple workers and reviewer sidecars.
 
-The first two are best for direct validation. The other examples show shape and vocabulary, not a complete project package.
+The first two are best for direct validation. The other examples show shape and vocabulary for larger project packages.
 
 ## Local CLI
 
@@ -339,7 +339,7 @@ openacp init ./my-openacp-package
 openacp init ./my-openacp-package --write
 ```
 
-`openacp init` is a dry run by default. It is a bootstrap fallback, not the normal startup flow. For real projects, install the skills first, then let Primary create project-specific prompt records and launchers from your working directory and facts input.
+`openacp init` is a dry run by default. It is a bootstrap fallback. For real projects, install the skills first, then let Primary create project-specific prompt records and launchers from your working directory and facts input.
 
 ## Positioning
 
@@ -354,7 +354,7 @@ One layer executes work. The other coordinates project truth.
 
 ## Public Package Hygiene
 
-The public repository should not contain private response logs, private source packs, local absolute paths, customer material, credentials, or production logs. Keep private run material in ignored local paths such as `.openacp-local/` or your team's private workspace.
+The public repository should contain public-safe docs, templates, schemas, examples, CLI, and validator code. Keep private response logs, private source packs, local absolute paths, customer material, credentials, and production logs in ignored local paths such as `.openacp-local/` or your team's private workspace.
 
 Before release, run:
 
@@ -363,4 +363,4 @@ python tools/openacp_validate_selftest.py
 python tools/openacp_validate.py --artifact . --ruleset public-package --strict
 ```
 
-The validator checks structure, common leakage patterns, and common overclaims. It is not a full secret scanner or a semantic proof of correctness. Run a dedicated secret scanner and human review before a formal release.
+The validator checks structure, common leakage patterns, and common overclaims. Pair it with a dedicated secret scanner and human review before a formal release.

@@ -45,9 +45,9 @@ Translate coordination terms into delivery meaning:
 
 If the system is waiting, explain whether it is a real final-authority wait or whether B0/B1/B2-safe work can still continue. Do not describe passive waiting as progress.
 
-## Frontier Human Next Step Rule
+## Frontier Recommended Next Step Rule
 
-For every Frontier reply, include a practical human next step:
+For every Frontier reply, include a practical recommended next step:
 
 - If Frontier can keep closing the lane through B0/B1/B2 work, say that no human action is needed and name the next Frontier-owned action.
 - If Frontier dispatched or will dispatch subagents, explain what they are checking or doing and how Frontier will consume the result.

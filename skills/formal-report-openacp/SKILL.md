@@ -27,14 +27,14 @@ Formal reports are often rendered in narrow chat panes. Keep the table readable:
 - Do not use free-form row labels such as `安装`, `Skill`, `CLI`, `项目`, `状态`, `What changed`, `Lane or area`, `Next step`, `Validation`, or `Checkpoint`.
 - Do not put long paths, URLs, commit hashes, full commands, validation logs, executable paths, local install paths, or long inline-code snippets inside table cells.
 - Do not include PowerShell blocks, bash blocks, shell command blocks, command lists, or command dumps anywhere in a chat formal report. Validation evidence should be a short status only, such as `验证通过` or `Validation passed`.
-- Put only short evidence notes after the table under `Evidence Details` as normal bullets.
-- Always use the exact table header `| 类型/状态 | 内容 |` for Chinese reports or `| Item/Status | Content |` for English reports. Do not use `| 项 | 内容 |`, `| 项目 | 状态 |`, `| 字段 | 内容 |`, or custom headers.
-- Do not pad first-column labels with ideographic spaces. The wider `类型/状态` / `Item/Status` header keeps the left column readable in Codex chat.
-- Do not include a `Checkpoint` row. Validation, gate, or checkpoint-like information belongs in the `验证` / `Gate` row for generic reports or in `Evidence Details` outside the table.
+- Put only short evidence notes after the table. Chinese reports use `依据与验证`; English reports use `Evidence and Validation`.
+- Always use the exact table header `| 报告项 | 内容 |` for Chinese reports or `| Item | Content |` for English reports. Legacy short Chinese headers, mixed status headers, field/content headers, and custom headers are invalid.
+- Do not pad first-column labels with ideographic spaces. The wider `报告项` / `Item` header keeps the left column readable in Codex chat.
+- Keep validation, gate, or checkpoint-like information in the `验证` / `Gate` row for generic reports or in the evidence section outside the table. The table row set excludes `Checkpoint`.
 
 ## Post-Install Startup Report
 
-After installing OpenACP as a skill + workflow kit, produce a formal report automatically. The user should not need to request it separately.
+After installing OpenACP as a skill + workflow kit, produce a formal report automatically as part of startup.
 
 The startup formal report should state:
 
@@ -54,7 +54,7 @@ The next step must ask for:
 - your current source pack, PRD, spec, or facts path,
 - your preferred language for future Primary, Frontier, worker, reviewer, and discovery replies.
 
-If no prepared facts path exists, ask the user to upload or attach the project materials. Do not treat uploaded materials as a replacement for the working directory; the working directory is still required.
+If no prepared facts path exists, ask the user to upload or attach the project materials. Uploaded materials become candidate facts; the working directory is still required.
 
 End the post-install report with human-readable wording, not a vague checklist. The meaning should be:
 
@@ -74,7 +74,7 @@ Avoid a next step that only says "wait". If waiting is unavoidable, name what ev
 
 ## Required Human Ending
 
-Every formal report must end with a short human-readable section named `Human Next Step` or `给人的下一步`.
+Every formal report must end with a short human-readable section named `Recommended Next Step` for English or `下一步建议` for Chinese.
 
 This section is outside the table. It should say the practical current situation and the next action in plain language:
 

@@ -15,7 +15,7 @@ If the preferred language is Chinese, Chinese must be the main language for the 
 
 Every status-like Primary reply must also use `formal-report-openacp` structure with stable OpenACP report rows and evidence details outside the table. Do not return machine-log prose as the main user-facing answer.
 
-End every Primary reply with a short `给人的下一步` / `Human Next Step` paragraph. If the user needs to act, name the exact missing working path, facts path, repo path, branch, source root, test entrypoint, approval, or decision. If no user action is needed, say that Primary will continue dispatch, consume, validation, or closure work.
+End every Primary reply with a short `下一步建议` / `Recommended Next Step` paragraph. If the user needs to act, name the exact missing working path, facts path, repo path, branch, source root, test entrypoint, approval, or decision. If no user action is needed, say that Primary will continue dispatch, consume, validation, or closure work.
 
 ## Responsibilities
 

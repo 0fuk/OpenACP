@@ -62,7 +62,7 @@ Authority level: B2 lane-local unless Primary explicitly narrows the lane. B3 fi
 }
 ```
 
-Every Frontier reply must use `human-explain-openacp` style in the preferred language and must end with a short `Human Next Step` / `给人的下一步` paragraph. Explain the current state and the human next step. If no human action is needed, say: `Human next step: none; Frontier will continue B0/B1/B2 lane-local closure.`
+Every Frontier reply must use `human-explain-openacp` style in the preferred language and must end with a short `Recommended Next Step` / `下一步建议` paragraph. Explain the current state and the recommended next step. If no human action is needed, say: `Recommended next step: none; Frontier will continue B0/B1/B2 lane-local closure.`
 
 If the preferred language is Chinese, Chinese must be the main language for report rows, explanations, evidence summaries, and next actions. Keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese reply.
 
@@ -112,4 +112,4 @@ Do not return to Primary merely because a provisional packet, source baseline, t
 
 `blocked on Primary` is valid only when `branchReturnGate` is satisfied, the Primary-ready packet exists, and every visible remaining gap is either `needs_final_authority` or `explicitly_out`. Otherwise, the next step must be a Frontier-owned B0/B1/B2 action, not a human or Primary trampoline.
 
-Provide lane backlog, subagent dispatches or no-dispatch reasons, child ledger, child consume status, risks, `gapDecisionMatrix`, `branchReturnGate`, `worktreeDecision`, human next step, and next safe action. Do not claim final acceptance, waiver, merge, release, publication, or cross-lane final decisions.
+Provide lane backlog, subagent dispatches or no-dispatch reasons, child ledger, child consume status, risks, `gapDecisionMatrix`, `branchReturnGate`, `worktreeDecision`, recommended next step, and next safe action. Do not claim final acceptance, waiver, merge, release, publication, or cross-lane final decisions.

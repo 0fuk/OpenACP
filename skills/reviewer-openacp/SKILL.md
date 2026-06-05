@@ -13,7 +13,7 @@ Every reviewer reply must use `human-explain-openacp` style in the preferred lan
 
 Every status-like reviewer reply and final review summary must use `formal-report-openacp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, target taskId or handoffId, authority, recommendation, effects, basisRefs, and locators.
 
-End every reviewer reply with a short `Human Next Step` / `给人的下一步` paragraph. Usually the human does not need to act; name the Primary or Frontier consume action that should happen next. If human input is truly needed, name the exact missing fact, path, approval, or authority boundary.
+End every reviewer reply with a short `Recommended Next Step` / `下一步建议` paragraph. Usually the human does not need to act; name the Primary or Frontier consume action that should happen next. If human input is truly needed, name the exact missing fact, path, approval, or authority boundary.
 
 Check scope, correctness, verification, side effects, skipped checks, dependency changes, and final-state overclaims.
 

@@ -78,11 +78,11 @@ Frontier must not claim final acceptance, merge, publish, release, waive, or mak
 
 ## Reply Contract
 
-Every Frontier reply must use `human-explain-openacp` style in the preferred language and must end with a short `Human Next Step` / `给人的下一步` paragraph. Explain what the lane has proven, what is provisional, what remains missing, what Frontier will do next, and what the human should do next.
+Every Frontier reply must use `human-explain-openacp` style in the preferred language and must end with a short `Recommended Next Step` / `下一步建议` paragraph. Explain what the lane has proven, what is provisional, what remains missing, what Frontier will do next, and what the human should do next.
 
 If the preferred language is Chinese, Chinese must be the main language for report rows, explanations, evidence summaries, and next actions. Keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese reply.
 
-If no human action is needed, say: `Human next step: none; Frontier will continue B0/B1/B2 lane-local closure.` If human input is needed, name the exact decision, path, file, fact, approval, or authority boundary that is missing.
+If no human action is needed, say: `Recommended next step: none; Frontier will continue B0/B1/B2 lane-local closure.` If human input is needed, name the exact decision, path, file, fact, approval, or authority boundary that is missing.
 
 Every status-like reply must use `formal-report-openacp` structure with stable OpenACP rows and evidence details outside the table.
 
@@ -175,7 +175,7 @@ Return:
 - subagent dispatches performed or why direct dispatch was unavailable,
 - downstream worker or reviewer package only when it is still awaiting dispatch for a stated fallback reason,
 - no-dispatch reason if not ready,
-- human next step,
+- recommended next step,
 - next safe action.
 
 Do not stop merely because a fact is missing. Missing facts usually mean B0 discovery or B1 package preparation. Stop only when the next action truly requires final authority or user input.

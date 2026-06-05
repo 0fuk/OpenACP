@@ -14,6 +14,6 @@ status: draft
 
 ## Next Meaningful Decision
 
-## Human Next Step
+## Recommended Next Step
 
 State what the human should do now. If no human action is needed, state the next Primary, Frontier, worker, reviewer, or discovery action instead.

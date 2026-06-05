@@ -14,6 +14,6 @@ Recommended order:
 8. `handoff.json` and `review-report.json`: provisional evidence from workers and reviewers.
 9. `consume-result.json`: Primary or Frontier consume decision for handoff evidence.
 10. `frontier-closures/<lane-id>.json`: proof that a Frontier lane can continue, close, or return to Primary.
-11. `formal-report.md`: short owner-facing report with evidence details and a human next step.
+11. `formal-report.md`: short owner-facing report with evidence notes and a recommended next step.
 
 Do not use a chat formal report as the only coordination state. When a lane is active, keep the machine-readable registries current enough that another agent can understand what is current, what is provisional, what is invalid, and what still needs final authority.

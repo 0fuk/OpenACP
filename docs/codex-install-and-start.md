@@ -69,7 +69,7 @@ For chat readability, keep the report table short. Long paths, commit hashes, UR
 The startup report must use `formal-report-openacp` rows. For a Chinese post-install report, use this exact table shape:
 
 ```text
-| 类型/状态 | 内容 |
+| 报告项 | 内容 |
 |---|---|
 | 做了什么 | |
 | 总体进度 | |
@@ -80,7 +80,7 @@ The startup report must use `formal-report-openacp` rows. For a Chinese post-ins
 | 下一步 | |
 ```
 
-Do not use `| 项 | 内容 |`, `| 项目 | 状态 |`, `| 字段 | 内容 |`, `安装`, `Skill`, `CLI`, or `Checkpoint` as formal-report table rows. They render poorly in narrow chat panes and do not match the OpenACP report contract.
+Use only the OpenACP report header: `| 报告项 | 内容 |` for Chinese or `| Item | Content |` for English. Keep row labels to the standard OpenACP set: `做了什么`, `总体进度`, `验证`, `范围`, `目标`, `缺口`, `下一步` for Chinese startup reports.
 
 Do not print PowerShell blocks, bash blocks, command lists, executable paths, local install paths, or temporary install directories in the user-facing post-install report. The `验证` row should simply say `验证通过` or `验证失败`; if a note is useful, write one short natural-language sentence after the table.
 
@@ -214,7 +214,7 @@ When Primary returns Frontier launchers, it must not return only links to `.shor
 
 Frontier lanes should default to B2 lane-local authority. A B2 Frontier may actively run B0 discovery, B1 packaging, B2 scoped worker/reviewer/subagent dispatch, child handoff consume, provisional lane evidence synthesis, and closure proof inside its assigned lane. Frontier must not perform B3 final acceptance, waiver, merge, release, publication, or cross-lane final decisions.
 
-Inside a Frontier lane, worker/reviewer/discovery/validation child work should be dispatched by that Frontier through available subagent or delegation tools. Do not make the human open child worker or reviewer threads by default. If direct dispatch is unavailable or unsafe, the Frontier may return a short `Fallback launcher`, but it must write that launcher to disk, print it in chat as a fenced `prompt` block, explain why it could not dispatch the child itself, and give one exact human next step.
+Inside a Frontier lane, worker/reviewer/discovery/validation child work should be dispatched by that Frontier through available subagent or delegation tools. Do not make the human open child worker or reviewer threads by default. If direct dispatch is unavailable or unsafe, the Frontier may return a short `Fallback launcher`, but it must write that launcher to disk, print it in chat as a fenced `prompt` block, explain why it could not dispatch the child itself, and give one exact recommended next step.
 
 Primary and Frontier should maintain machine-readable coordination state:
 

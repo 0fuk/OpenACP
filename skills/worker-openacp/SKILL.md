@@ -13,7 +13,7 @@ Every worker reply must use `human-explain-openacp` style in the preferred langu
 
 Every status-like worker reply and final handoff summary must use `formal-report-openacp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, taskId, handoffId, authority, effects, basisRefs, and locators.
 
-End every worker reply with a short `Human Next Step` / `给人的下一步` paragraph. Usually the human does not need to act; name the orchestrator consume or review action that should happen next. If human input is truly needed, name the exact missing fact, approval, path, or authority boundary.
+End every worker reply with a short `Recommended Next Step` / `下一步建议` paragraph. Usually the human does not need to act; name the orchestrator consume or review action that should happen next. If human input is truly needed, name the exact missing fact, approval, path, or authority boundary.
 
 Rules:
 

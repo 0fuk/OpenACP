@@ -376,17 +376,20 @@ JSON_FENCE_RE = re.compile(r"```(?:json|JSON)?\s*(\{.*?\})\s*```", re.DOTALL)
 PROMPT_FENCE_RE = re.compile(r"```prompt\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 ZH_ITEM = "\u9879"
 ZH_TYPE_STATUS = "\u7c7b\u578b/\u72b6\u6001"
+ZH_REPORT_ITEM = "\u62a5\u544a\u9879"
 ZH_FIELD = "\u5b57\u6bb5"
 ZH_PROGRESS = "\u603b\u4f53\u8fdb\u5ea6"
 ZH_EVIDENCE = "\u8bc1\u636e"
 ZH_BASIS = "\u4f9d\u636e"
+ZH_EVIDENCE_AND_VALIDATION = "\u4f9d\u636e\u4e0e\u9a8c\u8bc1"
+ZH_RECOMMENDED_NEXT_STEP = "\u4e0b\u4e00\u6b65\u5efa\u8bae"
 ZH_LEFT_SIDEBAR = "\u5de6\u4fa7"
 ZH_NEW_THREAD = "\u65b0\u5efa"
 ZH_PASTE = "\u7c98\u8d34"
 ZH_VALIDATION = "\u9a8c\u8bc1"
 ZH_AREA = "\u8303\u56f4"
 
-FORMAL_HEADERS = {("Item/Status", "Content"), (ZH_TYPE_STATUS, "\u5185\u5bb9")}
+FORMAL_HEADERS = {("Item", "Content"), (ZH_REPORT_ITEM, "\u5185\u5bb9")}
 FORMAL_ROW_SEQUENCES = [
     ["Changed", "Progress", "Gate", "Area", "Goal", "Gaps", "Next"],
     [
@@ -1169,15 +1172,25 @@ def _long_english_dominant_lines(text: str) -> list[str]:
     return offenders
 
 
-def _has_trailing_human_next_step_section(text: str) -> bool:
-    headings = list(re.finditer(r"(?im)^\s{0,3}#{1,6}\s*(?:Human Next Step|\u7ed9\u4eba\u7684\u4e0b\u4e00\u6b65)\s*$", text))
+def _trailing_report_section_heading(text: str, pattern: str) -> str | None:
+    headings = list(re.finditer(rf"(?im)^\s{{0,3}}#{{1,6}}\s*({pattern})\s*$", text))
     if not headings:
-        return False
+        return None
     last = headings[-1]
     after = text[last.end() :].strip()
     if not after:
-        return False
-    return not bool(re.search(r"(?im)^\s{0,3}#{1,6}\s+\S", after))
+        return None
+    if re.search(r"(?im)^\s{0,3}#{1,6}\s+\S", after):
+        return None
+    return last.group(1).strip()
+
+
+def _trailing_recommended_next_step_heading(text: str) -> str | None:
+    return _trailing_report_section_heading(text, r"Recommended Next Step|\u4e0b\u4e00\u6b65\u5efa\u8bae")
+
+
+def _has_heading(text: str, pattern: str) -> bool:
+    return bool(re.search(rf"(?im)^\s{{0,3}}#{{1,6}}\s*(?:{pattern})\s*$", text))
 
 
 def validate_formal_report_text(text: str, report: Report, preferred_language: str | None = None) -> None:
@@ -1191,10 +1204,14 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
     else:
         report.add("RESPONSE_LOG_PATH", "blocking", "fail", "Formal report must include a Response log path line.")
     rows, header = parse_formal_table(text, report)
+    preferred = (preferred_language or "").strip().lower()
+    wants_chinese = preferred in {"chinese", "zh", "zh-cn", "\u4e2d\u6587"} or (header and header[0] == ZH_REPORT_ITEM)
+    legacy_chinese_header = header and header[0] == ZH_TYPE_STATUS
+
     if header in FORMAL_HEADERS:
-        report.add("FORMAL_HEADER", "blocking", "pass", "Formal report uses the standard Item/Status or 类型/状态 header.")
+        report.add("FORMAL_HEADER", "blocking", "pass", "Formal report uses the standard Item or 报告项 header.")
     else:
-        report.add("FORMAL_HEADER", "blocking", "fail", "Formal report must use `| Item/Status | Content |` or `| 类型/状态 | 内容 |`.")
+        report.add("FORMAL_HEADER", "blocking", "fail", "Formal report must use `| Item | Content |` or `| 报告项 | 内容 |`.")
     labels = [label for label, _ in rows]
     if any(labels == required for required in FORMAL_ROW_SEQUENCES):
         report.add("FORMAL_ROWS", "blocking", "pass", "Formal report has an exact role-aware row set in the required order.")
@@ -1210,14 +1227,33 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
         report.add("PROGRESS_PERCENT", "blocking", "pass", "Progress row includes a numeric estimate.")
     else:
         report.add("PROGRESS_PERCENT", "blocking", "fail", "Formal report progress row must include a numeric percentage.")
-    if re.search(r"Evidence Details|Basis", text, re.IGNORECASE) or ZH_EVIDENCE in text or ZH_BASIS in text:
+    has_english_evidence = _has_heading(text, r"Evidence and Validation|Basis")
+    has_chinese_evidence = _has_heading(text, rf"{ZH_EVIDENCE_AND_VALIDATION}")
+    has_legacy_english_evidence = _has_heading(text, r"Evidence Details")
+    if wants_chinese and has_legacy_english_evidence:
+        report.add("EVIDENCE_DETAILS", "blocking", "fail", "Chinese formal reports must use `依据与验证`, not `Evidence Details`.")
+    elif wants_chinese and has_chinese_evidence:
+        report.add("EVIDENCE_DETAILS", "blocking", "pass", "Chinese formal report includes `依据与验证` outside the table.")
+    elif wants_chinese:
+        report.add("EVIDENCE_DETAILS", "blocking", "fail", "Chinese formal reports must include `依据与验证` outside the table.")
+    elif has_english_evidence:
         report.add("EVIDENCE_DETAILS", "blocking", "pass", "Formal report includes evidence or basis details outside the table.")
     else:
-        report.add("EVIDENCE_DETAILS", "blocking", "fail", "Formal report must include Evidence Details or basis outside the table.")
-    if _has_trailing_human_next_step_section(text):
+        report.add("EVIDENCE_DETAILS", "blocking", "fail", "Formal report must include Evidence and Validation or basis outside the table.")
+    trailing_next_step = _trailing_recommended_next_step_heading(text)
+    has_legacy_next_step = _has_heading(text, r"Human Next Step|\u7ed9\u4eba\u7684\u4e0b\u4e00\u6b65")
+    if wants_chinese and trailing_next_step == ZH_RECOMMENDED_NEXT_STEP:
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "pass", "Formal report ends with a human-readable next-step section.")
-    elif re.search(r"(?i)Human Next Step|human next step|what happens next", text) or "\u7ed9\u4eba\u7684\u4e0b\u4e00\u6b65" in text:
-        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Human Next Step must be the final report section.")
+    elif wants_chinese and has_legacy_next_step:
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Chinese formal reports must use `下一步建议`, not `给人的下一步`.")
+    elif wants_chinese and trailing_next_step:
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Chinese formal reports must end with `下一步建议`.")
+    elif wants_chinese:
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Chinese formal reports must end with a `下一步建议` section.")
+    elif trailing_next_step == "Recommended Next Step":
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "pass", "Formal report ends with a human-readable next-step section.")
+    elif re.search(r"(?i)Recommended Next Step|recommended next step|what happens next|Human Next Step|human next step", text):
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Recommended Next Step must be the final report section.")
     else:
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Formal reports must end with a human-readable next-step section.")
     if (
@@ -1230,12 +1266,12 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
         report.add("FORMAL_REPORT_NO_COMMAND_DUMP", "blocking", "fail", "Formal reports must not include shell command blocks or command dumps; summarize validation status instead.")
     else:
         report.add("FORMAL_REPORT_NO_COMMAND_DUMP", "blocking", "pass", "No shell command dump found in formal report.")
-    preferred = (preferred_language or "").strip().lower()
-    wants_chinese = preferred in {"chinese", "zh", "zh-cn", "\u4e2d\u6587"} or (header and header[0] == ZH_TYPE_STATUS)
-    if wants_chinese and header and header[0] != ZH_TYPE_STATUS:
+    if wants_chinese and header and header[0] != ZH_REPORT_ITEM:
         report.add("PREFERRED_LANGUAGE_HEADER", "blocking", "fail", "Chinese reports must use the Chinese formal-report header.")
     elif wants_chinese:
         report.add("PREFERRED_LANGUAGE_HEADER", "blocking", "pass", "Chinese report uses the Chinese formal-report header.")
+    if legacy_chinese_header:
+        report.add("LEGACY_FORMAL_HEADER", "blocking", "fail", "`类型/状态` is a legacy header; use `报告项`.")
     if wants_chinese or any(_has_cjk(label) for label in labels):
         english_offenders = _long_english_dominant_lines(text)
         if english_offenders:
@@ -1322,13 +1358,13 @@ def validate_frontier_contract_text(text: str, report: Report) -> None:
         report.add("FRONTIER_CHILD_LEDGER", "blocking", "pass", "Frontier contract requires child ledger identifiers and lifecycle status.")
     else:
         report.add("FRONTIER_CHILD_LEDGER", "blocking", "fail", "Frontier contract must require a child ledger with promptId, taskId, dispatchStatus, and handoffStatus.")
-    if re.search(r"(?is)(?:every|all)\s+Frontier\s+repl(?:y|ies).{0,160}(?:end|finish).{0,160}human\s+next\s+step", text) or re.search(
-        r"(?is)(?:end|finish).{0,160}(?:every|all)\s+Frontier\s+repl(?:y|ies).{0,160}human\s+next\s+step",
+    if re.search(r"(?is)(?:every|all)\s+Frontier\s+repl(?:y|ies).{0,160}(?:end|finish).{0,160}(?:recommended\s+next\s+step|\u4e0b\u4e00\u6b65\u5efa\u8bae)", text) or re.search(
+        r"(?is)(?:end|finish).{0,160}(?:every|all)\s+Frontier\s+repl(?:y|ies).{0,160}(?:recommended\s+next\s+step|\u4e0b\u4e00\u6b65\u5efa\u8bae)",
         text,
     ):
-        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "pass", "Frontier contract requires every Frontier reply to end with a human next-step paragraph.")
+        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "pass", "Frontier contract requires every Frontier reply to end with a recommended next-step paragraph.")
     else:
-        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "fail", "Frontier contract must require every Frontier reply to end with a human next-step paragraph.")
+        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "fail", "Frontier contract must require every Frontier reply to end with a recommended next-step paragraph.")
     if re.search(r"(?i)not\s+return\s+to\s+Primary\s+merely\s+because", text) and re.search(r"(?i)provisional\s+packet|source\s+baseline|consume-result|handoff", text):
         report.add("FRONTIER_NO_PACKET_RETURN", "blocking", "pass", "Frontier contract forbids returning to Primary merely after writing intermediate lane evidence.")
     else:
