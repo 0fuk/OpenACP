@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/handoff.schema.json",
-  "title": "OpenACP Handoff",
+  "$id": "https://openaccp.dev/schemas/handoff.schema.json",
+  "title": "OpenACCP Handoff",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "handoffId", "taskId", "responseId", "actorRole", "authority", "workspaceRef", "worktree", "branchRef", "baseCommit", "commit", "dataRisk", "effectsPreset", "changedFiles", "changedArtifacts", "claims", "verificationEvidence", "deviations", "risks", "assumptionsUsed", "remainingWork", "stateClaim"],
   "properties": {
-    "schemaVersion": { "const": "openacp-handoff.v1" },
+    "schemaVersion": { "const": "openaccp-handoff.v1" },
     "artifactType": { "const": "handoff" },
     "handoffId": { "type": "string", "minLength": 1 },
     "taskId": { "type": "string", "minLength": 1 },

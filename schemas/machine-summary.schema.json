@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/machine-summary.schema.json",
-  "title": "OpenACP Machine Summary",
+  "$id": "https://openaccp.dev/schemas/machine-summary.schema.json",
+  "title": "OpenACCP Machine Summary",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -19,7 +19,7 @@
     "nextActions"
   ],
   "properties": {
-    "schemaVersion": { "const": "openacp-machine-summary.v1" },
+    "schemaVersion": { "const": "openaccp-machine-summary.v1" },
     "artifactType": { "const": "machine-summary" },
     "summaryId": { "type": "string", "minLength": 1 },
     "role": { "enum": ["primary", "frontier", "worker", "reviewer", "discovery", "human-owner"] },

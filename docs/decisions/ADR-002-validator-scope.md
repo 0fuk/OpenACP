@@ -14,7 +14,7 @@ Multi-agent workflows need checks for missing fields, overclaiming, source misus
 
 ## Decision
 
-The OpenACP validator checks structure, hygiene, source status, authority boundaries, verification evidence, and overclaiming. It does not replace semantic review, CI, security review, human owners, or final authority.
+The OpenACCP validator checks structure, hygiene, source status, authority boundaries, verification evidence, and overclaiming. It does not replace semantic review, CI, security review, human owners, or final authority.
 
 ## Consequences
 

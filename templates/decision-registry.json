@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-decision-registry.v1",
+  "schemaVersion": "openaccp-decision-registry.v1",
   "artifactType": "decision-registry",
   "registryId": "DEC-REG-001",
   "decisions": [
@@ -8,7 +8,7 @@
       "type": "owner-question",
       "status": "open",
       "question": "Which product repo path, base branch, source roots, test entrypoints, and worktree policy should B2 work use?",
-      "basisRefs": [".openacp/coordination/runtime-boundary.json"],
+      "basisRefs": [".openaccp/coordination/runtime-boundary.json"],
       "blocks": ["B2 implementation dispatch"],
       "safeDefault": "Continue B0/B1 packaging and discovery only.",
       "authorityRequired": "B3"

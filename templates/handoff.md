@@ -1,10 +1,10 @@
 # Handoff
 
-schemaVersion: openacp-handoff.v1
+schemaVersion: openaccp-handoff.v1
 artifactType: handoff
 status: draft
 
-- schemaVersion: openacp-handoff.v1
+- schemaVersion: openaccp-handoff.v1
 - artifactType: handoff
 - handoffId:
 - taskId:

@@ -1,6 +1,6 @@
 # Open Questions
 
-schemaVersion: openacp-open-questions.v1
+schemaVersion: openaccp-open-questions.v1
 artifactType: open-questions
 status: draft
 

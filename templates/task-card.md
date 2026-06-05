@@ -1,10 +1,10 @@
 # Task Card
 
-schemaVersion: openacp-task-card.v1
+schemaVersion: openaccp-task-card.v1
 artifactType: task-card
 status: draft
 
-- schemaVersion: openacp-task-card.v1
+- schemaVersion: openaccp-task-card.v1
 - artifactType: task-card
 - taskId:
 - lane:

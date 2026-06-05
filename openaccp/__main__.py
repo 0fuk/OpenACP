@@ -1,4 +1,4 @@
-"""Module entry point for ``python -m openacp``."""
+"""Module entry point for ``python -m openaccp``."""
 
 from __future__ import annotations
 

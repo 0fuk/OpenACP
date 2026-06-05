@@ -16,28 +16,28 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run validator self-tests
-        run: python tools/openacp_validate_selftest.py
+        run: python tools/openaccp_validate_selftest.py
       - name: Scan public package
-        run: python tools/openacp_validate.py --artifact . --ruleset public-package --strict
+        run: python tools/openaccp_validate.py --artifact . --ruleset public-package --strict
       - name: Install package and check CLI
         run: |
           python -m pip install . --no-deps
-          openacp --help
-          openacp --version
-          openacp-validate --help
-          openacp-validate --version
+          openaccp --help
+          openaccp --version
+          openaccp-validate --help
+          openaccp-validate --version
       - name: Validate single worker flow
         run: |
-          python tools/openacp_validate.py --artifact examples/single-worker-flow/source-pack.json --ruleset source-pack --strict
-          python tools/openacp_validate.py --artifact examples/single-worker-flow/authority-charter.json --ruleset authority-charter --strict
-          python tools/openacp_validate.py --artifact examples/single-worker-flow/task-card.json --ruleset task-card --source-pack examples/single-worker-flow/source-pack.json --strict
-          python tools/openacp_validate.py --artifact examples/single-worker-flow/handoff.json --ruleset handoff --task-card examples/single-worker-flow/task-card.json --strict
-          python tools/openacp_validate.py --artifact examples/single-worker-flow/review-report.json --ruleset review-report --strict
-          python tools/openacp_validate.py --artifact examples/single-worker-flow/status-report.json --ruleset status-report --strict
+          python tools/openaccp_validate.py --artifact examples/single-worker-flow/source-pack.json --ruleset source-pack --strict
+          python tools/openaccp_validate.py --artifact examples/single-worker-flow/authority-charter.json --ruleset authority-charter --strict
+          python tools/openaccp_validate.py --artifact examples/single-worker-flow/task-card.json --ruleset task-card --source-pack examples/single-worker-flow/source-pack.json --strict
+          python tools/openaccp_validate.py --artifact examples/single-worker-flow/handoff.json --ruleset handoff --task-card examples/single-worker-flow/task-card.json --strict
+          python tools/openaccp_validate.py --artifact examples/single-worker-flow/review-report.json --ruleset review-report --strict
+          python tools/openaccp_validate.py --artifact examples/single-worker-flow/status-report.json --ruleset status-report --strict
       - name: Validate PRD-only bootstrap flow
         run: |
-          python tools/openacp_validate.py --artifact examples/prd-only-bootstrap/source-pack.json --ruleset source-pack --strict
-          python tools/openacp_validate.py --artifact examples/prd-only-bootstrap/scope-boundary.json --ruleset scope-boundary --strict
-          python tools/openacp_validate.py --artifact examples/prd-only-bootstrap/assumptions.json --ruleset assumption-ledger --strict
-          python tools/openacp_validate.py --artifact examples/prd-only-bootstrap/authority-charter.json --ruleset authority-charter --strict
-          python tools/openacp_validate.py --artifact examples/prd-only-bootstrap/task-card.json --ruleset task-card --source-pack examples/prd-only-bootstrap/source-pack.json --strict
+          python tools/openaccp_validate.py --artifact examples/prd-only-bootstrap/source-pack.json --ruleset source-pack --strict
+          python tools/openaccp_validate.py --artifact examples/prd-only-bootstrap/scope-boundary.json --ruleset scope-boundary --strict
+          python tools/openaccp_validate.py --artifact examples/prd-only-bootstrap/assumptions.json --ruleset assumption-ledger --strict
+          python tools/openaccp_validate.py --artifact examples/prd-only-bootstrap/authority-charter.json --ruleset authority-charter --strict
+          python tools/openaccp_validate.py --artifact examples/prd-only-bootstrap/task-card.json --ruleset task-card --source-pack examples/prd-only-bootstrap/source-pack.json --strict

@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/task-card.schema.json",
-  "title": "OpenACP Task Card",
+  "$id": "https://openaccp.dev/schemas/task-card.schema.json",
+  "title": "OpenACCP Task Card",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "taskId", "domain", "objective", "inputRefs", "sourceStatusNote", "allowedScope", "forbiddenScope", "acceptanceCriteria", "verificationPlan", "stopConditions", "expectedHandoff", "authorityRequired", "riskLevel"],
   "properties": {
-    "schemaVersion": { "const": "openacp-task-card.v1" },
+    "schemaVersion": { "const": "openaccp-task-card.v1" },
     "artifactType": { "const": "task-card" },
     "taskId": { "type": "string", "minLength": 1 },
     "parentCardId": { "type": "string", "minLength": 1 },

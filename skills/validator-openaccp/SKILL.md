@@ -1,40 +1,40 @@
 ---
-name: validator-openacp
-description: Validate OpenACP artifacts for structure, encoding, required fields, source status, authority boundary, verification evidence, overclaiming, and public-package hygiene before dispatch, handoff consume, reports, or release packaging.
+name: validator-openaccp
+description: Validate OpenACCP artifacts for structure, encoding, required fields, source status, authority boundary, verification evidence, overclaiming, and public-package hygiene before dispatch, handoff consume, reports, or release packaging.
 ---
 
-# Validator OpenACP
+# Validator OpenACCP
 
 Run:
 
 ```bash
-python tools/openacp_validate.py --artifact <path> --ruleset <ruleset> --strict
+python tools/openaccp_validate.py --artifact <path> --ruleset <ruleset> --strict
 ```
 
 For cross-checks:
 
 ```bash
-python tools/openacp_validate.py --artifact task-card.json --ruleset task-card --source-pack source-pack.json --strict
-python tools/openacp_validate.py --artifact handoff.json --ruleset handoff --task-card task-card.json --strict
-python tools/openacp_validate.py --artifact primary-orchestrator.prompt.md --ruleset prompt-record --expect-prompt-id <prompt-id> --strict
-python tools/openacp_validate.py --artifact primary.short-launcher.md --ruleset launcher --prompt-record primary-orchestrator.prompt.md --expect-prompt-id <prompt-id> --strict
-python tools/openacp_validate.py --artifact response-with-launcher.md --ruleset launcher-output --strict
-python tools/openacp_validate.py --artifact status.md --ruleset formal-report --preferred-language <language> --strict
-python tools/openacp_validate.py --artifact frontier.prompt.md --ruleset frontier-contract --strict
-python tools/openacp_validate.py --artifact runtime-boundary.json --ruleset runtime-boundary --strict
-python tools/openacp_validate.py --artifact lane-registry.json --ruleset lane-registry --strict
-python tools/openacp_validate.py --artifact .openacp/coordination/child-ledgers/<lane-id>.json --ruleset child-ledger --strict
-python tools/openacp_validate.py --artifact source-status-registry.json --ruleset source-status-registry --strict
-python tools/openacp_validate.py --artifact decision-registry.json --ruleset decision-registry --strict
-python tools/openacp_validate.py --artifact .openacp/coordination/frontier-closures/<lane-id>.json --ruleset frontier-closure --strict
-python tools/openacp_validate.py --artifact CARDS.md --ruleset card-registry --strict
-python tools/openacp_validate.py --artifact current-manifest.json --ruleset current-manifest --source-pack source-pack.json --strict
-python tools/openacp_validate.py --artifact sequence-registry.json --ruleset sequence-registry --strict
-python tools/openacp_validate.py --artifact consume-result.json --ruleset consume-result --strict
-python tools/openacp_validate.py --artifact machine-summary.json --ruleset machine-summary --strict
+python tools/openaccp_validate.py --artifact task-card.json --ruleset task-card --source-pack source-pack.json --strict
+python tools/openaccp_validate.py --artifact handoff.json --ruleset handoff --task-card task-card.json --strict
+python tools/openaccp_validate.py --artifact primary-orchestrator.prompt.md --ruleset prompt-record --expect-prompt-id <prompt-id> --strict
+python tools/openaccp_validate.py --artifact primary.short-launcher.md --ruleset launcher --prompt-record primary-orchestrator.prompt.md --expect-prompt-id <prompt-id> --strict
+python tools/openaccp_validate.py --artifact response-with-launcher.md --ruleset launcher-output --strict
+python tools/openaccp_validate.py --artifact status.md --ruleset formal-report --preferred-language <language> --strict
+python tools/openaccp_validate.py --artifact frontier.prompt.md --ruleset frontier-contract --strict
+python tools/openaccp_validate.py --artifact runtime-boundary.json --ruleset runtime-boundary --strict
+python tools/openaccp_validate.py --artifact lane-registry.json --ruleset lane-registry --strict
+python tools/openaccp_validate.py --artifact .openaccp/coordination/child-ledgers/<lane-id>.json --ruleset child-ledger --strict
+python tools/openaccp_validate.py --artifact source-status-registry.json --ruleset source-status-registry --strict
+python tools/openaccp_validate.py --artifact decision-registry.json --ruleset decision-registry --strict
+python tools/openaccp_validate.py --artifact .openaccp/coordination/frontier-closures/<lane-id>.json --ruleset frontier-closure --strict
+python tools/openaccp_validate.py --artifact CARDS.md --ruleset card-registry --strict
+python tools/openaccp_validate.py --artifact current-manifest.json --ruleset current-manifest --source-pack source-pack.json --strict
+python tools/openaccp_validate.py --artifact sequence-registry.json --ruleset sequence-registry --strict
+python tools/openaccp_validate.py --artifact consume-result.json --ruleset consume-result --strict
+python tools/openaccp_validate.py --artifact machine-summary.json --ruleset machine-summary --strict
 ```
 
-Use `frontier-contract` before launching or reusing a Frontier prompt. It checks the B2 lane contract, `openacp-frontier-orchestration-contract.v1` JSON block, subagent-first dispatch, child ledger, branch return gate, worktree decision, human-readable reporting, and fallback-only child launcher rule.
+Use `frontier-contract` before launching or reusing a Frontier prompt. It checks the B2 lane contract, `openaccp-frontier-orchestration-contract.v1` JSON block, subagent-first dispatch, child ledger, branch return gate, worktree decision, human-readable reporting, and fallback-only child launcher rule.
 
 Use `runtime-boundary` during Primary startup before B2 Frontier dispatch. It records working directory, product repo status/path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, side-effect level, data risk, unresolved owner inputs, and `b2DispatchGate`.
 

@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "openacp"
+name = "openaccp"
 version = "0.1.0"
-description = "Open workflow kit for source-driven multi-agent coordination."
+description = "OpenACCP is an open workflow protocol for coordinating multi-agent software work."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -24,8 +24,8 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-openacp = "openacp.cli:main"
-openacp-validate = "openacp.validate:main"
+openaccp = "openaccp.cli:main"
+openaccp-validate = "openaccp.validate:main"
 
 [tool.setuptools]
-packages = ["openacp"]
+packages = ["openaccp"]

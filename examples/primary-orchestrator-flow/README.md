@@ -14,6 +14,6 @@ Use:
 Validate:
 
 ```bash
-python tools/openacp_validate.py --artifact examples/primary-orchestrator-flow/primary-authority-charter.json --ruleset authority-charter --strict
-python tools/openacp_validate.py --artifact examples/primary-orchestrator-flow/final-consume-status.json --ruleset status-report --strict
+python tools/openaccp_validate.py --artifact examples/primary-orchestrator-flow/primary-authority-charter.json --ruleset authority-charter --strict
+python tools/openaccp_validate.py --artifact examples/primary-orchestrator-flow/final-consume-status.json --ruleset status-report --strict
 ```

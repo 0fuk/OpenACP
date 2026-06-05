@@ -1,9 +1,9 @@
 ---
-name: formal-report-openacp
-description: Produce a structured OpenACP formal report for human owners and downstream agents. Use when reporting project, lane, bootstrap, handoff consume, review, validation, or release-readiness status with progress, gaps, authority limits, and next actions.
+name: formal-report-openaccp
+description: Produce a structured OpenACCP formal report for human owners and downstream agents. Use when reporting project, lane, bootstrap, handoff consume, review, validation, or release-readiness status with progress, gaps, authority limits, and next actions.
 ---
 
-# Formal Report OpenACP
+# Formal Report OpenACCP
 
 Report current state, completed work, unverified claims, blockers, next actions, authority limits, and basis references.
 
@@ -35,14 +35,14 @@ Formal reports are often rendered in narrow chat panes. Keep the table readable:
 
 ## Post-Install Startup Report
 
-After installing OpenACP as a skill + workflow kit, produce a formal report automatically as part of startup.
+After installing OpenACCP as a skill + workflow kit, produce a formal report automatically as part of startup.
 
 The startup formal report should state:
 
 - what was installed or loaded,
 - whether validation passed or failed,
-- whether the OpenACP skills are available,
-- whether `openacp` and `openacp-validate` are available,
+- whether the OpenACCP skills are available,
+- whether `openaccp` and `openaccp-validate` are available,
 - current startup state,
 - gaps,
 - next step.
@@ -60,7 +60,7 @@ If no prepared facts path exists, ask the user to upload or attach the project m
 End the post-install report with human-readable wording, not a vague checklist. The meaning should be:
 
 ```text
-I have installed and validated OpenACP, but I cannot build a useful Primary launcher yet because I do not know where your project work should happen, which materials count as current facts, or which language future agents should use. Please send me one clear working directory. This is required. Also send your source pack, PRD, spec, design document, or facts path. If you do not have a clean facts path yet, you can upload the project materials instead and I will treat them as candidate facts, but I still need the working directory. Please also tell me your preferred language; if you omit it, I will keep using your current language.
+I have installed and validated OpenACCP, but I cannot build a useful Primary launcher yet because I do not know where your project work should happen, which materials count as current facts, or which language future agents should use. Please send me one clear working directory. This is required. Also send your source pack, PRD, spec, design document, or facts path. If you do not have a clean facts path yet, you can upload the project materials instead and I will treat them as candidate facts, but I still need the working directory. Please also tell me your preferred language; if you omit it, I will keep using your current language.
 ```
 
 ## Next Step Rule

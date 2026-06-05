@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Self-tests for the OpenACP validator."""
+"""Self-tests for the OpenACCP validator."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VALIDATOR = ROOT / "tools" / "openacp_validate.py"
+VALIDATOR = ROOT / "tools" / "openaccp_validate.py"
 
 
 def write_json(path: Path, data: dict) -> None:
@@ -40,7 +40,7 @@ def assert_exit(name: str, proc: subprocess.CompletedProcess[str], expected: int
 
 def source_pack() -> dict:
     return {
-        "schemaVersion": "openacp-source-pack.v1",
+        "schemaVersion": "openaccp-source-pack.v1",
         "artifactType": "source-pack",
         "currentSources": [{"sourceId": "SRC-001", "title": "Current PRD", "status": "current"}],
         "referenceSources": [{"sourceId": "REF-001", "title": "Old idea", "status": "reference"}],
@@ -55,7 +55,7 @@ def source_pack() -> dict:
 
 def task_card(authority: str = "B2") -> dict:
     return {
-        "schemaVersion": "openacp-task-card.v1",
+        "schemaVersion": "openaccp-task-card.v1",
         "artifactType": "task-card",
         "taskId": "TASK-001",
         "parentCardId": "CARD-001",
@@ -81,7 +81,7 @@ def task_card(authority: str = "B2") -> dict:
 
 def handoff() -> dict:
     return {
-        "schemaVersion": "openacp-handoff.v1",
+        "schemaVersion": "openaccp-handoff.v1",
         "artifactType": "handoff",
         "handoffId": "HAND-001",
         "taskId": "TASK-001",
@@ -121,7 +121,7 @@ def fixtures(tmp: Path) -> dict[str, Path]:
 
 def valid_sequence_registry() -> dict:
     return {
-        "schemaVersion": "openacp-sequence-registry.v1",
+        "schemaVersion": "openaccp-sequence-registry.v1",
         "artifactType": "sequence-registry",
         "registryId": "SEQ-001",
         "currentPromptId": "PROMPT-001",
@@ -145,7 +145,7 @@ def valid_sequence_registry() -> dict:
 
 def valid_runtime_boundary(tmp: Path) -> dict:
     return {
-        "schemaVersion": "openacp-runtime-boundary.v1",
+        "schemaVersion": "openaccp-runtime-boundary.v1",
         "artifactType": "runtime-boundary",
         "boundaryId": "RB-001",
         "workingDirectory": str(tmp / "work"),
@@ -155,7 +155,7 @@ def valid_runtime_boundary(tmp: Path) -> dict:
         "sourceRoots": ["src"],
         "testEntrypoints": ["pytest"],
         "worktreePolicy": "allowed",
-        "allowedWritablePaths": [".openacp/**", "worktrees/**"],
+        "allowedWritablePaths": [".openaccp/**", "worktrees/**"],
         "readOnlyPaths": ["source/**"],
         "forbiddenPaths": [".git/**"],
         "externalSideEffects": "none",
@@ -172,7 +172,7 @@ def valid_runtime_boundary(tmp: Path) -> dict:
 
 def valid_lane_registry() -> dict:
     return {
-        "schemaVersion": "openacp-lane-registry.v1",
+        "schemaVersion": "openaccp-lane-registry.v1",
         "artifactType": "lane-registry",
         "registryId": "LANES-001",
         "projectComplexity": "bootstrap",
@@ -211,7 +211,7 @@ def valid_lane_registry() -> dict:
 
 def valid_child_ledger() -> dict:
     return {
-        "schemaVersion": "openacp-child-ledger.v1",
+        "schemaVersion": "openaccp-child-ledger.v1",
         "artifactType": "child-ledger",
         "ledgerId": "LEDGER-001",
         "laneId": "frontier-docs",
@@ -225,7 +225,7 @@ def valid_child_ledger() -> dict:
                 "authority": "B2",
                 "effects": ["docs-only"],
                 "subagentIdOrToolStatus": "direct-subagent",
-                "expectedHandoffPath": ".openacp/handoffs/HAND-001.json",
+                "expectedHandoffPath": ".openaccp/handoffs/HAND-001.json",
                 "dispatchStatus": "returned",
                 "handoffStatus": "present",
                 "consumeStatus": "consumed",
@@ -237,7 +237,7 @@ def valid_child_ledger() -> dict:
 
 def valid_source_status_registry() -> dict:
     return {
-        "schemaVersion": "openacp-source-status-registry.v1",
+        "schemaVersion": "openaccp-source-status-registry.v1",
         "artifactType": "source-status-registry",
         "registryId": "SRCSTAT-001",
         "sources": [
@@ -263,7 +263,7 @@ def valid_source_status_registry() -> dict:
 
 def valid_decision_registry() -> dict:
     return {
-        "schemaVersion": "openacp-decision-registry.v1",
+        "schemaVersion": "openaccp-decision-registry.v1",
         "artifactType": "decision-registry",
         "registryId": "DEC-REG-001",
         "decisions": [
@@ -283,7 +283,7 @@ def valid_decision_registry() -> dict:
 
 def valid_frontier_closure() -> dict:
     return {
-        "schemaVersion": "openacp-frontier-closure.v1",
+        "schemaVersion": "openaccp-frontier-closure.v1",
         "artifactType": "frontier-closure",
         "closureId": "FC-001",
         "laneId": "frontier-docs",
@@ -302,9 +302,9 @@ def valid_frontier_closure() -> dict:
             "base": "main",
             "worktree": "not-required",
             "branch": "not-required",
-            "allowedFiles": [".openacp/**"],
+            "allowedFiles": [".openaccp/**"],
             "verification": ["validator"],
-            "handoffPath": ".openacp/handoffs/frontier-docs.json",
+            "handoffPath": ".openaccp/handoffs/frontier-docs.json",
             "dataRisk": "low",
             "resourceUse": "local only",
             "noDispatchReason": "No B2 work remains.",
@@ -334,11 +334,11 @@ def write_coordination_fixtures(tmp: Path, source_path: Path) -> dict[str, Path]
     write_json(files["decision"], valid_decision_registry())
     write_json(files["closure"], valid_frontier_closure())
     files["ready_packet"].write_text("Primary-ready packet for selftest.\n", encoding="utf-8")
-    files["cards"].write_text("schemaVersion: openacp-card-registry.v1\nartifactType: card-registry\n", encoding="utf-8")
+    files["cards"].write_text("schemaVersion: openaccp-card-registry.v1\nartifactType: card-registry\n", encoding="utf-8")
     write_json(
         files["current"],
         {
-            "schemaVersion": "openacp-current-manifest.v1.1",
+            "schemaVersion": "openaccp-current-manifest.v1.1",
             "artifactType": "current-manifest",
             "manifestId": "MAN-001",
             "preferredLanguage": "Chinese",
@@ -520,7 +520,7 @@ def assert_json_rules(tmp: Path, paths: dict[str, Path]) -> None:
     write_json(
         status_report_path,
         {
-            "schemaVersion": "openacp-status-report.v1",
+            "schemaVersion": "openaccp-status-report.v1",
             "artifactType": "status-report",
             "responseId": "RESP-STATUS-001",
             "basisRefs": ["handoff.json"],
@@ -547,7 +547,7 @@ def assert_text_rules(tmp: Path) -> None:
             "Role: Primary",
             "Authority level: B3",
             "Preferred language: Chinese",
-            "Use human-explain-openacp for every reply.",
+            "Use human-explain-openaccp for every reply.",
             "Before Frontier dispatch, resolve working directory, facts path, preferred language, product repo path, base branch, source roots, test entrypoints, worktree policy, runtime boundary, and runtimeBoundaryRef.",
             "Create 10-20 project-level CARDs for normal or medium/high-complexity work before Frontier dispatch.",
             "Scan product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, security, testing, CI, release, and ops before finalizing CARDs.",
@@ -565,7 +565,7 @@ def assert_text_rules(tmp: Path) -> None:
             [
                 "Project - Primary Orchestrator - Startup",
                 "",
-                "Read and execute this OpenACP prompt record:",
+                "Read and execute this OpenACCP prompt record:",
                 f"- Prompt Record: {primary_prompt_path}",
                 "- Prompt ID: PROMPT-001",
                 "- Preferred language: Chinese",
@@ -588,7 +588,7 @@ def assert_text_rules(tmp: Path) -> None:
     card_registry_path.write_text(
         "\n".join(
             [
-                "schemaVersion: openacp-card-registry.v1",
+                "schemaVersion: openaccp-card-registry.v1",
                 "artifactType: card-registry",
                 "",
                 "## Domain Coverage",
@@ -625,7 +625,7 @@ def assert_text_rules(tmp: Path) -> None:
     placeholder_card_registry_path.write_text(
         "\n".join(
             [
-                "schemaVersion: openacp-card-registry.v1",
+                "schemaVersion: openaccp-card-registry.v1",
                 "artifactType: card-registry",
                 "",
                 "## Domain Coverage",
@@ -661,7 +661,7 @@ def assert_text_rules(tmp: Path) -> None:
                 "| Changed | Primary created startup artifacts. |",
                 "| Progress | 80%. Startup is ready but final acceptance is pending. |",
                 "| Gate | Validation passed. |",
-                "| Area | OpenACP startup. |",
+                "| Area | OpenACCP startup. |",
                 "| Goal | Start Primary from current facts. |",
                 "| Gaps | User project execution has not started. |",
                 "| Next | Start the Primary launcher. |",
@@ -745,7 +745,7 @@ def assert_text_rules(tmp: Path) -> None:
     assert_exit("Chinese formal report rejects old next-step heading", run(["--artifact", str(bad_legacy_next_step_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
 
     bad_command_report_path = tmp / "bad-command-formal-report.md"
-    bad_command_report_path.write_text(zh_frontier_report_path.read_text(encoding="utf-8") + "\n```powershell\nopenacp --version\n```\n", encoding="utf-8")
+    bad_command_report_path.write_text(zh_frontier_report_path.read_text(encoding="utf-8") + "\n```powershell\nopenaccp --version\n```\n", encoding="utf-8")
     assert_exit("formal report rejects command dumps", run(["--artifact", str(bad_command_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
 
     bad_tail_report_path = tmp / "bad-tail-formal-report.md"
@@ -767,7 +767,7 @@ def assert_text_rules(tmp: Path) -> None:
                 "Prompt ID: FRONTIER-001",
                 "Role: Frontier",
                 "Authority level: B2",
-                "Use human-explain-openacp and formal-report-openacp for every status reply.",
+                "Use human-explain-openaccp and formal-report-openaccp for every status reply.",
                 "gapDecisionMatrix",
                 "branchReturnGate",
                 "worktreeDecision",
@@ -783,7 +783,7 @@ def assert_text_rules(tmp: Path) -> None:
                 "```json",
                 json.dumps(
                     {
-                        "schemaVersion": "openacp-frontier-orchestration-contract.v1",
+                        "schemaVersion": "openaccp-frontier-orchestration-contract.v1",
                         "artifactType": "frontier-orchestration-contract",
                         "authorityLevel": "B2",
                         "laneObjective": "Run one bounded lane to closure.",
@@ -842,7 +842,7 @@ def assert_text_rules(tmp: Path) -> None:
                 "Prompt ID: FRONTIER-002",
                 "Role: Frontier",
                 "Authority level: B2",
-                "Use human-explain-openacp and formal-report-openacp for every status reply.",
+                "Use human-explain-openaccp and formal-report-openaccp for every status reply.",
                 "gapDecisionMatrix",
                 "branchReturnGate",
                 "worktreeDecision",
@@ -860,46 +860,46 @@ def assert_public_package_rules(tmp: Path) -> None:
     public_pkg = tmp / "public-package"
     (public_pkg / "templates").mkdir(parents=True)
     (public_pkg / "examples").mkdir()
-    (public_pkg / "README.md").write_text("OpenACP public package\n", encoding="utf-8")
-    (public_pkg / "templates" / "formal-report.md").write_text("Response ID: `OACP-TEMPLATE-0001`\n", encoding="utf-8")
-    (public_pkg / "examples" / "formal-report-example.md").write_text("Response ID: `OACP-EXAMPLE-0001`\n", encoding="utf-8")
+    (public_pkg / "README.md").write_text("OpenACCP public package\n", encoding="utf-8")
+    (public_pkg / "templates" / "formal-report.md").write_text("Response ID: `OACCP-TEMPLATE-0001`\n", encoding="utf-8")
+    (public_pkg / "examples" / "formal-report-example.md").write_text("Response ID: `OACCP-EXAMPLE-0001`\n", encoding="utf-8")
     assert_exit("formal report templates and examples allowed", run(["--artifact", str(public_pkg), "--ruleset", "public-package", "--strict"]), 0)
 
     reports_dir = public_pkg / "reports"
     reports_dir.mkdir()
     internal_report = reports_dir / "release-report.md"
-    internal_report.write_text("Response ID: `OACP-2026-0001`\nResponse log path: local response log\n", encoding="utf-8")
+    internal_report.write_text("Response ID: `OACCP-2026-0001`\nResponse log path: local response log\n", encoding="utf-8")
     assert_exit("internal formal report rejected from public reports path", run(["--artifact", str(public_pkg), "--ruleset", "public-package", "--strict"]), 1)
     internal_report.unlink()
 
-    (public_pkg / "README.md").write_text("OpenACP 中文入口\n", encoding="utf-8")
+    (public_pkg / "README.md").write_text("OpenACCP 中文入口\n", encoding="utf-8")
     assert_exit("root README must stay English", run(["--artifact", str(public_pkg), "--ruleset", "public-package", "--strict"]), 1)
 
-    local_response_path = "C:" + "\\" + "Users" + "\\" + "example" + "\\" + "OpenACP" + "\\" + "response.md"
+    local_response_path = "C:" + "\\" + "Users" + "\\" + "example" + "\\" + "OpenACCP" + "\\" + "response.md"
     (public_pkg / "README.md").write_text("Response log path: " + local_response_path + "\n", encoding="utf-8")
     assert_exit("local absolute response log path rejected", run(["--artifact", str(public_pkg), "--ruleset", "public-package", "--strict"]), 1)
 
 
 def assert_cli_entrypoints(tmp: Path) -> None:
     version_proc = subprocess.run(
-        [sys.executable, "-m", "openacp", "--version"],
+        [sys.executable, "-m", "openaccp", "--version"],
         cwd=ROOT,
         text=True,
         encoding="utf-8",
         errors="replace",
         capture_output=True,
     )
-    assert_exit("python -m openacp version", version_proc, 0)
+    assert_exit("python -m openaccp version", version_proc, 0)
 
     init_proc = subprocess.run(
-        [sys.executable, "-m", "openacp", "init", str(tmp / "starter")],
+        [sys.executable, "-m", "openaccp", "init", str(tmp / "starter")],
         cwd=ROOT,
         text=True,
         encoding="utf-8",
         errors="replace",
         capture_output=True,
     )
-    assert_exit("python -m openacp init dry run", init_proc, 0)
+    assert_exit("python -m openaccp init dry run", init_proc, 0)
     required_output = [
         "coordination",
         "runtime-boundary.json",
@@ -909,10 +909,10 @@ def assert_cli_entrypoints(tmp: Path) -> None:
     ]
     missing = [item for item in required_output if item not in init_proc.stdout]
     if missing:
-        print("FAIL python -m openacp init lists coordination artifacts: missing " + ", ".join(missing))
+        print("FAIL python -m openaccp init lists coordination artifacts: missing " + ", ".join(missing))
         print(init_proc.stdout)
         raise SystemExit(1)
-    print("PASS python -m openacp init lists coordination artifacts")
+    print("PASS python -m openaccp init lists coordination artifacts")
 
 
 def main() -> int:

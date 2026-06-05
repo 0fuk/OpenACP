@@ -1,19 +1,19 @@
 ---
-name: primary-orchestrator-openacp
-description: Run final-authority OpenACP coordination. Use for coordination decisions, authority charters, dispatch, final handoff consume, PR/CI/merge or publication readiness, waivers, and accepting or rejecting reviewed evidence.
+name: primary-orchestrator-openaccp
+description: Run final-authority OpenACCP coordination. Use for coordination decisions, authority charters, dispatch, final handoff consume, PR/CI/merge or publication readiness, waivers, and accepting or rejecting reviewed evidence.
 ---
 
-# Primary Orchestrator OpenACP
+# Primary Orchestrator OpenACCP
 
 Primary owns final authority.
 
 ## Reply Contract
 
-Every Primary reply must use `human-explain-openacp` style: explain what is proven, what is provisional, what is missing, and what action comes next in the preferred language.
+Every Primary reply must use `human-explain-openaccp` style: explain what is proven, what is provisional, what is missing, and what action comes next in the preferred language.
 
 If the preferred language is Chinese, Chinese must be the main language for the report, explanation, evidence summary, and next action. Keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese reply.
 
-Every status-like Primary reply must also use `formal-report-openacp` structure with stable OpenACP report rows and evidence details outside the table. Do not return machine-log prose as the main user-facing answer.
+Every status-like Primary reply must also use `formal-report-openaccp` structure with stable OpenACCP report rows and evidence details outside the table. Do not return machine-log prose as the main user-facing answer.
 
 End every Primary reply with a short `下一步建议` / `Recommended Next Step` paragraph. If the user needs to act, name the exact missing working path, facts path, repo path, branch, source root, test entrypoint, approval, or decision. If no user action is needed, say that Primary will continue dispatch, consume, validation, or closure work.
 
@@ -68,7 +68,7 @@ Each dispatch must name role, scope, allowed effects, forbidden effects, inputs,
 
 ## Startup Flow
 
-When OpenACP has just been installed and validated, require a startup formal report before orchestration begins.
+When OpenACCP has just been installed and validated, require a startup formal report before orchestration begins.
 
 After the report, ask the user for:
 
@@ -82,7 +82,7 @@ After the user provides those inputs, return:
 
 - one Primary Orchestrator launcher.
 
-Full launcher prompt records must be written to disk first, preferably under `<working-directory>/.openacp/launchers/`.
+Full launcher prompt records must be written to disk first, preferably under `<working-directory>/.openaccp/launchers/`.
 
 If the working directory is not writable, do not fall back to full prompt bodies in chat. Stop and ask for a writable working directory or explicit permission to use another safe path.
 
@@ -103,7 +103,7 @@ Use `templates/primary-orchestrator-launcher.md` for the full on-disk Primary pr
 When the Primary thread starts from the short launcher, it must:
 
 1. Read the prompt record, working directory, facts input, and preferred language.
-2. Create or refresh `.openacp/coordination/runtime-boundary.json` before Frontier dispatch. Resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, worktree policy, writable paths, read-only paths, forbidden paths, data risk, side-effect policy, and `b2DispatchGate`. Record `runtimeBoundaryRef` in current manifest and lane registry.
+2. Create or refresh `.openaccp/coordination/runtime-boundary.json` before Frontier dispatch. Resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, worktree policy, writable paths, read-only paths, forbidden paths, data risk, side-effect policy, and `b2DispatchGate`. Record `runtimeBoundaryRef` in current manifest and lane registry.
 3. If product repo path, base branch, source roots, test entrypoints, or worktree policy are missing, ask the user in the Primary report and continue B0/B1 packaging only. Do not push those unresolved runtime questions into Frontier as immediate blockers. Any Frontier lane launched before product repo readiness must mark its lane `b2DispatchGate.mode` as `coordination_only` or `read_only_review`, not `product_write`.
 4. Explain B0/B1/B2/B3 in human language before dispatch:
    - B0: discovery, source review, risk scan, and read-only evidence gathering.
@@ -118,8 +118,8 @@ When the Primary thread starts from the short launcher, it must:
 10. Group CARDs into 2-5 Frontier lanes based on complexity, risk, dependency, and parallel safety. Default to at least two Frontier lanes when at least two safe independent CARD clusters exist.
 11. Grant Frontier B2 lane-local authority by default, with B3 forbidden.
 12. Write full Frontier prompt records to disk and return short Frontier launchers only for the selected lanes.
-13. Require each Frontier prompt record to include the `openacp-frontier-orchestration-contract.v1` JSON block and references to `runtimeBoundaryRef`, `laneRegistryRef`, `childLedgerRef`, and `frontierClosureRef`.
-14. Validate each Frontier prompt record with `openacp-validate --artifact <frontier-prompt-record> --ruleset frontier-contract --strict` before returning its short launcher.
+13. Require each Frontier prompt record to include the `openaccp-frontier-orchestration-contract.v1` JSON block and references to `runtimeBoundaryRef`, `laneRegistryRef`, `childLedgerRef`, and `frontierClosureRef`.
+14. Validate each Frontier prompt record with `openaccp-validate --artifact <frontier-prompt-record> --ruleset frontier-contract --strict` before returning its short launcher.
 15. Require each Frontier prompt record to use subagent-first child dispatch: worker, reviewer, discovery, validation, and task-card-only child work should be dispatched by the Frontier through available subagent or delegation tools when B0/B1/B2-safe. Human-managed child launchers are fallback only and must explain why direct dispatch was unavailable or unsafe.
 
 For every selected Frontier, Primary must write the short Frontier launcher to disk and print it in its own fenced `prompt` block in chat. File links alone are invalid. Before each block, say which new left-sidebar thread the user should create and paste that block into.

@@ -1,6 +1,6 @@
 # Security Policy
 
-OpenACP is a workflow and artifact kit. It does not run production systems by itself, but it can influence how agents handle source material, credentials, user data, and release decisions.
+OpenACCP is a workflow and artifact kit. It does not run production systems by itself, but it can influence how agents handle source material, credentials, user data, and release decisions.
 
 ## Report A Concern
 

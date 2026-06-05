@@ -10,7 +10,7 @@ The short launcher must be written to disk and printed in chat as a fenced `prom
 <Project> - <Role/Slot> - <Short Task>
 Purpose: <one short sentence>
 
-Read and execute this OpenACP prompt record:
+Read and execute this OpenACCP prompt record:
 - Prompt Record: <absolute-or-user-visible-path>
 - Prompt ID: <prompt-id>
 - Preferred language: <preferred-language-or-current-conversation-language>

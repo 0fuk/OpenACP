@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-task-card.v1",
+  "schemaVersion": "openaccp-task-card.v1",
   "artifactType": "task-card",
   "taskId": "TASK-DOCS-001",
   "parentCardId": "CARD-DOCS-001",

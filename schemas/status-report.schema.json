@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/status-report.schema.json",
-  "title": "OpenACP Status Report",
+  "$id": "https://openaccp.dev/schemas/status-report.schema.json",
+  "title": "OpenACCP Status Report",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "responseId", "basisRefs", "currentState", "completedWork", "unverifiedClaims", "blockers", "nextActions", "authorityLimits"],
   "properties": {
-    "schemaVersion": { "const": "openacp-status-report.v1" },
+    "schemaVersion": { "const": "openaccp-status-report.v1" },
     "artifactType": { "enum": ["status-report", "formal-report", "human-status"] },
     "responseId": { "type": "string", "minLength": 1 },
     "reportId": { "type": "string", "deprecated": true },

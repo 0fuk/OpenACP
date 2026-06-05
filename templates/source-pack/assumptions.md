@@ -1,6 +1,6 @@
 # Assumptions Ledger
 
-schemaVersion: openacp-assumption-ledger.v1
+schemaVersion: openaccp-assumption-ledger.v1
 artifactType: assumption-ledger
 status: draft
 

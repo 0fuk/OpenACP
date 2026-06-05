@@ -1,9 +1,9 @@
 ---
-name: discovery-openacp
-description: Run read-only OpenACP discovery and planning. Use when facts, scope, source status, task readiness, risk, or next safe action are unclear and implementation is not yet authorized.
+name: discovery-openaccp
+description: Run read-only OpenACCP discovery and planning. Use when facts, scope, source status, task readiness, risk, or next safe action are unclear and implementation is not yet authorized.
 ---
 
-# Discovery OpenACP
+# Discovery OpenACCP
 
 Read facts, classify gaps, and prepare safe next steps without implementation.
 
@@ -11,9 +11,9 @@ Do not edit, commit, merge, or treat reference material as current fact.
 
 ## Reply Contract
 
-Every discovery reply must use `human-explain-openacp` style in the preferred language. Explain what facts were found, what is still unproven, and which B0/B1/B2 action becomes possible next.
+Every discovery reply must use `human-explain-openaccp` style in the preferred language. Explain what facts were found, what is still unproven, and which B0/B1/B2 action becomes possible next.
 
-Every status-like discovery reply must use `formal-report-openacp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, source ids, authority, effects, basisRefs, locators, claims, and nextActions.
+Every status-like discovery reply must use `formal-report-openaccp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, source ids, authority, effects, basisRefs, locators, claims, and nextActions.
 
 End every discovery reply with a short `Recommended Next Step` / `下一步建议` paragraph. If discovery unlocked a B0/B1/B2 action, name the agent-owned next action. If human input is needed, name the exact missing source, owner fact, repo boundary, path, approval, or decision.
 

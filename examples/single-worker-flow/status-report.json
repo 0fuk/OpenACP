@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-status-report.v1",
+  "schemaVersion": "openaccp-status-report.v1",
   "artifactType": "status-report",
   "responseId": "STAT-DOCS-001",
   "basisRefs": ["task-card.json", "handoff.json", "review-report.json"],

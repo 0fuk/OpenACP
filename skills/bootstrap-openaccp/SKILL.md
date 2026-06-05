@@ -1,9 +1,9 @@
 ---
-name: bootstrap-openacp
-description: Build a minimal OpenACP work package from a rough PRD, product idea, issue list, or scattered notes. Use when a project lacks a source pack, spec, task cards, scope boundary, assumptions ledger, or verification plan.
+name: bootstrap-openaccp
+description: Build a minimal OpenACCP work package from a rough PRD, product idea, issue list, or scattered notes. Use when a project lacks a source pack, spec, task cards, scope boundary, assumptions ledger, or verification plan.
 ---
 
-# Bootstrap OpenACP
+# Bootstrap OpenACCP
 
 Turn vague product intent into an agent-ready work package.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OpenACP artifact validator.
+"""OpenACCP artifact validator.
 
 This validator is a structural and hygiene gate. It does not replace
 semantic review, CI, security review, or final owner acceptance.
@@ -452,7 +452,7 @@ PUBLIC_SCAN_SKIP_DIRS = {
     ".git",
     ".hg",
     ".mypy_cache",
-    ".openacp-local",
+    ".openaccp-local",
     ".pytest_cache",
     ".ruff_cache",
     ".venv",
@@ -501,7 +501,7 @@ class Report:
 
     def to_dict(self, strict: bool) -> dict[str, Any]:
         return {
-            "schemaVersion": "openacp-validator-report.v1",
+            "schemaVersion": "openaccp-validator-report.v1",
             "validatorVersion": VERSION,
             "status": self.status(strict),
             "artifact": self.artifact,
@@ -796,10 +796,10 @@ def validate_prompt_record_text(text: str, report: Report, expected_prompt_id: s
         report.add("PREFERRED_LANGUAGE", "blocking", "pass", "Prompt record carries language preference.")
     else:
         report.add("PREFERRED_LANGUAGE", "blocking", "fail", "Prompt record must carry preferred language.")
-    if "human-explain-openacp" in text:
-        report.add("HUMAN_EXPLAIN_REQUIRED", "blocking", "pass", "Prompt record requires human-explain-openacp.")
+    if "human-explain-openaccp" in text:
+        report.add("HUMAN_EXPLAIN_REQUIRED", "blocking", "pass", "Prompt record requires human-explain-openaccp.")
     else:
-        report.add("HUMAN_EXPLAIN_REQUIRED", "blocking", "fail", "Prompt record must require human-explain-openacp for replies.")
+        report.add("HUMAN_EXPLAIN_REQUIRED", "blocking", "fail", "Prompt record must require human-explain-openaccp for replies.")
     if is_primary_prompt_record(text):
         validate_primary_prompt_contract_text(text, report)
 
@@ -885,10 +885,10 @@ def validate_primary_prompt_contract_text(text: str, report: Report) -> None:
 
 
 def validate_card_registry_text(text: str, report: Report) -> None:
-    if re.search(r"(?im)^\s*schemaVersion\s*:\s*openacp-card-registry\.v1\s*$", text):
+    if re.search(r"(?im)^\s*schemaVersion\s*:\s*openaccp-card-registry\.v1\s*$", text):
         report.add("CARD_REGISTRY_SCHEMA", "blocking", "pass", "CARD registry schemaVersion is present.")
     else:
-        report.add("CARD_REGISTRY_SCHEMA", "blocking", "fail", "CARD registry must include schemaVersion: openacp-card-registry.v1.")
+        report.add("CARD_REGISTRY_SCHEMA", "blocking", "fail", "CARD registry must include schemaVersion: openaccp-card-registry.v1.")
     if re.search(r"(?im)^\s*artifactType\s*:\s*card-registry\s*$", text):
         report.add("CARD_REGISTRY_TYPE", "blocking", "pass", "CARD registry artifactType is present.")
     else:
@@ -1230,7 +1230,7 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
     if any(labels == required for required in FORMAL_ROW_SEQUENCES):
         report.add("FORMAL_ROWS", "blocking", "pass", "Formal report has an exact role-aware row set in the required order.")
     else:
-        report.add("FORMAL_ROWS", "blocking", "fail", "Formal report rows must exactly match a known OpenACP row set in order, with no extra rows.")
+        report.add("FORMAL_ROWS", "blocking", "fail", "Formal report rows must exactly match a known OpenACCP row set in order, with no extra rows.")
     bad_labels = set(labels).intersection({"What changed", "Lane or area", "Next step", "Validation", "Checkpoint", "Skill", "CLI", "\u5b89\u88c5", ZH_ITEM, ZH_FIELD})
     if bad_labels:
         report.add("LEGACY_ROW_LABELS", "blocking", "fail", "Legacy or overlong row labels found: " + ", ".join(sorted(bad_labels)))
@@ -1273,9 +1273,9 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
     if (
         re.search(r"```(?:powershell|pwsh|bash|sh|shell|cmd)\b", text, re.IGNORECASE)
         or re.search(r"(?i)\bPowerShell\b|\bcommands?\s+(?:include|passed)\b|\u9a8c\u8bc1\u901a\u8fc7\u7684\u547d\u4ee4", text)
-        or re.search(r"(?im)^\s*(?:[-*]\s*)?(?:python|openacp|openacp-validate|pip|git)\s+[-A-Za-z0-9_.\\/]", text)
-        or re.search(r"`\s*(?:python|openacp|openacp-validate|pip|git)\b[^`]*`", text, re.IGNORECASE)
-        or re.search(r"(?im)^\s*(?:[-*]\s*)?(?:validation|verify|check|run|command|commands|validated)\s*:\s*`?(?:python|openacp|openacp-validate|pip|git)\b", text)
+        or re.search(r"(?im)^\s*(?:[-*]\s*)?(?:python|openaccp|openaccp-validate|pip|git)\s+[-A-Za-z0-9_.\\/]", text)
+        or re.search(r"`\s*(?:python|openaccp|openaccp-validate|pip|git)\b[^`]*`", text, re.IGNORECASE)
+        or re.search(r"(?im)^\s*(?:[-*]\s*)?(?:validation|verify|check|run|command|commands|validated)\s*:\s*`?(?:python|openaccp|openaccp-validate|pip|git)\b", text)
     ):
         report.add("FORMAL_REPORT_NO_COMMAND_DUMP", "blocking", "fail", "Formal reports must not include shell command blocks or command dumps; summarize validation status instead.")
     else:
@@ -1400,10 +1400,10 @@ def validate_frontier_contract_text(text: str, report: Report) -> None:
         report.add("FRONTIER_BLOCKED_GATE", "blocking", "pass", "Frontier contract gates blocked-on-Primary claims behind branchReturnGate.")
     else:
         report.add("FRONTIER_BLOCKED_GATE", "blocking", "fail", "Frontier contract must gate blocked-on-Primary claims behind branchReturnGate.")
-    if "human-explain-openacp" in text and "formal-report-openacp" in text:
+    if "human-explain-openaccp" in text and "formal-report-openaccp" in text:
         report.add("FRONTIER_REPORTING", "blocking", "pass", "Frontier contract requires human explanation and formal reports.")
     else:
-        report.add("FRONTIER_REPORTING", "blocking", "fail", "Frontier contract must require human-explain-openacp and formal-report-openacp.")
+        report.add("FRONTIER_REPORTING", "blocking", "fail", "Frontier contract must require human-explain-openaccp and formal-report-openaccp.")
     validate_frontier_contract_block(text, report)
 
 
@@ -1412,7 +1412,7 @@ def validate_frontier_contract_block(text: str, report: Report) -> None:
     contracts = [
         block
         for block in blocks
-        if block.get("schemaVersion") == "openacp-frontier-orchestration-contract.v1"
+        if block.get("schemaVersion") == "openaccp-frontier-orchestration-contract.v1"
         or block.get("artifactType") == "frontier-orchestration-contract"
     ]
     if not contracts:
@@ -1420,7 +1420,7 @@ def validate_frontier_contract_block(text: str, report: Report) -> None:
             "FRONTIER_CONTRACT_BLOCK",
             "blocking",
             "fail",
-            "Frontier contract must include a JSON block with schemaVersion openacp-frontier-orchestration-contract.v1.",
+            "Frontier contract must include a JSON block with schemaVersion openaccp-frontier-orchestration-contract.v1.",
         )
         return
     report.add("FRONTIER_CONTRACT_BLOCK", "blocking", "pass", "Frontier machine-readable contract block is present.")
@@ -1493,7 +1493,7 @@ def validate_frontier_contract_block(text: str, report: Report) -> None:
     if missing_decisions:
         report.add("FRONTIER_GAP_DECISIONS", "blocking", "fail", "gapDecisionMatrix missing decisions: " + ", ".join(missing_decisions))
     else:
-        report.add("FRONTIER_GAP_DECISIONS", "blocking", "pass", "gapDecisionMatrix has the full OpenACP decision vocabulary.")
+        report.add("FRONTIER_GAP_DECISIONS", "blocking", "pass", "gapDecisionMatrix has the full OpenACCP decision vocabulary.")
     subagent_first = contract.get("subagentFirst")
     if subagent_first is True or (isinstance(subagent_first, dict) and subagent_first.get("enabled") is True):
         report.add("FRONTIER_CONTRACT_SUBAGENT_FIRST", "blocking", "pass", "Contract enables subagent-first dispatch.")
@@ -1741,7 +1741,7 @@ def validate_role_authority(role: Any, authority: Any, report: Report, check_nam
 
 def validate_authority_charter(data: dict[str, Any], report: Report) -> None:
     if data.get("grantedRole") not in ROLES:
-        report.add("GRANTED_ROLE", "blocking", "fail", "grantedRole is not a known OpenACP role.")
+        report.add("GRANTED_ROLE", "blocking", "fail", "grantedRole is not a known OpenACCP role.")
     else:
         report.add("GRANTED_ROLE", "blocking", "pass", "grantedRole is valid.")
     if data.get("authorityLevel") not in AUTHORITY_LEVELS:
@@ -1817,7 +1817,7 @@ def validate_current_manifest(data: dict[str, Any], report: Report) -> None:
         else:
             report.add("ACTIVE_LANE_FIELDS", "blocking", "pass", "active lane has required fields.", loc)
         if lane.get("role") not in ROLES:
-            report.add("ACTIVE_LANE_ROLE", "blocking", "fail", "active lane role must be a known OpenACP role.", loc)
+            report.add("ACTIVE_LANE_ROLE", "blocking", "fail", "active lane role must be a known OpenACCP role.", loc)
         if lane.get("authorityLevel") not in AUTHORITY_LEVELS:
             report.add("ACTIVE_LANE_AUTHORITY", "blocking", "fail", "active lane authorityLevel must be B0, B1, B2, or B3.", loc)
         validate_role_authority(lane.get("role"), lane.get("authorityLevel"), report, "ACTIVE_LANE_ROLE_AUTHORITY", loc)
@@ -1990,7 +1990,7 @@ def validate_sequence_registry(data: dict[str, Any], report: Report) -> None:
         if missing_lane_fields:
             report.add("SEQ_ACTIVE_LANE_FIELDS", "blocking", "fail", "active lane missing fields: " + ", ".join(missing_lane_fields), loc)
         if lane.get("role") not in ROLES:
-            report.add("SEQ_ACTIVE_LANE_ROLE", "blocking", "fail", "active lane role must be a known OpenACP role.", loc)
+            report.add("SEQ_ACTIVE_LANE_ROLE", "blocking", "fail", "active lane role must be a known OpenACCP role.", loc)
         if lane.get("authorityLevel") not in AUTHORITY_LEVELS:
             report.add("SEQ_ACTIVE_LANE_AUTHORITY", "blocking", "fail", "active lane authorityLevel must be B0, B1, B2, or B3.", loc)
         validate_role_authority(lane.get("role"), lane.get("authorityLevel"), report, "SEQ_ACTIVE_LANE_ROLE_AUTHORITY", loc)
@@ -2005,7 +2005,7 @@ def validate_consume_result(data: dict[str, Any], report: Report) -> None:
     else:
         report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is consume-result.")
     if data.get("consumerRole") not in ROLES:
-        report.add("CONSUMER_ROLE", "blocking", "fail", "consumerRole is not a known OpenACP role.")
+        report.add("CONSUMER_ROLE", "blocking", "fail", "consumerRole is not a known OpenACCP role.")
     else:
         report.add("CONSUMER_ROLE", "blocking", "pass", "consumerRole is valid.")
     if data.get("authorityScope") not in AUTHORITY_SCOPES:
@@ -2043,7 +2043,7 @@ def validate_machine_summary(data: dict[str, Any], report: Report) -> None:
     else:
         report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is machine-summary.")
     if data.get("role") not in ROLES:
-        report.add("SUMMARY_ROLE", "blocking", "fail", "role is not a known OpenACP role.")
+        report.add("SUMMARY_ROLE", "blocking", "fail", "role is not a known OpenACCP role.")
     else:
         report.add("SUMMARY_ROLE", "blocking", "pass", "role is valid.")
     if data.get("authority") not in AUTHORITY_LEVELS:
@@ -2052,7 +2052,7 @@ def validate_machine_summary(data: dict[str, Any], report: Report) -> None:
         report.add("SUMMARY_AUTHORITY", "blocking", "pass", "authority is valid.")
     validate_role_authority(data.get("role"), data.get("authority"), report, "SUMMARY_ROLE_AUTHORITY", "machine-summary")
     if data.get("effectsPreset") not in EFFECTS_PRESETS:
-        report.add("SUMMARY_EFFECTS_PRESET", "blocking", "fail", "effectsPreset is not a known OpenACP effects preset.")
+        report.add("SUMMARY_EFFECTS_PRESET", "blocking", "fail", "effectsPreset is not a known OpenACCP effects preset.")
     else:
         report.add("SUMMARY_EFFECTS_PRESET", "blocking", "pass", "effectsPreset is valid.")
     for field_name in ["promptId", "responseId", "status"]:
@@ -2184,7 +2184,7 @@ def validate_lane_registry(data: dict[str, Any], report: Report) -> None:
             report.add("LANE_AUTHORITY", "blocking", "fail", "lane authorityLevel must be B0, B1, B2, or B3.", loc)
         validate_role_authority(lane.get("role"), lane.get("authorityLevel"), report, "LANE_ROLE_AUTHORITY", loc)
         if lane.get("status") not in statuses:
-            report.add("LANE_STATUS", "blocking", "fail", "lane status is not a known OpenACP lane status.", loc)
+            report.add("LANE_STATUS", "blocking", "fail", "lane status is not a known OpenACCP lane status.", loc)
         if not isinstance(lane.get("assignedCardIds"), list) or not lane.get("assignedCardIds"):
             report.add("LANE_ASSIGNED_CARDS", "blocking", "fail", "lane assignedCardIds must be non-empty.", loc)
         validate_lane_b2_dispatch_gate(lane, report, loc)
@@ -2638,7 +2638,7 @@ def validate_handoff(data: dict[str, Any], report: Report, task_card: dict[str, 
     else:
         report.add("DATA_RISK", "blocking", "pass", "dataRisk is valid.")
     if data.get("effectsPreset") not in EFFECTS_PRESETS:
-        report.add("EFFECTS_PRESET", "blocking", "fail", "effectsPreset is not a known OpenACP effects preset.")
+        report.add("EFFECTS_PRESET", "blocking", "fail", "effectsPreset is not a known OpenACCP effects preset.")
     else:
         report.add("EFFECTS_PRESET", "blocking", "pass", "effectsPreset is valid.")
     for field_name in ["responseId", "worktree", "baseCommit", "commit"]:
@@ -3019,7 +3019,7 @@ def emit_report(report: Report, strict: bool, as_json: bool) -> None:
     if as_json:
         print(json.dumps(data, indent=2, ensure_ascii=False))
         return
-    print(f"OpenACP validator {VERSION}")
+    print(f"OpenACCP validator {VERSION}")
     print(f"status: {data['status']}")
     print(f"artifact: {report.artifact}")
     print(f"ruleset: {report.ruleset}")
@@ -3029,8 +3029,8 @@ def emit_report(report: Report, strict: bool, as_json: bool) -> None:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Validate OpenACP artifacts.")
-    parser.add_argument("--version", action="version", version=f"OpenACP validator {VERSION}")
+    parser = argparse.ArgumentParser(description="Validate OpenACCP artifacts.")
+    parser.add_argument("--version", action="version", version=f"OpenACCP validator {VERSION}")
     parser.add_argument("--artifact", help="Artifact path to validate.")
     parser.add_argument("--ruleset", choices=sorted(RULESETS), required=True)
     parser.add_argument("--source-pack", help="Optional source pack JSON for task-card cross-checks.")

@@ -1,6 +1,6 @@
 # Authority Boundary
 
-OpenACP uses B0/B1/B2/B3 to separate preparation, execution, and final authority.
+OpenACCP uses B0/B1/B2/B3 to separate preparation, execution, and final authority.
 
 ## B0
 

@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/child-ledger.schema.json",
-  "title": "OpenACP Child Ledger",
+  "$id": "https://openaccp.dev/schemas/child-ledger.schema.json",
+  "title": "OpenACCP Child Ledger",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "ledgerId", "laneId", "children"],
   "properties": {
-    "schemaVersion": { "const": "openacp-child-ledger.v1" },
+    "schemaVersion": { "const": "openaccp-child-ledger.v1" },
     "artifactType": { "const": "child-ledger" },
     "ledgerId": { "type": "string", "minLength": 1 },
     "laneId": { "type": "string", "minLength": 1 },

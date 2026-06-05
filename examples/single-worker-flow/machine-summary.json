@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-machine-summary.v1",
+  "schemaVersion": "openaccp-machine-summary.v1",
   "artifactType": "machine-summary",
   "summaryId": "MSUM-DOCS-001",
   "role": "worker",

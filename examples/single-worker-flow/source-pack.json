@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-source-pack.v1",
+  "schemaVersion": "openaccp-source-pack.v1",
   "artifactType": "source-pack",
   "currentSources": [{ "sourceId": "SRC-DEMO-PRD", "title": "Demo docs PRD", "status": "current" }],
   "referenceSources": [],

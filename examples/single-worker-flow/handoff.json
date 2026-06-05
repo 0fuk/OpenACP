@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-handoff.v1",
+  "schemaVersion": "openaccp-handoff.v1",
   "artifactType": "handoff",
   "handoffId": "HAND-DOCS-001",
   "taskId": "TASK-DOCS-001",

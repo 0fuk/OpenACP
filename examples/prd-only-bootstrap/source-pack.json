@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-source-pack.v1",
+  "schemaVersion": "openaccp-source-pack.v1",
   "artifactType": "source-pack",
   "currentSources": [{ "sourceId": "SRC-ISSUE-PRD", "title": "Issue triage rough PRD", "status": "current" }],
   "referenceSources": [{ "sourceId": "REF-PRIOR-CHAT", "title": "Earlier brainstorming", "status": "reference" }],

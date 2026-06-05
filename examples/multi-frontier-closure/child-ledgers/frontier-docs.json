@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-child-ledger.v1",
+  "schemaVersion": "openaccp-child-ledger.v1",
   "artifactType": "child-ledger",
   "ledgerId": "LEDGER-FRONTIER-DOCS-001",
   "laneId": "frontier-docs",

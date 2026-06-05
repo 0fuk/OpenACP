@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/consume-result.schema.json",
-  "title": "OpenACP Consume Result",
+  "$id": "https://openaccp.dev/schemas/consume-result.schema.json",
+  "title": "OpenACCP Consume Result",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -22,7 +22,7 @@
     "nextActions"
   ],
   "properties": {
-    "schemaVersion": { "const": "openacp-consume-result.v1" },
+    "schemaVersion": { "const": "openaccp-consume-result.v1" },
     "artifactType": { "const": "consume-result" },
     "consumeId": { "type": "string", "minLength": 1 },
     "responseId": { "type": "string", "minLength": 1 },

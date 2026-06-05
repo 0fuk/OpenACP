@@ -10,7 +10,7 @@ Authority level: B2 lane-local unless Primary explicitly narrows the lane. B3 fi
 
 ```json
 {
-  "schemaVersion": "openacp-frontier-orchestration-contract.v1",
+  "schemaVersion": "openaccp-frontier-orchestration-contract.v1",
   "artifactType": "frontier-orchestration-contract",
   "authorityLevel": "B2",
   "laneObjective": "Run one bounded lane until all B0/B1/B2-safe closure work is done or only final-authority gaps remain.",
@@ -39,10 +39,10 @@ Authority level: B2 lane-local unless Primary explicitly narrows the lane. B3 fi
     "rule": "Return to Primary only after every visible remaining gap is needs_final_authority or explicitly_out and a Primary-ready packet exists."
   },
   "coordinationRefs": {
-    "runtimeBoundaryRef": ".openacp/coordination/runtime-boundary.json",
-    "laneRegistryRef": ".openacp/coordination/lane-registry.json",
-    "childLedgerRef": ".openacp/coordination/child-ledgers/<lane-id>.json",
-    "frontierClosureRef": ".openacp/coordination/frontier-closures/<lane-id>.json"
+    "runtimeBoundaryRef": ".openaccp/coordination/runtime-boundary.json",
+    "laneRegistryRef": ".openaccp/coordination/lane-registry.json",
+    "childLedgerRef": ".openaccp/coordination/child-ledgers/<lane-id>.json",
+    "frontierClosureRef": ".openaccp/coordination/frontier-closures/<lane-id>.json"
   },
   "worktreeDecision": {
     "requiredWhen": "creating_or_skipping_B2_worker",
@@ -62,11 +62,11 @@ Authority level: B2 lane-local unless Primary explicitly narrows the lane. B3 fi
 }
 ```
 
-Every Frontier reply must use `human-explain-openacp` style in the preferred language and must end with a short `Recommended Next Step` / `下一步建议` paragraph. Explain the current state and the recommended next step. If no human action is needed, say: `Recommended next step: none; Frontier will continue B0/B1/B2 lane-local closure.`
+Every Frontier reply must use `human-explain-openaccp` style in the preferred language and must end with a short `Recommended Next Step` / `下一步建议` paragraph. Explain the current state and the recommended next step. If no human action is needed, say: `Recommended next step: none; Frontier will continue B0/B1/B2 lane-local closure.`
 
 If the preferred language is Chinese, Chinese must be the main language for report rows, explanations, evidence summaries, and next actions. Keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese reply.
 
-Every status-like reply must use `formal-report-openacp` structure or include a machine-readable summary with Prompt ID, Response ID, lane, authority, CARD ids, and effects.
+Every status-like reply must use `formal-report-openaccp` structure or include a machine-readable summary with Prompt ID, Response ID, lane, authority, CARD ids, and effects.
 
 ## Inputs
 

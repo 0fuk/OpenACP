@@ -1,36 +1,36 @@
 # Codex And Claude Code Install Startup
 
-This is the default OpenACP startup path for an agent that can install skills or load workflow instructions.
+This is the default OpenACCP startup path for an agent that can install skills or load workflow instructions.
 
 ## User Prompt
 
 Ask Codex/Claude Code:
 
 ```text
-Install https://github.com/0fuk/OpenACP as a skill + workflow kit, then follow the README startup flow.
+Install https://github.com/0fuk/OpenACCP as a skill + workflow kit, then follow the README startup flow.
 ```
 
 ## Agent Startup Contract
 
 The agent should:
 
-1. Clone or open `https://github.com/0fuk/OpenACP`.
-2. Install or load all OpenACP skills from `skills/`.
+1. Clone or open `https://github.com/0fuk/OpenACCP`.
+2. Install or load all OpenACCP skills from `skills/`.
 3. Install the Python workflow kit with `python -m pip install -e .`.
 4. Run validation:
-   - `python tools/openacp_validate_selftest.py`
-   - `python tools/openacp_validate.py --artifact . --ruleset public-package --strict`
-   - `openacp --version`
-   - `openacp-validate --version`
+   - `python tools/openaccp_validate_selftest.py`
+   - `python tools/openaccp_validate.py --artifact . --ruleset public-package --strict`
+   - `openaccp --version`
+   - `openaccp-validate --version`
 5. Read:
    - `README.md`
    - `docs/getting-started.md`
    - `docs/role-model.md`
    - `docs/authority-boundary.md`
    - `docs/validator.md`
-   - `skills/primary-orchestrator-openacp/SKILL.md`
-   - `skills/frontier-orchestrator-openacp/SKILL.md`
-   - `skills/formal-report-openacp/SKILL.md`
+   - `skills/primary-orchestrator-openaccp/SKILL.md`
+   - `skills/frontier-orchestrator-openaccp/SKILL.md`
+   - `skills/formal-report-openaccp/SKILL.md`
    - `templates/primary-orchestrator-launcher.md`
    - `templates/frontier-orchestrator-launcher.md`
 6. Produce a formal report automatically after installation and validation.
@@ -38,17 +38,17 @@ The agent should:
 
 ## Skills To Install Or Load
 
-- `skills/primary-orchestrator-openacp/`
-- `skills/frontier-orchestrator-openacp/`
-- `skills/worker-openacp/`
-- `skills/reviewer-openacp/`
-- `skills/formal-report-openacp/`
-- `skills/human-explain-openacp/`
-- `skills/handoff-consume-openacp/`
-- `skills/source-pack-openacp/`
-- `skills/bootstrap-openacp/`
-- `skills/discovery-openacp/`
-- `skills/validator-openacp/`
+- `skills/primary-orchestrator-openaccp/`
+- `skills/frontier-orchestrator-openaccp/`
+- `skills/worker-openaccp/`
+- `skills/reviewer-openaccp/`
+- `skills/formal-report-openaccp/`
+- `skills/human-explain-openaccp/`
+- `skills/handoff-consume-openaccp/`
+- `skills/source-pack-openaccp/`
+- `skills/bootstrap-openaccp/`
+- `skills/discovery-openaccp/`
+- `skills/validator-openaccp/`
 
 ## Automatic Formal Report
 
@@ -58,7 +58,7 @@ The report should include:
 
 - what was installed or loaded,
 - whether validation passed or failed,
-- whether OpenACP skills are available,
+- whether OpenACCP skills are available,
 - whether the CLI is available,
 - current startup state,
 - gaps,
@@ -66,7 +66,7 @@ The report should include:
 
 For chat readability, keep the report table short. Long paths, commit hashes, URLs, and validation logs should not appear in table cells.
 
-The startup report must use `formal-report-openacp` rows. For a Chinese post-install report, use this exact table shape:
+The startup report must use `formal-report-openaccp` rows. For a Chinese post-install report, use this exact table shape:
 
 ```text
 | 类型/状态 | 内容 |
@@ -80,7 +80,7 @@ The startup report must use `formal-report-openacp` rows. For a Chinese post-ins
 | 下一步　　　 | |
 ```
 
-Use only the OpenACP report header: `| 类型/状态 | 内容 |` for Chinese or `| Item/Status | Content |` for English. Keep row labels to the standard OpenACP set: `做了什么`, `总体进度`, `验证`, `范围`, `目标`, `缺口`, `下一步` for Chinese startup reports. In Codex chat, append full-width ideographic spaces to Chinese first-column row labels so `类型/状态` stays on one line.
+Use only the OpenACCP report header: `| 类型/状态 | 内容 |` for Chinese or `| Item/Status | Content |` for English. Keep row labels to the standard OpenACCP set: `做了什么`, `总体进度`, `验证`, `范围`, `目标`, `缺口`, `下一步` for Chinese startup reports. In Codex chat, append full-width ideographic spaces to Chinese first-column row labels so `类型/状态` stays on one line.
 
 Do not print PowerShell blocks, bash blocks, command lists, executable paths, local install paths, or temporary install directories in the user-facing post-install report. The `验证` row should simply say `验证通过` or `验证失败`; if a note is useful, write one short natural-language sentence after the table.
 
@@ -95,7 +95,7 @@ If the user does not have a prepared facts path, the agent may ask the user to u
 Use plain human-readable wording for the final ask. For example:
 
 ```text
-I have installed and validated OpenACP, but I cannot build a useful Primary launcher yet because I do not know where your project work should happen, which materials count as current facts, or which language you want future agents to use. Please send me one clear working directory. This is required. Also send your source pack, PRD, spec, design document, or facts path. If you do not have a clean facts path yet, you can upload the project materials instead and I will treat them as candidate facts, but I still need the working directory. Please also tell me your preferred language; if you do not specify one, I will keep using your current language.
+I have installed and validated OpenACCP, but I cannot build a useful Primary launcher yet because I do not know where your project work should happen, which materials count as current facts, or which language you want future agents to use. Please send me one clear working directory. This is required. Also send your source pack, PRD, spec, design document, or facts path. If you do not have a clean facts path yet, you can upload the project materials instead and I will treat them as candidate facts, but I still need the working directory. Please also tell me your preferred language; if you do not specify one, I will keep using your current language.
 ```
 
 ## After The User Provides Project Inputs
@@ -131,7 +131,7 @@ The Primary prompt record must also include active closure rules:
 
 - Primary should dispatch bounded subagents and consume evidence until only final-authority or explicitly-out gaps remain.
 - Primary must inspect the working directory and facts input before dispatching Frontier.
-- Primary must create or refresh `.openacp/coordination/runtime-boundary.json` before dispatching Frontier. It must resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, worktree policy, writable paths, read-only paths, forbidden paths, data risk, side-effect policy, and `b2DispatchGate`.
+- Primary must create or refresh `.openaccp/coordination/runtime-boundary.json` before dispatching Frontier. It must resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, worktree policy, writable paths, read-only paths, forbidden paths, data risk, side-effect policy, and `b2DispatchGate`.
 - Primary must create or refresh current manifest, source status registry, lane registry, decision registry, sequence registry, and CARD/task-card candidates.
 - If product repo path, base branch, source roots, test entrypoints, or worktree policy are missing, Primary should ask the user in the Primary report and continue B0/B1 packaging only. It should not push those unresolved runtime questions into Frontier as immediate blockers. Frontier lanes launched before product-write readiness must be `coordination_only` or `read_only_review`, not `product_write`.
 - Primary must cut enough CARDs for the actual project domains. Normal or medium/high-complexity product work usually needs 10-20 project-level CARDs before Frontier dispatch; fewer is acceptable only for a genuinely small project with an explicit reason.
@@ -142,7 +142,7 @@ The Primary prompt record must also include active closure rules:
 The full launcher prompt records must be written to disk first. Use the user's working directory, preferably:
 
 ```text
-<working-directory>/.openacp/launchers/
+<working-directory>/.openaccp/launchers/
 ```
 
 Write exactly one full Primary prompt record. It must include a stable Prompt ID, role, B3 authority, inputs, preferred language, scope, forbidden effects, validation expectations, output expectations, workspace review duties, CARD creation duties, and dynamic Frontier dispatch rules.
@@ -151,8 +151,8 @@ If the working directory is not writable, do not fall back to pasting full promp
 
 Recommended file names:
 
-- `<working-directory>/.openacp/launchers/primary-orchestrator.prompt.md`
-- `<working-directory>/.openacp/launchers/primary-orchestrator.short.md`
+- `<working-directory>/.openaccp/launchers/primary-orchestrator.prompt.md`
+- `<working-directory>/.openaccp/launchers/primary-orchestrator.short.md`
 
 The chat output must not contain the full prompt body. Chat must contain one short copyable Primary launcher that points to the on-disk prompt record.
 
@@ -179,9 +179,9 @@ Example short chat launcher:
 <Project> - Primary Orchestrator - Startup
 Purpose: start the Primary coordination thread.
 
-Read and execute this OpenACP prompt record:
-- Prompt Record: <working-directory>/.openacp/launchers/primary-orchestrator.prompt.md
-- Prompt ID: openacp-primary-startup
+Read and execute this OpenACCP prompt record:
+- Prompt Record: <working-directory>/.openaccp/launchers/primary-orchestrator.prompt.md
+- Prompt ID: openaccp-primary-startup
 - Preferred language: <user-preferred-or-current-language>
 
 Hard requirements:
@@ -190,7 +190,7 @@ Hard requirements:
 3. If the file cannot be read cleanly, the Prompt ID is missing, or the text appears corrupted, stop and report launcher-read failure.
 ```
 
-If the user has no source pack, PRD, spec, facts path, or uploaded project materials, do not invent one. Offer the bootstrap path and use `openacp init` only after the user explicitly approves creating starter artifacts.
+If the user has no source pack, PRD, spec, facts path, or uploaded project materials, do not invent one. Offer the bootstrap path and use `openaccp init` only after the user explicitly approves creating starter artifacts.
 
 ## Primary Runtime Dispatch
 
@@ -202,7 +202,7 @@ Primary must first:
 2. Create or refresh runtime boundary: product repo path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, data risk, side-effect policy, and `b2DispatchGate`.
 3. Explain in the preferred language what B0/B1/B2/B3 mean for this project.
 4. Inspect the working directory and facts input.
-5. Create or refresh OpenACP current manifest, source status registry, invalid or deprecated sources, decision registry, sequence registry, lane registry, and CARD/task-card candidates.
+5. Create or refresh OpenACCP current manifest, source status registry, invalid or deprecated sources, decision registry, sequence registry, lane registry, and CARD/task-card candidates.
 6. Create CARDs before Frontier dispatch. For normal or medium/high-complexity product work, prefer 10-20 project-level CARDs. Use fewer only for genuinely small projects and record why.
 7. Scan the facts for domain coverage before finalizing CARDs: product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops, and project-specific domains. Create CARDs only for domains present in the facts, but never miss a domain the facts explicitly name.
 8. Group CARDs into Frontier lanes based on complexity, risk, dependencies, and parallel safety. Default to at least two Frontier lanes when two safe independent CARD clusters exist; use one only for small/single-lane/user-request cases with a stated reason; use two to five for medium/high complexity when parallel work is useful.
@@ -232,7 +232,7 @@ Primary and Frontier should maintain machine-readable coordination state:
 Validate launcher-bearing response logs with:
 
 ```bash
-openacp-validate --artifact <response-log-with-launcher.md> --ruleset launcher-output --strict
+openaccp-validate --artifact <response-log-with-launcher.md> --ruleset launcher-output --strict
 ```
 
 ## Skill Install Notes

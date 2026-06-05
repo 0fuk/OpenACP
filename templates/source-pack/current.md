@@ -1,6 +1,6 @@
 # Current Source Pack
 
-schemaVersion: openacp-source-pack.v1
+schemaVersion: openaccp-source-pack.v1
 artifactType: source-pack
 status: draft
 

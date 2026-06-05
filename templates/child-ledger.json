@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-child-ledger.v1",
+  "schemaVersion": "openaccp-child-ledger.v1",
   "artifactType": "child-ledger",
   "ledgerId": "LEDGER-<lane>-001",
   "laneId": "<lane-id>",
@@ -11,7 +11,7 @@
       "authority": "B2",
       "effects": ["<allowed-effect>"],
       "subagentIdOrToolStatus": "direct-subagent | unavailable | fallback-launcher",
-      "expectedHandoffPath": ".openacp/handoffs/<handoff-id>.json",
+      "expectedHandoffPath": ".openaccp/handoffs/<handoff-id>.json",
       "dispatchStatus": "not_started",
       "handoffStatus": "expected",
       "consumeStatus": "not_consumed",

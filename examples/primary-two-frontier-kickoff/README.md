@@ -33,7 +33,7 @@ After Primary decides that two Frontier lanes are useful, return:
 Write the full launcher prompt records to disk first, preferably under:
 
 ```text
-<working-directory>/.openacp/launchers/
+<working-directory>/.openaccp/launchers/
 ```
 
 Then return short copyable launchers in chat. Do not paste the full prompt bodies into chat.
@@ -54,9 +54,9 @@ Example short chat launcher:
 <Project> - Frontier A - Source Pack Lane
 Purpose: start the source-pack and scope-baseline lane.
 
-Read and execute this OpenACP prompt record:
-- Prompt Record: <working-directory>/.openacp/launchers/frontier-a.prompt.md
-- Prompt ID: openacp-frontier-a-source-pack
+Read and execute this OpenACCP prompt record:
+- Prompt Record: <working-directory>/.openaccp/launchers/frontier-a.prompt.md
+- Prompt ID: openaccp-frontier-a-source-pack
 - Preferred language: <user-preferred-or-current-language>
 
 Hard requirements:

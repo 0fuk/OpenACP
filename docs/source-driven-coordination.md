@@ -1,6 +1,6 @@
 # Source-Driven Coordination
 
-OpenACP starts from local facts.
+OpenACCP starts from local facts.
 
 ## Current Facts
 

@@ -1,8 +1,10 @@
-# OpenACP
+# OpenACCP
 
-OpenACP, short for **Open Agent Coordination Protocol**, is a workflow kit for coordinating multiple AI agents around real project work.
+**OpenACCP: Agentic Continuous Coordination Protocol**
 
-OpenACP focuses on the coordination layer around agent runtimes, model frameworks, IDE tools, and graph frameworks. It works alongside Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK. Those tools help agents run, code, call tools, or build graphs. OpenACP keeps parallel agent work organized once several threads start moving at the same time:
+OpenACCP is an open workflow protocol for coordinating multi-agent software work.
+
+OpenACCP focuses on the coordination layer around agent runtimes, model frameworks, IDE tools, and graph frameworks. It works alongside Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK. Those tools help agents run, code, call tools, or build graphs. OpenACCP keeps parallel agent work organized once several threads start moving at the same time:
 
 - Which materials are current facts, reference-only material, deprecated material, or invalid sources.
 - Which agent may only read, which agent may prepare packages, and which agent may execute scoped work.
@@ -11,13 +13,13 @@ OpenACP focuses on the coordination layer around agent runtimes, model framework
 - How multiple threads, worktrees, handoffs, review reports, and launchers connect.
 - When the human owner must make a final decision, and when agents can keep moving without interrupting the human.
 
-In one sentence: **AI agents can do work; OpenACP keeps the work coordinated, reviewable, and recoverable.**
+In one sentence: **AI agents can do work; OpenACCP keeps the work coordinated, reviewable, and recoverable.**
 
 ## Who This Is For
 
-OpenACP is for people who have moved beyond one-off prompts and are starting to use AI agents like a small project team.
+OpenACCP is for people who have moved beyond one-off prompts and are starting to use AI agents like a small project team.
 
-| You are | Common pain | What OpenACP gives you |
+| You are | Common pain | What OpenACCP gives you |
 |---|---|---|
 | An independent developer running several agent threads | One thread reads the spec, another edits code, another reviews, and soon nobody knows which result still counts. | Each thread gets a role, scope, authority, handoff, and status path. |
 | A startup founder or engineering lead | Agents can move quickly, but merge, release, customer impact, and risk acceptance still need a clear owner. | Execution authority and final authority are kept separate. |
@@ -26,19 +28,19 @@ OpenACP is for people who have moved beyond one-off prompts and are starting to 
 | A complex delivery owner | Backend, frontend, tests, security, docs, and launch work move in parallel, but only some agent output should be accepted. | A clean distinction between "an agent produced this" and "the project accepted this." |
 | A team with only a PRD or rough product idea | There is no source pack, spec, scope boundary, or task card, so agents start guessing. | Bootstrap turns rough material into a minimal source pack, scope boundary, assumptions ledger, open questions, starter spec, and first CARDs. |
 
-OpenACP keeps tests, CI, code review, security review, legal review, release ownership, and engineering judgment visible inside one coordination flow.
+OpenACCP keeps tests, CI, code review, security review, legal review, release ownership, and engineering judgment visible inside one coordination flow.
 
 ## Quick Start
 
 Ask Codex or Claude Code:
 
 ```text
-Install https://github.com/0fuk/OpenACP as a skill + workflow kit, then follow the README startup flow.
+Install https://github.com/0fuk/OpenACCP as a skill + workflow kit, then follow the README startup flow.
 ```
 
 The startup agent should:
 
-1. Install or load every OpenACP skill under `skills/`.
+1. Install or load every OpenACCP skill under `skills/`.
 2. Install the Python workflow kit and run basic validation.
 3. Produce a formal report automatically as part of startup.
 
@@ -87,7 +89,7 @@ After the skills are installed, you can also manually start a new Primary or Fro
 Manual Primary launcher:
 
 ```prompt
-Use primary-orchestrator-openacp to start OpenACP coordination for this project.
+Use primary-orchestrator-openaccp to start OpenACCP coordination for this project.
 
 Working directory: <your project path>
 Facts input: <source pack, PRD, spec, design document, facts path, or uploaded materials>
@@ -99,7 +101,7 @@ First review the workspace and facts. Create or refresh the source pack, scope b
 Manual Frontier launcher:
 
 ```prompt
-Use frontier-orchestrator-openacp for this lane.
+Use frontier-orchestrator-openaccp for this lane.
 
 Lane objective: <what this lane should close>
 Authority: B2 lane-local unless explicitly narrowed
@@ -115,7 +117,7 @@ If a full prompt record already exists, use a short launcher. The short launcher
 
 ## How Orchestrators Communicate
 
-OpenACP uses project artifacts as the shared memory between orchestrators.
+OpenACCP uses project artifacts as the shared memory between orchestrators.
 
 ```text
 Primary
@@ -210,21 +212,21 @@ CARDs should then be grouped into Frontier lanes. A lane can own several related
 
 ## Skills
 
-OpenACP skills are installable agent workflow instructions. Each skill maps to a real coordination role or governance action.
+OpenACCP skills are installable agent workflow instructions. Each skill maps to a real coordination role or governance action.
 
 | Skill | When to use it | Why it matters |
 |---|---|---|
-| `primary-orchestrator-openacp` | Start or run project-level coordination. Use it for CARD decomposition, lane dispatch, final handoff consume, and acceptance decisions. | Keeps the project moving without mixing provisional agent output with final acceptance. |
-| `frontier-orchestrator-openacp` | Run one bounded lane. Use it for lane backlog, discovery, package preparation, worker/reviewer dispatch, and child handoff consume. | Prevents Frontier from returning to the human too early when B0/B1/B2 work can still continue. |
-| `worker-openacp` | Execute one narrow task under a task card and authority charter. | Keeps implementation scoped and evidence-backed. |
-| `reviewer-openacp` | Review a task card, diff, branch, handoff, prompt, or status artifact. | Turns "looks okay" into an approve/amend/reject/split-follow-up recommendation with evidence. |
-| `discovery-openacp` | Run read-only fact discovery when scope, source status, risk, or next safe action is unclear. | Prevents agents from treating guesses as facts. |
-| `source-pack-openacp` | Create, review, or update source packs and manifests. | Keeps current, reference, deprecated, and invalid sources separate. |
-| `bootstrap-openacp` | Start from a rough PRD, idea, issue list, or scattered notes. | Builds the first source pack, scope boundary, assumptions ledger, starter spec, and CARDs. |
-| `handoff-consume-openacp` | Decide what a handoff proves before merge, release, follow-up dispatch, or acceptance. | Prevents "a file exists" from becoming "the project accepted it." |
-| `formal-report-openacp` | Report project, lane, review, validation, or release-readiness status. | Gives humans stable, readable status without machine-log noise. |
-| `human-explain-openacp` | Explain orchestration status in plain language. | Translates Prompt IDs, lanes, handoffs, and B0/B1/B2/B3 into delivery meaning. |
-| `validator-openacp` | Validate artifacts before dispatch, consume, reports, launchers, or release packaging. | Checks structure, encoding, source status, authority boundary, overclaiming, and public package hygiene. |
+| `primary-orchestrator-openaccp` | Start or run project-level coordination. Use it for CARD decomposition, lane dispatch, final handoff consume, and acceptance decisions. | Keeps the project moving without mixing provisional agent output with final acceptance. |
+| `frontier-orchestrator-openaccp` | Run one bounded lane. Use it for lane backlog, discovery, package preparation, worker/reviewer dispatch, and child handoff consume. | Prevents Frontier from returning to the human too early when B0/B1/B2 work can still continue. |
+| `worker-openaccp` | Execute one narrow task under a task card and authority charter. | Keeps implementation scoped and evidence-backed. |
+| `reviewer-openaccp` | Review a task card, diff, branch, handoff, prompt, or status artifact. | Turns "looks okay" into an approve/amend/reject/split-follow-up recommendation with evidence. |
+| `discovery-openaccp` | Run read-only fact discovery when scope, source status, risk, or next safe action is unclear. | Prevents agents from treating guesses as facts. |
+| `source-pack-openaccp` | Create, review, or update source packs and manifests. | Keeps current, reference, deprecated, and invalid sources separate. |
+| `bootstrap-openaccp` | Start from a rough PRD, idea, issue list, or scattered notes. | Builds the first source pack, scope boundary, assumptions ledger, starter spec, and CARDs. |
+| `handoff-consume-openaccp` | Decide what a handoff proves before merge, release, follow-up dispatch, or acceptance. | Prevents "a file exists" from becoming "the project accepted it." |
+| `formal-report-openaccp` | Report project, lane, review, validation, or release-readiness status. | Gives humans stable, readable status without machine-log noise. |
+| `human-explain-openaccp` | Explain orchestration status in plain language. | Translates Prompt IDs, lanes, handoffs, and B0/B1/B2/B3 into delivery meaning. |
+| `validator-openaccp` | Validate artifacts before dispatch, consume, reports, launchers, or release packaging. | Checks structure, encoding, source status, authority boundary, overclaiming, and public package hygiene. |
 
 ## Language Contract
 
@@ -234,11 +236,11 @@ For example, if the preferred language is Chinese, the reply should be Chinese-f
 
 ## Core Technology
 
-OpenACP is a reusable coordination layer for agent work.
+OpenACCP is a reusable coordination layer for agent work.
 
 ### Source-Driven Coordination
 
-Work starts from current facts. A PRD, old spec, screenshot, chat note, or draft becomes current truth only after source classification. OpenACP asks agents to classify source status:
+Work starts from current facts. A PRD, old spec, screenshot, chat note, or draft becomes current truth only after source classification. OpenACCP asks agents to classify source status:
 
 - `current`: may drive implementation.
 - `reference`: may provide background while current sources continue to define scope.
@@ -266,13 +268,13 @@ A handoff is evidence that becomes completion only after consume and acceptance.
 
 ### Human-Readable Status
 
-OpenACP rejects machine-log replies as the main user-facing answer. A useful status says what changed, what is proven, what is provisional, what is missing, and what happens next.
+OpenACCP rejects machine-log replies as the main user-facing answer. A useful status says what changed, what is proven, what is provisional, what is missing, and what happens next.
 
-Every Primary, Frontier, worker, reviewer, discovery, bootstrap, and validation reply should use `human-explain-openacp` style. Status-like replies must end with a practical recommended next step. If the agent can continue, the answer should say so and name the next Primary-owned or Frontier-owned action. If human input is needed, it should name the exact path, fact, repo boundary, branch, source root, test entrypoint, approval, or decision.
+Every Primary, Frontier, worker, reviewer, discovery, bootstrap, and validation reply should use `human-explain-openaccp` style. Status-like replies must end with a practical recommended next step. If the agent can continue, the answer should say so and name the next Primary-owned or Frontier-owned action. If human input is needed, it should name the exact path, fact, repo boundary, branch, source root, test entrypoint, approval, or decision.
 
 ## Minimum Useful Setup
 
-The smallest useful OpenACP package contains:
+The smallest useful OpenACCP package contains:
 
 ```text
 source pack
@@ -295,7 +297,7 @@ frontier closure
 formal report
 ```
 
-When these inputs are missing, start with `bootstrap-openacp` so implementation begins from task cards, acceptance criteria, verification plans, and stop conditions.
+When these inputs are missing, start with `bootstrap-openaccp` so implementation begins from task cards, acceptance criteria, verification plans, and stop conditions.
 
 ## Repository Map
 
@@ -304,7 +306,7 @@ docs/        Concepts, role model, authority model, bootstrap, coordination, val
 templates/   Reusable Markdown templates for source packs, specs, prompts, reports, handoffs.
 schemas/     Minimal JSON Schemas for machine-checkable coordination artifacts.
 tools/       Validator and helper CLI.
-skills/      Portable agent skills for using OpenACP workflows.
+skills/      Portable agent skills for using OpenACCP workflows.
 examples/    Strict fixtures and concept examples.
 ```
 
@@ -325,42 +327,42 @@ The first two are best for direct validation. The other examples show shape and 
 For a local trial:
 
 ```bash
-git clone https://github.com/0fuk/OpenACP.git
-cd OpenACP
+git clone https://github.com/0fuk/OpenACCP.git
+cd OpenACCP
 python -m pip install -e .
-openacp --version
-openacp-validate --version
+openaccp --version
+openaccp-validate --version
 ```
 
 If you only have a rough PRD or scattered material, create a starter package:
 
 ```bash
-openacp init ./my-openacp-package
-openacp init ./my-openacp-package --write
+openaccp init ./my-openaccp-package
+openaccp init ./my-openaccp-package --write
 ```
 
-`openacp init` is a dry run by default. It is a bootstrap fallback. For real projects, install the skills first, then let Primary create project-specific prompt records and launchers from your working directory and facts input.
+`openaccp init` is a dry run by default. It is a bootstrap fallback. For real projects, install the skills first, then let Primary create project-specific prompt records and launchers from your working directory and facts input.
 
 ## Positioning
 
-OpenACP can be used with Claude Workflow, SuperClaude, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, the OpenAI Agents SDK, Codex, or a custom agent stack.
+OpenACCP can be used with Claude Workflow, SuperClaude, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, the OpenAI Agents SDK, Codex, or a custom agent stack.
 
 The difference:
 
 - Runtime and coding-agent tools make agents run, call tools, and write code.
-- OpenACP makes multi-agent work traceable, reviewable, handoff-ready, and authority-aware.
+- OpenACCP makes multi-agent work traceable, reviewable, handoff-ready, and authority-aware.
 
 One layer executes work. The other coordinates project truth.
 
 ## Public Package Hygiene
 
-The public repository should contain public-safe docs, templates, schemas, examples, CLI, and validator code. Keep private response logs, private source packs, local absolute paths, customer material, credentials, and production logs in ignored local paths such as `.openacp-local/` or your team's private workspace.
+The public repository should contain public-safe docs, templates, schemas, examples, CLI, and validator code. Keep private response logs, private source packs, local absolute paths, customer material, credentials, and production logs in ignored local paths such as `.openaccp-local/` or your team's private workspace.
 
 Before release, run:
 
 ```bash
-python tools/openacp_validate_selftest.py
-python tools/openacp_validate.py --artifact . --ruleset public-package --strict
+python tools/openaccp_validate_selftest.py
+python tools/openaccp_validate.py --artifact . --ruleset public-package --strict
 ```
 
 The validator checks structure, common leakage patterns, and common overclaims. Pair it with a dedicated secret scanner and human review before a formal release.

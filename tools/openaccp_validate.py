@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compatibility wrapper for running the OpenACP helper CLI from a source tree."""
+"""Compatibility wrapper for running the OpenACCP validator from a source tree."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from openacp.cli import main
+from openaccp.validate import main
 
 
 if __name__ == "__main__":

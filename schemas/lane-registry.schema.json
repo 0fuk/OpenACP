@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/lane-registry.schema.json",
-  "title": "OpenACP Lane Registry",
+  "$id": "https://openaccp.dev/schemas/lane-registry.schema.json",
+  "title": "OpenACCP Lane Registry",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "registryId", "projectComplexity", "frontierDispatchMode", "frontierDispatchReason", "lanes"],
   "properties": {
-    "schemaVersion": { "const": "openacp-lane-registry.v1" },
+    "schemaVersion": { "const": "openaccp-lane-registry.v1" },
     "artifactType": { "const": "lane-registry" },
     "registryId": { "type": "string", "minLength": 1 },
     "projectComplexity": { "enum": ["bootstrap", "small", "normal", "medium", "medium-high", "high", "unknown"] },

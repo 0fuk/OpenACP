@@ -1,6 +1,6 @@
 # Getting Started
 
-OpenACP has two adoption paths. Pick the shortest one that matches your current material.
+OpenACCP has two adoption paths. Pick the shortest one that matches your current material.
 
 For Codex or Claude Code startup, begin with `docs/codex-install-and-start.md`. The default path is to install skills, install the workflow kit, validate, produce a formal report automatically, then ask for the required working directory, a source pack, PRD, spec, facts path or uploaded project materials, and the user's preferred language. After those inputs arrive, startup returns one short Primary launcher only, printed in chat as a fenced `prompt` block; Primary later reviews the workspace, creates CARDs, and decides whether to launch Frontier lanes.
 
@@ -8,7 +8,7 @@ For normal or medium-complexity projects, Primary should usually create enough C
 
 ## Path A: I Only Have A PRD
 
-Use ACP Bootstrap when the project starts from a rough PRD, product note, or vague design.
+Use ACCP Bootstrap when the project starts from a rough PRD, product note, or vague design.
 
 1. Fill `templates/prd-intake.md`.
 2. Create `source-pack.json` from the current note or PRD.
@@ -23,7 +23,7 @@ The Bootstrap path prevents agents from inventing a spec or treating old brainst
 
 ## Path B: I Already Have A Work Package
 
-Use ACP Coordination when the project already has enough facts to dispatch agents.
+Use ACCP Coordination when the project already has enough facts to dispatch agents.
 
 1. Confirm the current source pack.
 2. Define roles and authority boundaries.

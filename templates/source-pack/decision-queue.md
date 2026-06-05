@@ -1,6 +1,6 @@
 # Human Decision Queue
 
-schemaVersion: openacp-decision-queue.v1
+schemaVersion: openaccp-decision-queue.v1
 artifactType: decision-queue
 status: draft
 

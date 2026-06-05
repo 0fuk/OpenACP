@@ -1,6 +1,6 @@
 # Concepts
 
-OpenACP is built around artifacts that separate facts, scope, execution, review, and final authority.
+OpenACCP is built around artifacts that separate facts, scope, execution, review, and final authority.
 
 ## Core Artifacts
 

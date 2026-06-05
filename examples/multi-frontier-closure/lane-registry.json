@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-lane-registry.v1",
+  "schemaVersion": "openaccp-lane-registry.v1",
   "artifactType": "lane-registry",
   "registryId": "LANES-DEMO-001",
   "projectComplexity": "small",

@@ -1,6 +1,6 @@
 # Coordination Templates
 
-Use these templates for the `.openacp/coordination/` control plane. Human-readable reports explain state to the owner; coordination artifacts make that state reusable by Primary, Frontier, worker, reviewer, and validator threads.
+Use these templates for the `.openaccp/coordination/` control plane. Human-readable reports explain state to the owner; coordination artifacts make that state reusable by Primary, Frontier, worker, reviewer, and validator threads.
 
 Recommended order:
 
@@ -9,7 +9,7 @@ Recommended order:
 3. `runtime-boundary.json`: working directory, product repo path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, side effects, data risk, and `b2DispatchGate`.
 4. `authority-charter.json`: role authority and scope boundaries.
 5. `lane-registry.json`: active Primary and Frontier lanes, assigned CARDs, runtime boundary reference, child ledger reference, consume refs, return-gate state, and per-lane `b2DispatchGate`.
-6. `frontier prompt record`: full on-disk lane prompt with `openacp-frontier-orchestration-contract.v1`.
+6. `frontier prompt record`: full on-disk lane prompt with `openaccp-frontier-orchestration-contract.v1`.
 7. `child-ledgers/<lane-id>.json`: worker/reviewer/discovery/validation child lifecycle, response and handoff status, consume status, and remaining risk.
 8. `handoff.json` and `review-report.json`: provisional evidence from workers and reviewers.
 9. `consume-result.json`: Primary or Frontier consume decision for handoff evidence.

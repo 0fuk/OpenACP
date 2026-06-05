@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-decision-registry.v1",
+  "schemaVersion": "openaccp-decision-registry.v1",
   "artifactType": "decision-registry",
   "registryId": "DEC-DEMO-001",
   "decisions": [

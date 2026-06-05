@@ -7,7 +7,7 @@ Confirmed release metadata for the first public candidate:
 - License: MIT.
 - Copyright holder: Vyqo AI.
 - GitHub account: `0fuk`.
-- Package name: `openacp`.
+- Package name: `openaccp`.
 
 ## Required
 
@@ -21,7 +21,7 @@ Confirmed release metadata for the first public candidate:
 - [ ] Check B2/B3 task cards include `authorityCharterRef`.
 - [ ] Check strict fixtures are separated from concept examples.
 - [ ] Check internal reports and response logs are outside the public package.
-- [ ] Run a dedicated secret scan in addition to the OpenACP public-package scan.
+- [ ] Run a dedicated secret scan in addition to the OpenACCP public-package scan.
 - [ ] Check every schema has a documented use.
 - [ ] Check skills are concise and generic.
 

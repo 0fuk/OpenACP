@@ -1,6 +1,6 @@
 # Data Contracts Starter
 
-schemaVersion: openacp-data-contracts.v1
+schemaVersion: openaccp-data-contracts.v1
 artifactType: data-contracts
 status: draft
 

@@ -1,6 +1,6 @@
-﻿# CARD Registry - Multi Frontier Closure Fixture
+# CARD Registry - Multi Frontier Closure Fixture
 
-schemaVersion: openacp-card-registry.v1
+schemaVersion: openaccp-card-registry.v1
 artifactType: card-registry
 
 ## Domain Coverage

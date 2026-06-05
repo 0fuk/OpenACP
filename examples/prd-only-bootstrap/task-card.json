@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-task-card.v1",
+  "schemaVersion": "openaccp-task-card.v1",
   "artifactType": "task-card",
   "taskId": "TASK-ISSUE-SPEC",
   "parentCardId": "CARD-ISSUE-001",
@@ -10,7 +10,7 @@
   "allowedScope": { "filesOrArtifacts": ["spec/**", "docs/**"], "effects": ["docs-only"] },
   "forbiddenScope": { "filesOrArtifacts": ["src/**", "package-lock.json"], "effects": ["external-side-effect", "dependency-change"], "claims": ["accepted", "merged", "released"] },
   "acceptanceCriteria": ["Workflow states input, classification output, draft output, and human review point.", "Outbound replies are forbidden."],
-  "verificationPlan": [{ "check": "public scan", "method": "OpenACP validator public-package scan", "required": true }],
+  "verificationPlan": [{ "check": "public scan", "method": "OpenACCP validator public-package scan", "required": true }],
   "stopConditions": ["Real credentials are required.", "Posting or status changes are requested."],
   "expectedHandoff": { "artifactType": "handoff", "requiredFields": ["changedArtifacts", "verificationEvidence", "stateClaim"] },
   "authorityRequired": "B2",

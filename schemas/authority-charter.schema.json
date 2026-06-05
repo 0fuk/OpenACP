@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/authority-charter.schema.json",
-  "title": "OpenACP Authority Charter",
+  "$id": "https://openaccp.dev/schemas/authority-charter.schema.json",
+  "title": "OpenACCP Authority Charter",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "charterId", "grantedRole", "authorityLevel", "allowedActions", "forbiddenActions", "delegationRules", "finalAuthorityReservedTo", "scopeLimits", "dataRiskLimit", "resourceUseLimit", "allowedInputs", "allowedOutputs", "forbiddenSideEffects", "stopConditions", "expiresWhen"],
   "properties": {
-    "schemaVersion": { "const": "openacp-authority-charter.v1" },
+    "schemaVersion": { "const": "openaccp-authority-charter.v1" },
     "artifactType": { "const": "authority-charter" },
     "charterId": { "type": "string", "minLength": 1 },
     "grantedRole": { "enum": ["primary", "frontier", "worker", "reviewer", "discovery", "human-owner"] },

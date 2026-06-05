@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-runtime-boundary.v1",
+  "schemaVersion": "openaccp-runtime-boundary.v1",
   "artifactType": "runtime-boundary",
   "boundaryId": "RB-001",
   "workingDirectory": "<working-directory>",
@@ -9,7 +9,7 @@
   "sourceRoots": [],
   "testEntrypoints": [],
   "worktreePolicy": "unknown",
-  "allowedWritablePaths": [".openacp/**"],
+  "allowedWritablePaths": [".openaccp/**"],
   "readOnlyPaths": [],
   "forbiddenPaths": [".git/**"],
   "externalSideEffects": "none",

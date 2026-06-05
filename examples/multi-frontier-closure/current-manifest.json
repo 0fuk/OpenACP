@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-current-manifest.v1.1",
+  "schemaVersion": "openaccp-current-manifest.v1.1",
   "artifactType": "current-manifest",
   "manifestId": "MAN-DEMO-001",
   "preferredLanguage": "English",

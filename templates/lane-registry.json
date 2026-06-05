@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-lane-registry.v1",
+  "schemaVersion": "openaccp-lane-registry.v1",
   "artifactType": "lane-registry",
   "registryId": "LANES-001",
   "projectComplexity": "bootstrap",
@@ -14,8 +14,8 @@
       "currentPromptId": "<primary-prompt-id>",
       "authorityLevel": "B3",
       "assignedCardIds": ["CARD-001"],
-      "runtimeBoundaryRef": ".openacp/coordination/runtime-boundary.json",
-      "childLedgerRef": ".openacp/coordination/child-ledgers/primary.json",
+      "runtimeBoundaryRef": ".openaccp/coordination/runtime-boundary.json",
+      "childLedgerRef": ".openaccp/coordination/child-ledgers/primary.json",
       "latestConsumeRefs": [],
       "b2DispatchGate": {
         "mode": "coordination_only",
@@ -28,7 +28,7 @@
         "finalAuthorityGapCount": 0,
         "explicitlyOutCount": 0,
         "frontierClosureRef": "",
-        "latestChildLedgerRef": ".openacp/coordination/child-ledgers/primary.json",
+        "latestChildLedgerRef": ".openaccp/coordination/child-ledgers/primary.json",
         "latestConsumeRefs": []
       }
     }

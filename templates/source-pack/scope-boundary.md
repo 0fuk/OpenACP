@@ -1,6 +1,6 @@
 # Scope Boundary
 
-schemaVersion: openacp-scope-boundary.v1
+schemaVersion: openaccp-scope-boundary.v1
 artifactType: scope-boundary
 status: draft
 

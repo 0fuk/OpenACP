@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/runtime-boundary.schema.json",
-  "title": "OpenACP Runtime Boundary",
+  "$id": "https://openaccp.dev/schemas/runtime-boundary.schema.json",
+  "title": "OpenACCP Runtime Boundary",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -23,7 +23,7 @@
     "b2DispatchGate"
   ],
   "properties": {
-    "schemaVersion": { "const": "openacp-runtime-boundary.v1" },
+    "schemaVersion": { "const": "openaccp-runtime-boundary.v1" },
     "artifactType": { "const": "runtime-boundary" },
     "boundaryId": { "type": "string", "minLength": 1 },
     "workingDirectory": { "type": "string", "minLength": 1 },

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/sequence-registry.schema.json",
-  "title": "OpenACP Sequence Registry",
+  "$id": "https://openaccp.dev/schemas/sequence-registry.schema.json",
+  "title": "OpenACCP Sequence Registry",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -17,7 +17,7 @@
     "activeLanes"
   ],
   "properties": {
-    "schemaVersion": { "const": "openacp-sequence-registry.v1" },
+    "schemaVersion": { "const": "openaccp-sequence-registry.v1" },
     "artifactType": { "const": "sequence-registry" },
     "registryId": { "type": "string", "minLength": 1 },
     "currentPromptId": { "type": "string", "minLength": 1 },

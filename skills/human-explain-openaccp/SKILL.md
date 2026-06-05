@@ -1,9 +1,9 @@
 ---
-name: human-explain-openacp
-description: Explain OpenACP project, lane, handoff, review, blocker, authority, or multi-agent status in plain human language. Use when an owner needs to know what is proven, provisional, missing, and next.
+name: human-explain-openaccp
+description: Explain OpenACCP project, lane, handoff, review, blocker, authority, or multi-agent status in plain human language. Use when an owner needs to know what is proven, provisional, missing, and next.
 ---
 
-# Human Explain OpenACP
+# Human Explain OpenACCP
 
 Use the user's preferred language when it is known. If the preferred language is Chinese, use Chinese as the main language and keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese explanation.
 
@@ -20,7 +20,7 @@ Do not invent progress or hide authority limits.
 
 ## Required Response Ending
 
-Every OpenACP role response should end with a short human-readable next-step paragraph. This applies to Primary, Frontier, worker, reviewer, discovery, validator, and bootstrap replies.
+Every OpenACCP role response should end with a short human-readable next-step paragraph. This applies to Primary, Frontier, worker, reviewer, discovery, validator, and bootstrap replies.
 
 The ending should say:
 
@@ -56,7 +56,7 @@ For every Frontier reply, include a practical recommended next step:
 
 ## Startup Input Ask
 
-After OpenACP installation and validation, explain the missing inputs in practical terms:
+After OpenACCP installation and validation, explain the missing inputs in practical terms:
 
 - The working directory is required because launchers need a concrete project place where the agent is allowed to work.
 - The facts input can be a source pack, PRD, spec, design document, facts path, or uploaded project materials.

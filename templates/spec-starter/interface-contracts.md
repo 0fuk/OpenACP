@@ -1,6 +1,6 @@
 # Interface Contracts Starter
 
-schemaVersion: openacp-interface-contracts.v1
+schemaVersion: openaccp-interface-contracts.v1
 artifactType: interface-contracts
 status: draft
 

@@ -1,21 +1,21 @@
 ---
-name: frontier-orchestrator-openacp
-description: Run a bounded OpenACP Frontier lane. Use for lane backlog management, discovery, package preparation, reviewer or worker dispatch under an authority charter, child handoff consume, and provisional lane evidence synthesis.
+name: frontier-orchestrator-openaccp
+description: Run a bounded OpenACCP Frontier lane. Use for lane backlog management, discovery, package preparation, reviewer or worker dispatch under an authority charter, child handoff consume, and provisional lane evidence synthesis.
 ---
 
-# Frontier Orchestrator OpenACP
+# Frontier Orchestrator OpenACCP
 
 Frontier is a lane orchestrator, not a default implementation worker.
 
 ## Reply Contract
 
-Every Frontier reply must use `human-explain-openacp` style in the preferred language. Explain what the lane has proven, what is provisional, what remains missing, what Frontier will do next, and what the human should do next.
+Every Frontier reply must use `human-explain-openaccp` style in the preferred language. Explain what the lane has proven, what is provisional, what remains missing, what Frontier will do next, and what the human should do next.
 
 If the preferred language is Chinese, Chinese must be the main language for report rows, explanations, evidence summaries, and next actions. Keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese reply.
 
 Every Frontier reply must end with a short `Recommended Next Step` / `下一步建议` paragraph. If no human action is needed, say that plainly: `Recommended next step: none; Frontier will continue B0/B1/B2 lane-local closure.` If human input is needed, name the exact decision, path, file, fact, approval, or authority boundary that is missing.
 
-Every status-like Frontier reply must also use `formal-report-openacp` structure with the Frontier/Lane row contract and evidence details outside the table. Do not return machine-log prose as the main user-facing answer.
+Every status-like Frontier reply must also use `formal-report-openaccp` structure with the Frontier/Lane row contract and evidence details outside the table. Do not return machine-log prose as the main user-facing answer.
 
 ## Gap Decisions
 
@@ -39,7 +39,7 @@ Frontier prompt records should carry this machine-readable contract block, updat
 
 ```json
 {
-  "schemaVersion": "openacp-frontier-orchestration-contract.v1",
+  "schemaVersion": "openaccp-frontier-orchestration-contract.v1",
   "artifactType": "frontier-orchestration-contract",
   "authorityLevel": "B2",
   "laneObjective": "Run one bounded lane until all B0/B1/B2-safe closure work is done or only final-authority gaps remain.",
@@ -68,10 +68,10 @@ Frontier prompt records should carry this machine-readable contract block, updat
     "rule": "Return to Primary only after every visible remaining gap is needs_final_authority or explicitly_out and a Primary-ready packet exists."
   },
   "coordinationRefs": {
-    "runtimeBoundaryRef": ".openacp/coordination/runtime-boundary.json",
-    "laneRegistryRef": ".openacp/coordination/lane-registry.json",
-    "childLedgerRef": ".openacp/coordination/child-ledgers/<lane-id>.json",
-    "frontierClosureRef": ".openacp/coordination/frontier-closures/<lane-id>.json"
+    "runtimeBoundaryRef": ".openaccp/coordination/runtime-boundary.json",
+    "laneRegistryRef": ".openaccp/coordination/lane-registry.json",
+    "childLedgerRef": ".openaccp/coordination/child-ledgers/<lane-id>.json",
+    "frontierClosureRef": ".openaccp/coordination/frontier-closures/<lane-id>.json"
   },
   "worktreeDecision": {
     "requiredWhen": "creating_or_skipping_B2_worker",

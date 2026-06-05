@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-runtime-boundary.v1",
+  "schemaVersion": "openaccp-runtime-boundary.v1",
   "artifactType": "runtime-boundary",
   "boundaryId": "RB-DEMO-001",
   "workingDirectory": "examples/multi-frontier-closure",
@@ -7,7 +7,7 @@
   "productRepoPath": "",
   "baseBranch": "not_applicable",
   "sourceRoots": [],
-  "testEntrypoints": ["openacp validator"],
+  "testEntrypoints": ["openaccp validator"],
   "worktreePolicy": "forbidden",
   "allowedWritablePaths": ["examples/multi-frontier-closure/**"],
   "readOnlyPaths": [],

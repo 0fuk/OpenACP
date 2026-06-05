@@ -1,17 +1,17 @@
 ---
-name: reviewer-openacp
-description: Perform read-only OpenACP sidecar review of a task card, branch, diff, handoff, prompt, or status artifact. Use to check scope compliance, correctness, verification evidence, side effects, overclaiming, and readiness for final-authority consume.
+name: reviewer-openaccp
+description: Perform read-only OpenACCP sidecar review of a task card, branch, diff, handoff, prompt, or status artifact. Use to check scope compliance, correctness, verification evidence, side effects, overclaiming, and readiness for final-authority consume.
 ---
 
-# Reviewer OpenACP
+# Reviewer OpenACCP
 
 Reviewer provides read-only evidence.
 
 ## Reply Contract
 
-Every reviewer reply must use `human-explain-openacp` style in the preferred language. Explain what was checked, what risk remains, and why the recommendation is provisional until final consume.
+Every reviewer reply must use `human-explain-openaccp` style in the preferred language. Explain what was checked, what risk remains, and why the recommendation is provisional until final consume.
 
-Every status-like reviewer reply and final review summary must use `formal-report-openacp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, target taskId or handoffId, authority, recommendation, effects, basisRefs, and locators.
+Every status-like reviewer reply and final review summary must use `formal-report-openaccp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, target taskId or handoffId, authority, recommendation, effects, basisRefs, and locators.
 
 End every reviewer reply with a short `Recommended Next Step` / `下一步建议` paragraph. Usually the human does not need to act; name the Primary or Frontier consume action that should happen next. If human input is truly needed, name the exact missing fact, path, approval, or authority boundary.
 

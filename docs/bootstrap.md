@@ -1,6 +1,6 @@
-# ACP Bootstrap
+# ACCP Bootstrap
 
-ACP Bootstrap helps teams move from rough intent to a minimal work package.
+ACCP Bootstrap helps teams move from rough intent to a minimal work package.
 
 ## Use Bootstrap When
 

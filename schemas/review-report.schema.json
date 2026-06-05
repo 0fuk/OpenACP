@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/review-report.schema.json",
-  "title": "OpenACP Review Report",
+  "$id": "https://openaccp.dev/schemas/review-report.schema.json",
+  "title": "OpenACCP Review Report",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "reviewId", "targetHandoffId", "reviewedArtifacts", "scopeAssessment", "testAssessment", "claimAssessment", "findings", "recommendation", "residualRisk"],
   "properties": {
-    "schemaVersion": { "const": "openacp-review-report.v1" },
+    "schemaVersion": { "const": "openaccp-review-report.v1" },
     "artifactType": { "const": "review-report" },
     "reviewId": { "type": "string", "minLength": 1 },
     "targetHandoffId": { "type": "string", "minLength": 1 },

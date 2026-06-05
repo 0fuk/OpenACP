@@ -1,6 +1,6 @@
 # Human Status
 
-schemaVersion: openacp-status-report.v1
+schemaVersion: openaccp-status-report.v1
 artifactType: human-status
 status: draft
 

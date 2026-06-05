@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OpenACP helper CLI."""
+"""OpenACCP helper CLI."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def starter_files(target: Path) -> dict[Path, str]:
     return {
         target / "source-pack.json": json_text(
             {
-                "schemaVersion": "openacp-source-pack.v1",
+                "schemaVersion": "openaccp-source-pack.v1",
                 "artifactType": "source-pack",
                 "currentSources": [{"sourceId": "SRC-001", "title": "Current product note or PRD", "status": "current"}],
                 "referenceSources": [],
@@ -37,7 +37,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "scope-boundary.json": json_text(
             {
-                "schemaVersion": "openacp-scope-boundary.v1",
+                "schemaVersion": "openaccp-scope-boundary.v1",
                 "artifactType": "scope-boundary",
                 "inScope": ["Draft docs or specs from the current source."],
                 "outOfScope": ["Runtime code changes.", "External side effects."],
@@ -50,7 +50,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "assumptions.json": json_text(
             {
-                "schemaVersion": "openacp-assumption-ledger.v1",
+                "schemaVersion": "openaccp-assumption-ledger.v1",
                 "artifactType": "assumption-ledger",
                 "assumptions": [
                     {
@@ -67,7 +67,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "authority-charter.json": json_text(
             {
-                "schemaVersion": "openacp-authority-charter.v1",
+                "schemaVersion": "openaccp-authority-charter.v1",
                 "artifactType": "authority-charter",
                 "charterId": "CHARTER-001",
                 "grantedRole": "worker",
@@ -88,7 +88,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "task-card.json": json_text(
             {
-                "schemaVersion": "openacp-task-card.v1",
+                "schemaVersion": "openaccp-task-card.v1",
                 "artifactType": "task-card",
                 "taskId": "TASK-001",
                 "parentCardId": "CARD-001",
@@ -115,7 +115,7 @@ def starter_files(target: Path) -> dict[Path, str]:
             [
                 "# CARD Registry",
                 "",
-                "schemaVersion: openacp-card-registry.v1",
+                "schemaVersion: openaccp-card-registry.v1",
                 "artifactType: card-registry",
                 "",
                 "## Domain Coverage",
@@ -152,7 +152,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "coordination" / "runtime-boundary.json": json_text(
             {
-                "schemaVersion": "openacp-runtime-boundary.v1",
+                "schemaVersion": "openaccp-runtime-boundary.v1",
                 "artifactType": "runtime-boundary",
                 "boundaryId": "RB-001",
                 "workingDirectory": str(target),
@@ -162,7 +162,7 @@ def starter_files(target: Path) -> dict[Path, str]:
                 "sourceRoots": [],
                 "testEntrypoints": [],
                 "worktreePolicy": "unknown",
-                "allowedWritablePaths": [".openacp/**", "docs/**", "spec/**"],
+                "allowedWritablePaths": [".openaccp/**", "docs/**", "spec/**"],
                 "readOnlyPaths": [],
                 "forbiddenPaths": [".git/**"],
                 "externalSideEffects": "none",
@@ -178,7 +178,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "coordination" / "source-status-registry.json": json_text(
             {
-                "schemaVersion": "openacp-source-status-registry.v1",
+                "schemaVersion": "openaccp-source-status-registry.v1",
                 "artifactType": "source-status-registry",
                 "registryId": "SRCSTAT-001",
                 "sources": [
@@ -195,7 +195,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "coordination" / "sequence-registry.json": json_text(
             {
-                "schemaVersion": "openacp-sequence-registry.v1",
+                "schemaVersion": "openaccp-sequence-registry.v1",
                 "artifactType": "sequence-registry",
                 "registryId": "SEQ-001",
                 "currentPromptId": "PROMPT-BOOTSTRAP-001",
@@ -210,7 +210,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "coordination" / "lane-registry.json": json_text(
             {
-                "schemaVersion": "openacp-lane-registry.v1",
+                "schemaVersion": "openaccp-lane-registry.v1",
                 "artifactType": "lane-registry",
                 "registryId": "LANES-001",
                 "projectComplexity": "bootstrap",
@@ -231,7 +231,7 @@ def starter_files(target: Path) -> dict[Path, str]:
                         "b2DispatchGate": {
                             "mode": "coordination_only",
                             "state": "ready",
-                            "reason": "Bootstrap lane may write OpenACP coordination artifacts only; no product repo writes are allowed.",
+                            "reason": "Bootstrap lane may write OpenACCP coordination artifacts only; no product repo writes are allowed.",
                         },
                         "returnGateStatus": {
                             "state": "not_applicable",
@@ -248,7 +248,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "coordination" / "child-ledgers" / "primary.json": json_text(
             {
-                "schemaVersion": "openacp-child-ledger.v1",
+                "schemaVersion": "openaccp-child-ledger.v1",
                 "artifactType": "child-ledger",
                 "ledgerId": "LEDGER-PRIMARY-001",
                 "laneId": "primary",
@@ -257,7 +257,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "coordination" / "decision-registry.json": json_text(
             {
-                "schemaVersion": "openacp-decision-registry.v1",
+                "schemaVersion": "openaccp-decision-registry.v1",
                 "artifactType": "decision-registry",
                 "registryId": "DEC-REG-001",
                 "decisions": [
@@ -276,7 +276,7 @@ def starter_files(target: Path) -> dict[Path, str]:
         ),
         target / "coordination" / "current-manifest.json": json_text(
             {
-                "schemaVersion": "openacp-current-manifest.v1.1",
+                "schemaVersion": "openaccp-current-manifest.v1.1",
                 "artifactType": "current-manifest",
                 "manifestId": "MAN-001",
                 "preferredLanguage": "unspecified",
@@ -304,7 +304,7 @@ def init_command(args: argparse.Namespace) -> int:
     target = Path(args.target)
     files = starter_files(target)
     action = "create" if args.write else "would create"
-    print(f"OpenACP init {'write' if args.write else 'dry run'}: {target}")
+    print(f"OpenACCP init {'write' if args.write else 'dry run'}: {target}")
     for path in files:
         print(f"- {action}: {path}")
     if not args.write:
@@ -324,10 +324,10 @@ def init_command(args: argparse.Namespace) -> int:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(prog="openacp", description="OpenACP workflow helpers.")
-    parser.add_argument("--version", action="version", version=f"OpenACP {VERSION}")
+    parser = argparse.ArgumentParser(prog="openaccp", description="OpenACCP workflow helpers.")
+    parser.add_argument("--version", action="version", version=f"OpenACCP {VERSION}")
     subparsers = parser.add_subparsers(dest="command", required=True)
-    init_parser = subparsers.add_parser("init", help="Generate a starter OpenACP work package.")
+    init_parser = subparsers.add_parser("init", help="Generate a starter OpenACCP work package.")
     init_parser.add_argument("target", help="Target directory for starter artifacts.")
     init_parser.add_argument("--write", action="store_true", help="Create files. Without this flag, init is a dry run.")
     init_parser.set_defaults(func=init_command)

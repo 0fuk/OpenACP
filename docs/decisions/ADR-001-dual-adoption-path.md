@@ -10,14 +10,14 @@ Accepted
 
 ## Context
 
-Some teams have mature work packages. Many developers have only rough PRDs, issues, or notes. A single advanced coordination entry point would make OpenACP harder to adopt.
+Some teams have mature work packages. Many developers have only rough PRDs, issues, or notes. A single advanced coordination entry point would make OpenACCP harder to adopt.
 
 ## Decision
 
-OpenACP v1 exposes two paths:
+OpenACCP v1 exposes two paths:
 
-- ACP Bootstrap for rough intent to source pack, scope boundary, assumptions, starter spec, and task cards.
-- ACP Coordination for role boundaries, task cards, handoffs, reviews, validator gates, and final consume.
+- ACCP Bootstrap for rough intent to source pack, scope boundary, assumptions, starter spec, and task cards.
+- ACCP Coordination for role boundaries, task cards, handoffs, reviews, validator gates, and final consume.
 
 ## Consequences
 

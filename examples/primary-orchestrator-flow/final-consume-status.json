@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-status-report.v1",
+  "schemaVersion": "openaccp-status-report.v1",
   "artifactType": "status-report",
   "responseId": "STAT-PRIMARY-CONSUME-001",
   "basisRefs": [

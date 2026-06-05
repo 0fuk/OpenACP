@@ -1,6 +1,6 @@
-# ACP Coordination
+# ACCP Coordination
 
-ACP Coordination manages multi-agent work once a project has enough local facts.
+ACCP Coordination manages multi-agent work once a project has enough local facts.
 
 ## Flow
 
@@ -16,7 +16,7 @@ ACP Coordination manages multi-agent work once a project has enough local facts.
 
 ## Active Closure
 
-OpenACP coordination is an active closure loop, not a passive status chain.
+OpenACCP coordination is an active closure loop, not a passive status chain.
 
 Primary and Frontier should repeatedly:
 
@@ -32,7 +32,7 @@ A lane is not closed because a seed checklist is complete. A lane closes only wh
 
 ## Coordination Control Plane
 
-OpenACP uses a small `.openacp/coordination/` control plane so separate threads can share facts without relying on chat memory.
+OpenACCP uses a small `.openaccp/coordination/` control plane so separate threads can share facts without relying on chat memory.
 
 Core artifacts:
 

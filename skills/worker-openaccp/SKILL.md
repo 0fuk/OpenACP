@@ -1,17 +1,17 @@
 ---
-name: worker-openacp
-description: Execute a narrow OpenACP task as a scoped worker. Use when an agent must work inside assigned files, effects, workspace or branch, run focused verification, and produce a structured handoff without expanding scope.
+name: worker-openaccp
+description: Execute a narrow OpenACCP task as a scoped worker. Use when an agent must work inside assigned files, effects, workspace or branch, run focused verification, and produce a structured handoff without expanding scope.
 ---
 
-# Worker OpenACP
+# Worker OpenACCP
 
 Confirm source pack, task card, authority source, workspace boundary, allowed scope, forbidden scope, verification, handoff path, and stop conditions before editing.
 
 ## Reply Contract
 
-Every worker reply must use `human-explain-openacp` style in the preferred language. Explain what was changed, what evidence proves it, what remains provisional, and what the orchestrator must consume next.
+Every worker reply must use `human-explain-openaccp` style in the preferred language. Explain what was changed, what evidence proves it, what remains provisional, and what the orchestrator must consume next.
 
-Every status-like worker reply and final handoff summary must use `formal-report-openacp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, taskId, handoffId, authority, effects, basisRefs, and locators.
+Every status-like worker reply and final handoff summary must use `formal-report-openaccp` structure or include a `machine-summary` artifact with Prompt ID, Response ID, taskId, handoffId, authority, effects, basisRefs, and locators.
 
 End every worker reply with a short `Recommended Next Step` / `下一步建议` paragraph. Usually the human does not need to act; name the orchestrator consume or review action that should happen next. If human input is truly needed, name the exact missing fact, approval, path, or authority boundary.
 

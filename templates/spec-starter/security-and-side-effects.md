@@ -1,6 +1,6 @@
 # Security And Side Effects Starter
 
-schemaVersion: openacp-security-side-effects.v1
+schemaVersion: openaccp-security-side-effects.v1
 artifactType: security-side-effects
 status: draft
 

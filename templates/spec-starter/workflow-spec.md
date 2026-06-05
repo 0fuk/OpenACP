@@ -1,6 +1,6 @@
 # Workflow Spec Starter
 
-schemaVersion: openacp-workflow-spec.v1
+schemaVersion: openaccp-workflow-spec.v1
 artifactType: workflow-spec
 status: draft
 

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-scope-boundary.v1",
+  "schemaVersion": "openaccp-scope-boundary.v1",
   "artifactType": "scope-boundary",
   "inScope": ["Classify local sample issue text.", "Prepare a draft response for human review."],
   "outOfScope": ["Send replies automatically.", "Modify a real issue tracker."],

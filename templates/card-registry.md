@@ -1,6 +1,6 @@
 # CARD Registry
 
-schemaVersion: openacp-card-registry.v1
+schemaVersion: openaccp-card-registry.v1
 artifactType: card-registry
 status: draft
 

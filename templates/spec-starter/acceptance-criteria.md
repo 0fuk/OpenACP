@@ -1,6 +1,6 @@
 # Acceptance Criteria Starter
 
-schemaVersion: openacp-acceptance-criteria.v1
+schemaVersion: openaccp-acceptance-criteria.v1
 artifactType: acceptance-criteria
 status: draft
 

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-machine-summary.v1",
+  "schemaVersion": "openaccp-machine-summary.v1",
   "artifactType": "machine-summary",
   "summaryId": "SUMMARY-ID",
   "role": "worker",

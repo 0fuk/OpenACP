@@ -1,4 +1,4 @@
-"""OpenACP command-line package."""
+"""OpenACCP command-line package."""
 
 from .version import VERSION
 

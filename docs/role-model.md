@@ -1,6 +1,6 @@
 # Role Model
 
-OpenACP defines roles by authority, not by model provider.
+OpenACCP defines roles by authority, not by model provider.
 
 ## Primary
 

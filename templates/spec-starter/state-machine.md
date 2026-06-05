@@ -1,6 +1,6 @@
 # State Machine Starter
 
-schemaVersion: openacp-state-machine.v1
+schemaVersion: openaccp-state-machine.v1
 artifactType: state-machine
 status: draft
 

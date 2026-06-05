@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-consume-result.v1",
+  "schemaVersion": "openaccp-consume-result.v1",
   "artifactType": "consume-result",
   "consumeId": "CONSUME-ID",
   "responseId": "RESPONSE-ID",

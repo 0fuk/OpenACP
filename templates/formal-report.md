@@ -1,6 +1,6 @@
 # Formal Report
 
-schemaVersion: openacp-status-report.v1
+schemaVersion: openaccp-status-report.v1
 artifactType: formal-report
 status: draft
 
@@ -75,7 +75,7 @@ For Chinese chat reports, keep the header `类型/状态` and append full-width 
 
 ## Post-Install Startup Note
 
-When this report is used immediately after installing OpenACP, the `Next` cell must ask for a required working directory, a facts input, and the user's preferred language. The facts input can be a source pack, PRD, spec, design document, facts path, or uploaded project materials. Do not end with only "send paths"; explain that the working directory is required because launchers need a concrete project workspace, that the facts input is needed so the launcher can start from current evidence, and that the language choice keeps all later Primary, Frontier, worker, reviewer, and discovery replies consistent.
+When this report is used immediately after installing OpenACCP, the `Next` cell must ask for a required working directory, a facts input, and the user's preferred language. The facts input can be a source pack, PRD, spec, design document, facts path, or uploaded project materials. Do not end with only "send paths"; explain that the working directory is required because launchers need a concrete project workspace, that the facts input is needed so the launcher can start from current evidence, and that the language choice keeps all later Primary, Frontier, worker, reviewer, and discovery replies consistent.
 
 ## Mini Example
 

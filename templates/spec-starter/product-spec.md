@@ -1,6 +1,6 @@
 # Product Spec Starter
 
-schemaVersion: openacp-product-spec.v1
+schemaVersion: openaccp-product-spec.v1
 artifactType: product-spec
 status: draft
 

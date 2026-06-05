@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "openacp-frontier-closure.v1",
+  "schemaVersion": "openaccp-frontier-closure.v1",
   "artifactType": "frontier-closure",
   "closureId": "FC-DOCS-001",
   "laneId": "frontier-docs",

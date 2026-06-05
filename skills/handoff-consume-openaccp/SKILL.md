@@ -1,9 +1,9 @@
 ---
-name: handoff-consume-openacp
-description: Consume OpenACP handoffs and decide what they prove. Use before follow-up dispatch, integration planning, final acceptance, publication, merge, amendment, or rejection.
+name: handoff-consume-openaccp
+description: Consume OpenACCP handoffs and decide what they prove. Use before follow-up dispatch, integration planning, final acceptance, publication, merge, amendment, or rejection.
 ---
 
-# Handoff Consume OpenACP
+# Handoff Consume OpenACCP
 
 Validate structure, check scope against task card, review verification evidence, inspect risks, consider reviewer recommendation, and decide accepted, amend, split-follow-up, rejected, or blocked.
 
@@ -48,5 +48,5 @@ Record:
 Validate with:
 
 ```bash
-openacp-validate --artifact <consume-result.json> --ruleset consume-result --strict
+openaccp-validate --artifact <consume-result.json> --ruleset consume-result --strict
 ```

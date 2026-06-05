@@ -1,6 +1,6 @@
 # Review Report
 
-schemaVersion: openacp-review-report.v1
+schemaVersion: openaccp-review-report.v1
 artifactType: review-report
 status: draft
 

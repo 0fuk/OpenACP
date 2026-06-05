@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openacp.dev/schemas/scope-boundary.schema.json",
-  "title": "OpenACP Scope Boundary",
+  "$id": "https://openaccp.dev/schemas/scope-boundary.schema.json",
+  "title": "OpenACCP Scope Boundary",
   "type": "object",
   "required": ["schemaVersion", "artifactType", "inScope", "outOfScope", "deferred", "requiresHumanApproval", "forbiddenActions", "stopConditions", "scopeLeakExamples"],
   "properties": {
-    "schemaVersion": { "const": "openacp-scope-boundary.v1" },
+    "schemaVersion": { "const": "openaccp-scope-boundary.v1" },
     "artifactType": { "const": "scope-boundary" },
     "inScope": { "$ref": "#/$defs/nonEmptyStrings" },
     "outOfScope": { "$ref": "#/$defs/nonEmptyStrings" },

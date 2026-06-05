@@ -1,6 +1,6 @@
 # Source Manifest
 
-schemaVersion: openacp-source-pack.v1
+schemaVersion: openaccp-source-pack.v1
 artifactType: source-manifest
 status: draft
 

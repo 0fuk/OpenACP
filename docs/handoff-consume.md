@@ -35,5 +35,5 @@ Each consume should produce a `consume-result` artifact. That artifact separates
 Validate it with:
 
 ```bash
-openacp-validate --artifact <consume-result.json> --ruleset consume-result --strict
+openaccp-validate --artifact <consume-result.json> --ruleset consume-result --strict
 ```
