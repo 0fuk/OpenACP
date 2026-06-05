@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "openacp-source-status-registry.v1",
+  "artifactType": "source-status-registry",
+  "registryId": "SRCSTAT-001",
+  "sources": [
+    {
+      "sourceId": "SRC-001",
+      "status": "current",
+      "reason": "Accepted by Primary as current source.",
+      "authority": "B3",
+      "locator": "source-pack.json#SRC-001",
+      "lastReviewedAt": "<date>"
+    }
+  ]
+}

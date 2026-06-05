@@ -71,11 +71,12 @@ Primary should:
 
 1. Read the working directory and facts input.
 2. Classify sources as `current`, `reference`, `deprecated`, or `invalid`.
-3. Create or refresh the source pack, scope boundary, current manifest, sequence registry, and assumptions ledger.
-4. Split the project into CARDs before dispatching Frontier lanes.
-5. Decide how many Frontier lanes are useful based on project complexity, dependencies, risk, and parallel safety.
-6. Write full Frontier prompt records and short Frontier launchers for selected lanes.
-7. Print each selected Frontier launcher in chat as a copyable fenced `prompt` block.
+3. Create or refresh the source pack, scope boundary, assumptions ledger, runtime boundary, current manifest, source status registry, lane registry, decision registry, sequence registry, and CARD registry.
+4. Resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, side effects, and data risk before B2 Frontier dispatch.
+5. Split the project into CARDs before dispatching Frontier lanes.
+6. Decide how many Frontier lanes are useful based on project complexity, dependencies, risk, and parallel safety.
+7. Write full Frontier prompt records and short Frontier launchers for selected lanes.
+8. Print each selected Frontier launcher in chat as a copyable fenced `prompt` block.
 
 Primary should default to **at least two Frontier lanes** for normal or medium-complexity projects when two safe independent CARD clusters exist. It may launch one Frontier only when the project is clearly small, only one safe lane exists, or the user explicitly asks for a single lane. Broad or medium-high-complexity projects should normally receive two to five Frontier lanes. More than five requires explicit user approval.
 
@@ -92,7 +93,7 @@ Working directory: <your project path>
 Facts input: <source pack, PRD, spec, design document, facts path, or uploaded materials>
 Preferred language: <English / Chinese / your choice>
 
-First review the workspace and facts. Create or refresh the source pack, scope boundary, assumptions ledger, current manifest, sequence registry, and CARD registry. Split the project into enough CARDs to support useful parallel Frontier lanes. Then return a human-readable status report and copyable short Frontier launchers for selected lanes.
+First review the workspace and facts. Create or refresh the source pack, scope boundary, assumptions ledger, runtime boundary, current manifest, source status registry, lane registry, decision registry, sequence registry, and CARD registry. Resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, and worktree policy before B2 Frontier dispatch. Split the project into enough CARDs to support useful parallel Frontier lanes. Then return a human-readable status report and copyable short Frontier launchers for selected lanes.
 ```
 
 Manual Frontier launcher:
@@ -126,7 +127,7 @@ Frontier
   -> runs B0/B1/B2 lane-local closure
   -> dispatches worker/reviewer/discovery subagents when safe
   -> consumes child handoffs
-  -> writes lane status, child ledger, and Primary-ready packet
+  -> writes lane status, child ledger, frontier closure, and Primary-ready packet
 
 worker / reviewer / discovery
   -> returns handoff, review report, machine summary, or evidence summary
@@ -143,6 +144,13 @@ Important artifacts:
 | `source pack` | The current fact list. It tells agents what may drive implementation and what is only background. |
 | `scope boundary` | The line between allowed work and forbidden work. |
 | `assumptions ledger` | Explicit assumptions that are not fully proven yet. |
+| `runtime boundary` | Repo path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, side effects, data risk, and the `b2DispatchGate` that says whether product-write B2 work is ready, blocked, or coordination-only. |
+| `current manifest` | The current coordination anchor: source pack, runtime boundary, source status registry, lane registry, CARD registry, and active lanes. |
+| `sequence registry` | Prompt IDs, Response IDs, handoffs, consumes, cards, active lanes, lifecycle states, and current/latest pointers. |
+| `source status registry` | Current, reference, deprecated, invalid, and unknown sources with reasons and locators. |
+| `lane registry` | Primary and Frontier lanes, project complexity, Frontier dispatch mode, lane-count reason, assigned CARDs, authority, child ledger refs, consume refs, closure refs, return-gate state, and per-lane B2 dispatch mode. |
+| `child ledger` | Worker, reviewer, discovery, validation, or task-card-only child lifecycle, handoff status, consume status, and remaining risk. |
+| `decision registry` | Owner questions, Primary decisions, waivers, out-of-scope decisions, blockers, and safe defaults. |
 | `CARD` | A project-level work slice large enough for lane planning. A CARD can later become several task cards. |
 | `task card` | A bounded executable task with scope, acceptance, verification, and stop conditions. |
 | `authority charter` | The permission contract: who can read, who can write, allowed effects, forbidden effects, and data risk. |
@@ -150,6 +158,7 @@ Important artifacts:
 | `short launcher` | The copyable chat block that points a new thread to the full prompt record. |
 | `handoff` | Evidence from a worker, reviewer, or discovery agent. It proves some things and leaves other things unproven. |
 | `consume result` | The orchestrator decision about what a handoff actually proves. A handoff is not acceptance by itself. |
+| `frontier closure` | The gate proof for whether a Frontier can keep working, close, or return to Primary. |
 | `formal report` | Human-readable status: what changed, progress, area, goal, gaps, next action, and evidence. |
 | `machine summary` | Compact locators for downstream agents and validators. |
 
@@ -259,6 +268,8 @@ A handoff is evidence, not completion. The consuming orchestrator checks scope, 
 
 OpenACP rejects machine-log replies as the main user-facing answer. A useful status says what changed, what is proven, what is provisional, what is missing, and what happens next.
 
+Every Primary, Frontier, worker, reviewer, discovery, bootstrap, and validation reply should use `human-explain-openacp` style. Status-like replies must end with a practical human next step. If no human action is needed, the answer should say that clearly and name the next Primary-owned or Frontier-owned action. If human input is needed, it should name the exact path, fact, repo boundary, branch, source root, test entrypoint, approval, or decision.
+
 ## Minimum Useful Setup
 
 The smallest useful OpenACP package contains:
@@ -268,11 +279,19 @@ source pack
 scope boundary
 assumptions ledger
 CARD registry
+runtime boundary
+current manifest
+sequence registry
+lane registry
+child ledger
+source status registry
+decision registry
 task card
 authority charter
 worker handoff
 review report
 consume result
+frontier closure
 formal report
 ```
 
@@ -296,6 +315,7 @@ examples/    Strict fixtures and concept examples.
 - `examples/primary-two-frontier-kickoff/`: concept example for Primary-generated Frontier launchers after CARD and lane analysis.
 - `examples/primary-orchestrator-flow/`: concept example for final-authority dispatch and consume.
 - `examples/frontier-lane-flow/`: concept example for lane authority.
+- `examples/multi-frontier-closure/`: strict fixture for runtime boundary, lane registry, child ledger, source status, decision registry, and Frontier closure.
 - `examples/multi-worktree-review/`: concept example for multiple workers and reviewer sidecars.
 
 The first two are best for direct validation. The other examples show shape and vocabulary, not a complete project package.

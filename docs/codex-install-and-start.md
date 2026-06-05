@@ -69,18 +69,18 @@ For chat readability, keep the report table short. Long paths, commit hashes, UR
 The startup report must use `formal-report-openacp` rows. For a Chinese post-install report, use this exact table shape:
 
 ```text
-| 项 | 内容 |
+| 类型/状态 | 内容 |
 |---|---|
-| 做了什么　 | |
-| 总体进度　 | |
-| 验证　　 | 验证通过 / 验证失败。 |
-| 范围　　 | |
-| 目标　　 | |
-| 缺口　　 | |
-| 下一步　 | |
+| 做了什么 | |
+| 总体进度 | |
+| 验证 | 验证通过 / 验证失败。 |
+| 范围 | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 ```
 
-Do not use `| 项目 | 状态 |`, `| 字段 | 内容 |`, `安装`, `Skill`, or `CLI` as formal-report table rows. They render poorly in narrow chat panes and do not match the OpenACP report contract.
+Do not use `| 项 | 内容 |`, `| 项目 | 状态 |`, `| 字段 | 内容 |`, `安装`, `Skill`, `CLI`, or `Checkpoint` as formal-report table rows. They render poorly in narrow chat panes and do not match the OpenACP report contract.
 
 Do not print PowerShell blocks, bash blocks, command lists, executable paths, local install paths, or temporary install directories in the user-facing post-install report. The `验证` row should simply say `验证通过` or `验证失败`; if a note is useful, write one short natural-language sentence after the table.
 
@@ -116,6 +116,11 @@ The launchers must name:
 - working directory,
 - source pack or facts input,
 - preferred language,
+- product repo path,
+- base branch,
+- source roots,
+- test entrypoints,
+- worktree policy,
 - writable paths,
 - read-only references,
 - forbidden paths or side effects,
@@ -126,7 +131,9 @@ The Primary prompt record must also include active closure rules:
 
 - Primary should dispatch bounded subagents and consume evidence until only final-authority or explicitly-out gaps remain.
 - Primary must inspect the working directory and facts input before dispatching Frontier.
-- Primary must create or refresh current manifest, source status, sequence registry, and CARD/task-card candidates.
+- Primary must create or refresh `.openacp/coordination/runtime-boundary.json` before dispatching Frontier. It must resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, worktree policy, writable paths, read-only paths, forbidden paths, data risk, side-effect policy, and `b2DispatchGate`.
+- Primary must create or refresh current manifest, source status registry, lane registry, decision registry, sequence registry, and CARD/task-card candidates.
+- If product repo path, base branch, source roots, test entrypoints, or worktree policy are missing, Primary should ask the user in the Primary report and continue B0/B1 packaging only. It should not push those unresolved runtime questions into Frontier as immediate blockers. Frontier lanes launched before product-write readiness must be `coordination_only` or `read_only_review`, not `product_write`.
 - Primary must cut enough CARDs for the actual project domains. Normal or medium/high-complexity product work usually needs 10-20 project-level CARDs before Frontier dispatch; fewer is acceptable only for a genuinely small project with an explicit reason.
 - Primary must scan facts for product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops, and any project-specific domain. Do not invent a domain that facts do not mention, but if facts mention UI, frontend, Electron, desktop shell, mobile, or another surface, Primary must create CARD coverage for it.
 - Primary must decide Frontier lanes dynamically based on project complexity, CARD grouping, risk, and parallel safety. Default to at least two Frontier lanes when two safe independent CARD clusters exist; one Frontier requires a small-project, single-safe-lane, or explicit-user-request reason. Medium/high projects should normally receive two to five Frontiers. More than five requires explicit user approval.
@@ -192,15 +199,16 @@ The Primary thread, not the install startup thread, decides Frontier dispatch.
 Primary must first:
 
 1. Read the prompt record, working directory, facts input, and preferred language.
-2. Explain in the preferred language what B0/B1/B2/B3 mean for this project.
-3. Inspect the working directory and facts input.
-4. Create or refresh OpenACP current manifest, source status, invalid or deprecated sources, sequence registry, and CARD/task-card candidates.
-5. Create CARDs before Frontier dispatch. For normal or medium/high-complexity product work, prefer 10-20 project-level CARDs. Use fewer only for genuinely small projects and record why.
-6. Scan the facts for domain coverage before finalizing CARDs: product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops, and project-specific domains. Create CARDs only for domains present in the facts, but never miss a domain the facts explicitly name.
-7. Group CARDs into Frontier lanes based on complexity, risk, dependencies, and parallel safety. Default to at least two Frontier lanes when two safe independent CARD clusters exist; use one only for small/single-lane/user-request cases with a stated reason; use two to five for medium/high complexity when parallel work is useful.
-8. Write full Frontier prompt records to disk only for the lanes it decides are useful.
-9. Validate each full Frontier prompt record with the `frontier-contract` ruleset before returning a short Frontier launcher.
-10. Write each short Frontier launcher to disk for audit, then print each selected Frontier launcher in its own fenced `prompt` block in chat.
+2. Create or refresh runtime boundary: product repo path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, data risk, side-effect policy, and `b2DispatchGate`.
+3. Explain in the preferred language what B0/B1/B2/B3 mean for this project.
+4. Inspect the working directory and facts input.
+5. Create or refresh OpenACP current manifest, source status registry, invalid or deprecated sources, decision registry, sequence registry, lane registry, and CARD/task-card candidates.
+6. Create CARDs before Frontier dispatch. For normal or medium/high-complexity product work, prefer 10-20 project-level CARDs. Use fewer only for genuinely small projects and record why.
+7. Scan the facts for domain coverage before finalizing CARDs: product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops, and project-specific domains. Create CARDs only for domains present in the facts, but never miss a domain the facts explicitly name.
+8. Group CARDs into Frontier lanes based on complexity, risk, dependencies, and parallel safety. Default to at least two Frontier lanes when two safe independent CARD clusters exist; use one only for small/single-lane/user-request cases with a stated reason; use two to five for medium/high complexity when parallel work is useful.
+9. Write full Frontier prompt records to disk only for the lanes it decides are useful.
+10. Validate each full Frontier prompt record with the `frontier-contract` ruleset before returning a short Frontier launcher.
+11. Write each short Frontier launcher to disk for audit, then print each selected Frontier launcher in its own fenced `prompt` block in chat.
 
 When Primary returns Frontier launchers, it must not return only links to `.short.md` files. It should say, in the preferred language, which new left-sidebar thread each prompt block belongs in, then show the copyable prompt block. If four Frontiers are selected, there should be four copyable `prompt` blocks, not just four file links.
 
@@ -210,8 +218,14 @@ Inside a Frontier lane, worker/reviewer/discovery/validation child work should b
 
 Primary and Frontier should maintain machine-readable coordination state:
 
-- `current-manifest` records current facts, invalid or deprecated sources, active lanes, superseded prompts, cancelled prompts, and latest consume refs.
-- `sequence-registry` records Prompt IDs, Response IDs, handoffs, consume results, active cards, active lanes, and current/latest pointers.
+- `runtime-boundary` records repo path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, side effects, data risk, and `b2DispatchGate`.
+- `current-manifest` records current facts, invalid or deprecated sources, active lanes, superseded prompts, cancelled prompts, registry refs, and latest consume refs.
+- `sequence-registry` records Prompt IDs, Response IDs, handoffs, consume results, active cards, active lanes, lifecycle status, and current/latest pointers.
+- `lane-registry` records Primary/Frontier lanes, assigned CARDs, `child-ledgers/<lane-id>.json` refs, `frontier-closures/<lane-id>.json` refs, and return-gate status.
+- `child-ledger` records child worker/reviewer/discovery/validation lifecycle, handoff status, consume status, and remaining risk.
+- `source-status-registry` records current, reference, deprecated, invalid, and unknown sources with reasons.
+- `decision-registry` records owner questions, Primary decisions, waivers, out-of-scope decisions, blockers, and safe defaults.
+- `frontier-closure` proves whether a Frontier can keep working, close, or return to Primary.
 - `consume-result` records what handoff or review evidence has been provisionally or finally consumed.
 - `machine-summary` gives compact locators for worker, reviewer, discovery, Frontier, or Primary output.
 

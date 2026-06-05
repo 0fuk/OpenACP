@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "openacp-child-ledger.v1",
+  "artifactType": "child-ledger",
+  "ledgerId": "LEDGER-FRONTIER-DOCS-001",
+  "laneId": "frontier-docs",
+  "children": [
+    {
+      "promptId": "PROMPT-WORKER-DOCS-001",
+      "responseId": "RESP-WORKER-DOCS-001",
+      "taskId": "TASK-DOCS-001",
+      "handoffId": "HAND-DOCS-001",
+      "role": "worker",
+      "authority": "B2",
+      "effects": ["docs-only"],
+      "subagentIdOrToolStatus": "direct-subagent",
+      "expectedHandoffPath": "handoff-docs.json",
+      "dispatchStatus": "returned",
+      "handoffStatus": "present",
+      "consumeStatus": "consumed",
+      "parentConsumeRef": "CONSUME-DOCS-001",
+      "remainingRisk": "Final acceptance remains with Primary."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "openacp-frontier-closure.v1",
+  "artifactType": "frontier-closure",
+  "closureId": "FC-DOCS-001",
+  "laneId": "frontier-docs",
+  "responseId": "RESP-FRONTIER-DOCS-001",
+  "authorityLevel": "B2",
+  "branchState": "blocked_on_primary",
+  "gapDecisionMatrix": [
+    {
+      "gap": "Final acceptance of reviewed documentation evidence.",
+      "decision": "needs_final_authority",
+      "nextSafeAction": "Primary consumes the Frontier-ready packet."
+    }
+  ],
+  "childLedgerRef": "../child-ledgers/frontier-docs.json",
+  "allChildrenTerminal": true,
+  "allChildHandoffsConsumedOrRejected": true,
+  "primaryReadyPacketRef": "../primary-ready-packets/frontier-docs.md",
+  "blockedOnHumanReason": "",
+  "remainingB0B1B2SafeWork": [],
+  "remainingFinalAuthorityGaps": ["Final acceptance"],
+  "explicitlyOutGaps": [],
+  "worktreeDecision": {
+    "base": "not_applicable",
+    "worktree": "not_required",
+    "branch": "not_required",
+    "allowedFiles": ["examples/multi-frontier-closure/**"],
+    "verification": ["validator"],
+    "handoffPath": "handoff-docs.json",
+    "dataRisk": "low",
+    "resourceUse": "local only",
+    "noDispatchReason": "All B2 child work has returned and been consumed."
+  },
+  "humanNextStep": "Primary should consume the ready packet and decide accept, amend, or reject."
+}

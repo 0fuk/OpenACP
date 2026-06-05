@@ -12,6 +12,15 @@ For normal or medium/high-complexity product work, prefer 10-20 project-level CA
 
 Do not invent domains that are absent from the facts. If the source facts mention UI, frontend, Electron, desktop shell, mobile, or another product surface, this registry must include CARD coverage for that surface.
 
+## Complexity Assessment
+
+- complexity: small / normal / medium-high / high
+- cardCountTarget: 10-20 for normal or medium/high-complexity projects
+- cardCountReason:
+- small-project-reason:
+- single-lane-reason:
+- explicit-user-request:
+
 ## Domain Coverage
 
 | Domain | Present? | Source refs | CARD coverage | Notes |
@@ -43,6 +52,8 @@ Do not invent domains that are absent from the facts. If the source facts mentio
 | CARD-008 | | B0/B1/B2 | | draft | | | |
 | CARD-009 | | B0/B1/B2 | | draft | | | |
 | CARD-010 | | B0/B1/B2 | | draft | | | |
+| CARD-011 | | B0/B1/B2 | | draft | | | |
+| CARD-012 | | B0/B1/B2 | | draft | | | |
 
 ## Lane Grouping
 
@@ -55,7 +66,4 @@ Group CARDs into Frontier lanes only after checking dependency, risk, allowed ef
 
 ## Exceptions
 
-- small-project-reason:
-- single-lane-reason:
-- explicit-user-request:
 - CARD coverage gaps:

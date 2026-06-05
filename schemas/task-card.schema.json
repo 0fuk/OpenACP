@@ -3,13 +3,17 @@
   "$id": "https://openacp.dev/schemas/task-card.schema.json",
   "title": "OpenACP Task Card",
   "type": "object",
-  "required": ["schemaVersion", "artifactType", "taskId", "objective", "inputRefs", "allowedScope", "forbiddenScope", "acceptanceCriteria", "verificationPlan", "stopConditions", "expectedHandoff", "authorityRequired", "riskLevel"],
+  "required": ["schemaVersion", "artifactType", "taskId", "domain", "objective", "inputRefs", "sourceStatusNote", "allowedScope", "forbiddenScope", "acceptanceCriteria", "verificationPlan", "stopConditions", "expectedHandoff", "authorityRequired", "riskLevel"],
   "properties": {
     "schemaVersion": { "const": "openacp-task-card.v1" },
     "artifactType": { "const": "task-card" },
     "taskId": { "type": "string", "minLength": 1 },
+    "parentCardId": { "type": "string", "minLength": 1 },
+    "cardRefs": { "$ref": "#/$defs/nonEmptyStrings" },
+    "domain": { "type": "string", "minLength": 1 },
     "objective": { "type": "string", "minLength": 1 },
     "inputRefs": { "$ref": "#/$defs/nonEmptyStrings" },
+    "sourceStatusNote": { "type": "string", "minLength": 1 },
     "allowedScope": { "$ref": "#/$defs/scope" },
     "forbiddenScope": { "type": "object", "required": ["filesOrArtifacts", "effects", "claims"], "additionalProperties": true },
     "acceptanceCriteria": { "$ref": "#/$defs/nonEmptyStrings" },
@@ -24,5 +28,9 @@
     "nonEmptyStrings": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
     "scope": { "type": "object", "required": ["filesOrArtifacts", "effects"], "additionalProperties": true }
   },
+  "anyOf": [
+    { "required": ["parentCardId"] },
+    { "required": ["cardRefs"] }
+  ],
   "additionalProperties": true
 }

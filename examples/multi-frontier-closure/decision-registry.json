@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "openacp-decision-registry.v1",
+  "artifactType": "decision-registry",
+  "registryId": "DEC-DEMO-001",
+  "decisions": [
+    {
+      "decisionId": "DEC-DOCS-FINAL-001",
+      "type": "primary-decision",
+      "status": "open",
+      "question": "Should Primary accept the reviewed documentation evidence?",
+      "basisRefs": ["frontier-closures/frontier-docs.json", "child-ledgers/frontier-docs.json"],
+      "blocks": ["final acceptance"],
+      "safeDefault": "Keep evidence provisional until Primary consume.",
+      "authorityRequired": "B3"
+    }
+  ]
+}

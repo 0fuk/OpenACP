@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "openacp-runtime-boundary.v1",
+  "artifactType": "runtime-boundary",
+  "boundaryId": "RB-DEMO-001",
+  "workingDirectory": "examples/multi-frontier-closure",
+  "productRepoStatus": "not_applicable",
+  "productRepoPath": "",
+  "baseBranch": "not_applicable",
+  "sourceRoots": [],
+  "testEntrypoints": ["openacp validator"],
+  "worktreePolicy": "forbidden",
+  "allowedWritablePaths": ["examples/multi-frontier-closure/**"],
+  "readOnlyPaths": [],
+  "forbiddenPaths": [".git/**"],
+  "externalSideEffects": "none",
+  "dataRisk": "low",
+  "unresolvedOwnerInputs": [],
+  "b2DispatchGate": {
+    "state": "coordination_only",
+    "allowsProductWrite": false,
+    "reason": "This fixture demonstrates coordination and documentation evidence only; no product repo write is allowed.",
+    "missingInputs": []
+  }
+}

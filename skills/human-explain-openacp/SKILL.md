@@ -18,6 +18,20 @@ Explain:
 
 Do not invent progress or hide authority limits.
 
+## Required Response Ending
+
+Every OpenACP role response should end with a short human-readable next-step paragraph. This applies to Primary, Frontier, worker, reviewer, discovery, validator, and bootstrap replies.
+
+The ending should say:
+
+1. what the situation means right now,
+2. whether the human needs to act,
+3. the exact next action.
+
+If no human action is needed, say that plainly and name the next agent-owned action, for example: `No human action is needed right now; Frontier will continue B0/B1/B2 lane-local closure and consume the next child handoff.`
+
+If human input is needed, name the exact missing path, fact, decision, approval, repo boundary, branch, source root, test entrypoint, or authority boundary. Do not end with a file list, validator result, command output, or vague "wait for Primary" statement.
+
 ## Explain Orchestration Meaning
 
 Translate coordination terms into delivery meaning:

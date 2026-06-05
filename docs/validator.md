@@ -22,16 +22,22 @@ The validator is not a full JSON Schema engine. It uses hardcoded rules that mat
 - `review-report`: reviewer recommendation and review evidence shape.
 - `consume-result`: provisional or final consume decision, target handoffs/reviews, accepted/rejected claims, evidence status, authority limits, and next actions.
 - `machine-summary`: compact locator summary for worker, reviewer, discovery, Frontier, or Primary output with Prompt ID, Response ID, authority, effects, basisRefs, locators, claims, and next actions.
-- `status-report`: current state, unverified claims, blockers, next actions, and authority limits.
+- `status-report`: current state, unverified claims, blockers, next actions, authority limits, and `responseId`. `reportId` is deprecated.
 - `assumption-ledger`: assumptions, evidence, risk, and confirmation flags.
 - `card-registry`: project-level CARD registry with domain coverage, 10-20 CARD expectation for normal or medium/high-complexity work, task-card candidates, Frontier lane grouping, and explicit small/single-lane/user-request exception when fewer CARDs are used.
 - `prompt-record`: full on-disk orchestrator or worker prompt record with Prompt ID, role, authority, preferred language, and human-readable reply contract.
 - `launcher`: short chat launcher that points to an on-disk prompt record, requires explicit UTF-8 reading, and does not paste the full prompt body into chat. Worker, reviewer, discovery, validation, and task-card-only launchers are rejected unless they are explicitly marked as fallback launchers with a direct-dispatch failure reason. Use `--prompt-record` to cross-check the launcher Prompt ID against the full prompt record.
 - `launcher-output`: response-log or chat-output text that must include one or more copyable fenced `prompt` blocks, plus natural-language instruction to open a new left-sidebar thread and paste the launcher. It rejects file-link-only and `Get-Content` substitutes.
-- `formal-report`: readable status report with `Response ID`, `Response log path`, standard `Item/Content` or `项/内容` table header, stable role-aware table rows, numeric progress, basis, evidence details, and no shell command dump.
+- `formal-report`: readable status report with `Response ID`, `Response log path`, standard `Item/Status` or `类型/状态` table header, stable role-aware table rows, numeric progress, basis, evidence details, a human next step, and no shell command dump. `Checkpoint` rows are rejected.
 - `frontier-contract`: Frontier prompt or report text with B2 lane-local authority, active B0/B1/B2 closure rules, gap decision matrix, branch return gate, worktree decision, subagent-first current-thread dispatch, child ledger, human next step, fallback-only child launcher rules, and a JSON `openacp-frontier-orchestration-contract.v1` block.
-- `current-manifest`: current fact anchor that records preferred language, facts input, current source pack, invalid sources, deprecated sources, sequence registry, active cards, active lanes, superseded prompts, cancelled prompts, and latest consume refs.
-- `sequence-registry`: registry of prompt records, responses, handoffs, consumes, active cards, active lanes, and current/latest pointers.
+- `runtime-boundary`: Primary startup boundary with working directory, product repo status/path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, side effects, data risk, unresolved owner inputs, and `b2DispatchGate`.
+- `current-manifest`: current fact anchor that records preferred language, facts input, current source pack, invalid sources, deprecated sources, sequence registry, lane registry, runtime boundary, source status registry, card registry, active lanes, superseded prompts, cancelled prompts, and latest consume refs.
+- `sequence-registry`: registry of prompt records, responses, handoffs, consumes, active cards, active lanes, lifecycle states, and current/latest pointers.
+- `lane-registry`: Primary/Frontier lane registry with project complexity, Frontier dispatch mode, lane-count reason, assigned CARDs, authority, runtime boundary ref, child ledger ref, consume refs, return-gate status, and per-lane `b2DispatchGate`.
+- `child-ledger`: Frontier child lifecycle registry with promptId, taskId, authority, effects, dispatch status, handoff status, consume status, and remaining risk. Response ID and handoffId are lifecycle fields.
+- `source-status-registry`: current, reference, deprecated, invalid, and unknown source status with reasons and locators.
+- `decision-registry`: owner questions, Primary decisions, waivers, out-of-scope decisions, blockers, safe defaults, and required authority.
+- `frontier-closure`: Frontier closure or return-gate proof. It rejects closed or blocked states while B0/B1/B2-safe work remains, while child work has not returned, or while present handoffs are not consumed/rejected.
 - `public-package`: UTF-8, common mojibake, local paths, internal identifier markers, lightweight secret markers, English-only root README, and internal formal reports placed in public report paths.
 
 ## Commands
@@ -65,7 +71,7 @@ Prompt records, short launchers, and formal reports can be checked before dispat
 python tools/openacp_validate.py --artifact .openacp/launchers/primary-orchestrator.prompt.md --ruleset prompt-record --expect-prompt-id <prompt-id> --strict
 python tools/openacp_validate.py --artifact .openacp/launchers/primary-orchestrator.short.md --ruleset launcher --prompt-record .openacp/launchers/primary-orchestrator.prompt.md --expect-prompt-id <prompt-id> --strict
 python tools/openacp_validate.py --artifact .openacp/reports/response-with-launcher.md --ruleset launcher-output --strict
-python tools/openacp_validate.py --artifact .openacp/reports/response.md --ruleset formal-report --strict
+python tools/openacp_validate.py --artifact .openacp/reports/response.md --ruleset formal-report --preferred-language Chinese --strict
 ```
 
 CARD registries can be checked before Frontier dispatch:
@@ -77,8 +83,19 @@ python tools/openacp_validate.py --artifact .openacp/tasks/CARDS.md --ruleset ca
 Manifest and registry validation should run after Primary creates or refreshes coordination state:
 
 ```bash
-python tools/openacp_validate.py --artifact .openacp/current-manifest.json --ruleset current-manifest --source-pack .openacp/source-pack.json --strict
-python tools/openacp_validate.py --artifact .openacp/sequence-registry.json --ruleset sequence-registry --strict
+python tools/openacp_validate.py --artifact .openacp/coordination/runtime-boundary.json --ruleset runtime-boundary --strict
+python tools/openacp_validate.py --artifact .openacp/coordination/current-manifest.json --ruleset current-manifest --strict
+python tools/openacp_validate.py --artifact .openacp/coordination/sequence-registry.json --ruleset sequence-registry --strict
+python tools/openacp_validate.py --artifact .openacp/coordination/lane-registry.json --ruleset lane-registry --strict
+python tools/openacp_validate.py --artifact .openacp/coordination/source-status-registry.json --ruleset source-status-registry --strict
+python tools/openacp_validate.py --artifact .openacp/coordination/decision-registry.json --ruleset decision-registry --strict
+```
+
+Frontier lifecycle artifacts can be checked before a lane reports blocked, closed, or ready for Primary:
+
+```bash
+python tools/openacp_validate.py --artifact .openacp/coordination/child-ledgers/frontier-a.json --ruleset child-ledger --strict
+python tools/openacp_validate.py --artifact .openacp/coordination/frontier-closures/frontier-a.json --ruleset frontier-closure --strict
 ```
 
 Consume results and compact machine summaries can be checked after handoff consume, worker output, reviewer output, or discovery output:

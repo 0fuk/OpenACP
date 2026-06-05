@@ -1,7 +1,7 @@
 {
   "schemaVersion": "openacp-status-report.v1",
   "artifactType": "status-report",
-  "reportId": "STAT-DOCS-001",
+  "responseId": "STAT-DOCS-001",
   "basisRefs": ["task-card.json", "handoff.json", "review-report.json"],
   "currentState": "The docs-only worker result is reviewed and ready for final-authority consume.",
   "completedWork": ["A getting-started guide was created and reviewed."],

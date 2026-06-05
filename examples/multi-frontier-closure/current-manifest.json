@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "openacp-current-manifest.v1.1",
+  "artifactType": "current-manifest",
+  "manifestId": "MAN-DEMO-001",
+  "preferredLanguage": "English",
+  "workingDirectory": "examples/multi-frontier-closure",
+  "factsInput": "source-pack.json",
+  "currentSourcePackRef": "source-pack.json",
+  "invalidSourceRefs": [],
+  "deprecatedSourceRefs": [],
+  "sequenceRegistryRef": "sequence-registry.json",
+  "laneRegistryRef": "lane-registry.json",
+  "runtimeBoundaryRef": "runtime-boundary.json",
+  "sourceStatusRegistryRef": "source-status-registry.json",
+  "cardRegistryRef": "card-registry.md",
+  "activeLanes": [
+    {
+      "laneId": "frontier-docs",
+      "role": "frontier",
+      "status": "blocked_on_primary",
+      "currentPromptId": "PROMPT-FRONTIER-DOCS-001",
+      "authorityLevel": "B2"
+    }
+  ],
+  "supersededPromptIds": [],
+  "cancelledPromptIds": [],
+  "latestConsumeRefs": ["CONSUME-DOCS-001"]
+}

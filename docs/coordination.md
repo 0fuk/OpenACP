@@ -28,7 +28,24 @@ Primary and Frontier should repeatedly:
 6. continue B0/B1/B2-safe work,
 7. reserve only true final-authority decisions for B3.
 
-A lane is not closed because a seed checklist is complete. A lane closes only when the current visible gaps are resolved, child work is terminal and consumed or rejected by the parent orchestrator, explicitly out, or final-authority-only with a Primary-ready packet.
+A lane is not closed because a seed checklist is complete. A lane closes only when the current visible gaps are resolved, child dispatches have returned, failed, or been cancelled, present child handoffs are consumed or rejected by the parent orchestrator, remaining gaps are explicitly out, or the only remaining work is final-authority-only with a Primary-ready packet.
+
+## Coordination Control Plane
+
+OpenACP uses a small `.openacp/coordination/` control plane so separate threads can share facts without relying on chat memory.
+
+Core artifacts:
+
+- `runtime-boundary.json`: repo path, base branch, source roots, test entrypoints, worktree policy, writable/read-only/forbidden paths, side effects, data risk, and `b2DispatchGate`.
+- `current-manifest.json`: current source pack, source status registry, runtime boundary, lane registry, CARD registry, active lanes, and latest consume refs.
+- `sequence-registry.json`: Prompt IDs, Response IDs, handoffs, consumes, cards, active lanes, lifecycle states, and current/latest pointers.
+- `lane-registry.json`: Primary and Frontier lane objectives, project complexity, Frontier dispatch mode, lane-count reason, assigned CARDs, authority, child ledger refs, closure refs, return-gate state, and per-lane `b2DispatchGate`.
+- `child-ledgers/<lane-id>.json`: child worker/reviewer/discovery/validation lifecycle status and consume status for one lane.
+- `source-status-registry.json`: current, reference, deprecated, invalid, and unknown source status with reasons.
+- `decision-registry.json`: owner questions, Primary decisions, waivers, out-of-scope decisions, blockers, and safe defaults.
+- `frontier-closures/<lane-id>.json`: proof that a Frontier lane can continue, close, or return to Primary.
+
+Primary should establish the runtime boundary before B2 Frontier dispatch. If product repo path, base branch, source roots, test entrypoints, or worktree policy are missing, Primary should ask the user and continue safe B0/B1 packaging instead of making each Frontier rediscover the same blocker. A Frontier can still run coordination-only or read-only B2 work, but product-write B2 dispatch requires both runtime `b2DispatchGate` and lane `b2DispatchGate` to be ready for product-write work.
 
 ## Subagents
 

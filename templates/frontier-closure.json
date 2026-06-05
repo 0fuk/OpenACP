@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "openacp-frontier-closure.v1",
+  "artifactType": "frontier-closure",
+  "closureId": "FC-<lane>-001",
+  "laneId": "<lane-id>",
+  "responseId": "<response-id>",
+  "authorityLevel": "B2",
+  "branchState": "open",
+  "gapDecisionMatrix": [
+    {
+      "gap": "<visible-gap>",
+      "decision": "do_now",
+      "nextSafeAction": "Frontier continues B0/B1/B2 work in this lane."
+    }
+  ],
+  "childLedgerRef": ".openacp/coordination/child-ledgers/<lane-id>.json",
+  "allChildrenTerminal": false,
+  "allChildHandoffsConsumedOrRejected": false,
+  "primaryReadyPacketRef": "",
+  "blockedOnHumanReason": "",
+  "remainingB0B1B2SafeWork": ["<safe lane-local work still available>"],
+  "remainingFinalAuthorityGaps": [],
+  "explicitlyOutGaps": [],
+  "worktreeDecision": {
+    "base": "<base-or-not_applicable>",
+    "worktree": "<worktree-or-not_required>",
+    "branch": "<branch-or-not_required>",
+    "allowedFiles": ["<allowed-file-glob>"],
+    "verification": ["<verification-check>"],
+    "handoffPath": "<handoff-path>",
+    "dataRisk": "low",
+    "resourceUse": "local only",
+    "noDispatchReason": "B2 dispatch fields are not ready yet."
+  },
+  "humanNextStep": "No human action is needed while Frontier still has B0/B1/B2-safe work."
+}

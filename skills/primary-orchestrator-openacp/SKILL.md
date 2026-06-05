@@ -15,6 +15,8 @@ If the preferred language is Chinese, Chinese must be the main language for the 
 
 Every status-like Primary reply must also use `formal-report-openacp` structure with stable OpenACP report rows and evidence details outside the table. Do not return machine-log prose as the main user-facing answer.
 
+End every Primary reply with a short `给人的下一步` / `Human Next Step` paragraph. If the user needs to act, name the exact missing working path, facts path, repo path, branch, source root, test entrypoint, approval, or decision. If no user action is needed, say that Primary will continue dispatch, consume, validation, or closure work.
+
 ## Responsibilities
 
 - assign authority charters,
@@ -101,22 +103,24 @@ Use `templates/primary-orchestrator-launcher.md` for the full on-disk Primary pr
 When the Primary thread starts from the short launcher, it must:
 
 1. Read the prompt record, working directory, facts input, and preferred language.
-2. Explain B0/B1/B2/B3 in human language before dispatch:
+2. Create or refresh `.openacp/coordination/runtime-boundary.json` before Frontier dispatch. Resolve or explicitly mark product repo path, base branch, source roots, test entrypoints, worktree policy, writable paths, read-only paths, forbidden paths, data risk, side-effect policy, and `b2DispatchGate`. Record `runtimeBoundaryRef` in current manifest and lane registry.
+3. If product repo path, base branch, source roots, test entrypoints, or worktree policy are missing, ask the user in the Primary report and continue B0/B1 packaging only. Do not push those unresolved runtime questions into Frontier as immediate blockers. Any Frontier lane launched before product repo readiness must mark its lane `b2DispatchGate.mode` as `coordination_only` or `read_only_review`, not `product_write`.
+4. Explain B0/B1/B2/B3 in human language before dispatch:
    - B0: discovery, source review, risk scan, and read-only evidence gathering.
    - B1: source pack, CARD, task-card, verification, handoff, and owner-question packaging.
    - B2: scoped lane execution through workers, reviewers, discovery, validation, and child handoff consume.
    - B3: final acceptance, waiver, merge, release, publication, and cross-lane final decisions.
-3. Inspect the working directory and facts input.
-4. Create or refresh current manifest, source status, invalid or deprecated sources, sequence registry, and CARD/task-card candidates.
-5. Create CARDs before Frontier dispatch. CARDs should be stable, numbered, specific enough to assign to lanes, and broad enough to cover the actual project domains named in the facts.
-6. For normal or medium/high-complexity product work, prefer 10-20 project-level CARDs. Each CARD may later expand into multiple concrete task cards. Use fewer only for genuinely small projects and record the reason.
-7. Scan the source facts for domain coverage before finalizing CARDs: product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops. Create a CARD for a domain only when the facts mention or imply it; do not invent UI/Electron/mobile/compliance work for projects that do not have it. If the spec explicitly mentions UI, frontend, Electron, desktop shell, mobile, or another surface, CARD coverage for that surface is required.
-8. Group CARDs into 2-5 Frontier lanes based on complexity, risk, dependency, and parallel safety. Default to at least two Frontier lanes when at least two safe independent CARD clusters exist.
-9. Grant Frontier B2 lane-local authority by default, with B3 forbidden.
-10. Write full Frontier prompt records to disk and return short Frontier launchers only for the selected lanes.
-11. Require each Frontier prompt record to include the `openacp-frontier-orchestration-contract.v1` JSON block.
-12. Validate each Frontier prompt record with `openacp-validate --artifact <frontier-prompt-record> --ruleset frontier-contract --strict` before returning its short launcher.
-13. Require each Frontier prompt record to use subagent-first child dispatch: worker, reviewer, discovery, validation, and task-card-only child work should be dispatched by the Frontier through available subagent or delegation tools when B0/B1/B2-safe. Human-managed child launchers are fallback only and must explain why direct dispatch was unavailable or unsafe.
+5. Inspect the working directory and facts input.
+6. Create or refresh current manifest, source status registry, invalid or deprecated sources, sequence registry, lane registry, decision registry, and CARD/task-card candidates.
+7. Create CARDs before Frontier dispatch. CARDs should be stable, numbered, specific enough to assign to lanes, and broad enough to cover the actual project domains named in the facts.
+8. For normal or medium/high-complexity product work, prefer 10-20 project-level CARDs. Each CARD may later expand into multiple concrete task cards. Use fewer only for genuinely small projects and record the reason.
+9. Scan the source facts for domain coverage before finalizing CARDs: product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops. Create a CARD for a domain only when the facts mention or imply it; do not invent UI/Electron/mobile/compliance work for projects that do not have it. If the spec explicitly mentions UI, frontend, Electron, desktop shell, mobile, or another surface, CARD coverage for that surface is required.
+10. Group CARDs into 2-5 Frontier lanes based on complexity, risk, dependency, and parallel safety. Default to at least two Frontier lanes when at least two safe independent CARD clusters exist.
+11. Grant Frontier B2 lane-local authority by default, with B3 forbidden.
+12. Write full Frontier prompt records to disk and return short Frontier launchers only for the selected lanes.
+13. Require each Frontier prompt record to include the `openacp-frontier-orchestration-contract.v1` JSON block and references to `runtimeBoundaryRef`, `laneRegistryRef`, `childLedgerRef`, and `frontierClosureRef`.
+14. Validate each Frontier prompt record with `openacp-validate --artifact <frontier-prompt-record> --ruleset frontier-contract --strict` before returning its short launcher.
+15. Require each Frontier prompt record to use subagent-first child dispatch: worker, reviewer, discovery, validation, and task-card-only child work should be dispatched by the Frontier through available subagent or delegation tools when B0/B1/B2-safe. Human-managed child launchers are fallback only and must explain why direct dispatch was unavailable or unsafe.
 
 For every selected Frontier, Primary must write the short Frontier launcher to disk and print it in its own fenced `prompt` block in chat. File links alone are invalid. Before each block, say which new left-sidebar thread the user should create and paste that block into.
 
@@ -126,5 +130,10 @@ Primary should also maintain machine-readable state:
 
 - `current-manifest`: current facts, invalid/deprecated sources, active lanes, superseded prompts, cancelled prompts, and latest consume refs.
 - `sequence-registry`: Prompt IDs, Response IDs, handoffs, consume results, active cards, active lanes, and current/latest pointers.
+- `runtime-boundary`: repo path, base branch, source roots, test entrypoints, worktree policy, write/read/forbidden paths, side effects, data risk, and `b2DispatchGate`.
+- `lane-registry`: Primary and Frontier lanes, assigned CARDs, return gate status, child ledger refs, closure refs, latest consume refs, and lane `b2DispatchGate`.
+- `child-ledger`: child worker/reviewer/discovery/validation lifecycle status and consume status.
+- `source-status-registry`: current, reference, deprecated, invalid, and unknown source status with reasons.
+- `decision-registry`: owner questions, Primary decisions, waivers, out-of-scope decisions, blockers, and safe defaults.
 - `consume-result`: final or provisional consume decisions.
 - `machine-summary`: compact locator summary when downstream agents need stable references.

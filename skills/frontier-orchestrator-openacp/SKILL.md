@@ -13,7 +13,7 @@ Every Frontier reply must use `human-explain-openacp` style in the preferred lan
 
 If the preferred language is Chinese, Chinese must be the main language for report rows, explanations, evidence summaries, and next actions. Keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese reply.
 
-If no human action is needed, say that plainly: `Human next step: none; Frontier will continue B0/B1/B2 lane-local closure.` If human input is needed, name the exact decision, path, file, fact, approval, or authority boundary that is missing.
+Every Frontier reply must end with a short `Human Next Step` / `给人的下一步` paragraph. If no human action is needed, say that plainly: `Human next step: none; Frontier will continue B0/B1/B2 lane-local closure.` If human input is needed, name the exact decision, path, file, fact, approval, or authority boundary that is missing.
 
 Every status-like Frontier reply must also use `formal-report-openacp` structure with the Frontier/Lane row contract and evidence details outside the table. Do not return machine-log prose as the main user-facing answer.
 
@@ -67,12 +67,18 @@ Frontier prompt records should carry this machine-readable contract block, updat
   "branchReturnGate": {
     "rule": "Return to Primary only after every visible remaining gap is needs_final_authority or explicitly_out and a Primary-ready packet exists."
   },
+  "coordinationRefs": {
+    "runtimeBoundaryRef": ".openacp/coordination/runtime-boundary.json",
+    "laneRegistryRef": ".openacp/coordination/lane-registry.json",
+    "childLedgerRef": ".openacp/coordination/child-ledgers/<lane-id>.json",
+    "frontierClosureRef": ".openacp/coordination/frontier-closures/<lane-id>.json"
+  },
   "worktreeDecision": {
     "requiredWhen": "creating_or_skipping_B2_worker",
     "requiredFields": ["base", "worktree", "branch", "allowedFiles", "verification", "handoffPath", "dataRisk", "resourceUse", "noDispatchReason"]
   },
   "childLedger": {
-    "requiredFields": ["promptId", "responseId", "taskId", "handoffId", "role", "authority", "effects", "subagentIdOrToolStatus", "expectedHandoffPath", "terminalStatus", "consumeStatus", "remainingRisk"]
+    "requiredFields": ["promptId", "taskId", "role", "authority", "effects", "subagentIdOrToolStatus", "expectedHandoffPath", "dispatchStatus", "handoffStatus", "consumeStatus", "remainingRisk"]
   },
   "subagentFirst": {
     "enabled": true,
@@ -143,7 +149,7 @@ Default order:
 1. Continue simple B0/B1 orchestration directly in the current Frontier thread.
 2. When a bounded worker, reviewer, discovery, validation, or task-card-only task can reduce lane risk, dispatch it through available subagent or delegation tools from the current Frontier thread.
 3. Write full child prompt records to disk when useful for audit, reproducibility, or a tool-backed child handoff. The on-disk prompt record is evidence and control surface; it is not a reason to ask the human to open another thread.
-4. Maintain a child ledger with promptId, responseId, taskId, handoffId, role, authority, effects, subagent id or tool status, expected handoff path, terminal status, consume status, and remaining risk.
+4. Maintain a child ledger with promptId, taskId, role, authority, effects, subagent id or tool status, expected handoff path, dispatchStatus, handoffStatus, consumeStatus, and remaining risk. Add responseId when the child returns and handoffId when the handoff is present.
 5. Consume child handoffs before claiming lane progress, then reclassify the remaining gaps.
 
 Short downstream chat launchers are fallback only. Use them only when direct subagent dispatch is unavailable, unsafe in the current environment, explicitly requested by Primary or the human owner, or when the child must run in a separately user-managed session. When returning a fallback launcher, write it to disk, print it in chat as a fenced `prompt` block, label it `Fallback launcher`, state why direct dispatch was unavailable or unsafe, and include the exact human next step.
@@ -154,7 +160,7 @@ Do not return to Primary or the human merely because a child prompt package was 
 
 If Frontier dispatched a child subagent, Frontier must consume the child handoff before claiming lane progress. A child handoff being present is not enough.
 
-A bundle is complete only when every child has a terminal status and each handoff has been consumed or explicitly rejected.
+A bundle is complete only when every child dispatch is returned, failed, or cancelled and each present handoff has been consumed or explicitly rejected.
 
 ## Launcher Inputs
 

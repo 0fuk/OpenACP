@@ -28,8 +28,9 @@ Formal reports are often rendered in narrow chat panes. Keep the table readable:
 - Do not put long paths, URLs, commit hashes, full commands, validation logs, executable paths, local install paths, or long inline-code snippets inside table cells.
 - Do not include PowerShell blocks, bash blocks, shell command blocks, command lists, or command dumps anywhere in a chat formal report. Validation evidence should be a short status only, such as `验证通过` or `Validation passed`.
 - Put only short evidence notes after the table under `Evidence Details` as normal bullets.
-- For all Chinese chat reports, pad the first-column labels with full-width ideographic spaces by default so the chat UI does not compress labels into vertical fragments. The visible label stays the same after validator normalization.
-- Always use the exact table header `| 项 | 内容 |` for Chinese reports or `| Item | Content |` for English reports. Do not use `| 项目 | 状态 |`, `| 字段 | 内容 |`, or custom headers.
+- Always use the exact table header `| 类型/状态 | 内容 |` for Chinese reports or `| Item/Status | Content |` for English reports. Do not use `| 项 | 内容 |`, `| 项目 | 状态 |`, `| 字段 | 内容 |`, or custom headers.
+- Do not pad first-column labels with ideographic spaces. The wider `类型/状态` / `Item/Status` header keeps the left column readable in Codex chat.
+- Do not include a `Checkpoint` row. Validation, gate, or checkpoint-like information belongs in the `验证` / `Gate` row for generic reports or in `Evidence Details` outside the table.
 
 ## Post-Install Startup Report
 
@@ -70,3 +71,13 @@ For Primary, name the decision, dispatch, consume, or closure action Primary sho
 For Frontier, include a Frontier-owned B0/B1/B2 action when any safe lane-local work remains. Return to Primary only when the report includes closure proof showing every visible remaining gap is final-authority-only or explicitly out.
 
 Avoid a next step that only says "wait". If waiting is unavoidable, name what evidence or user fact is missing and what prepared packet will be used when it arrives.
+
+## Required Human Ending
+
+Every formal report must end with a short human-readable section named `Human Next Step` or `给人的下一步`.
+
+This section is outside the table. It should say the practical current situation and the next action in plain language:
+
+- If the user needs to do something, name the exact path, fact, approval, or left-sidebar thread action.
+- If no user action is needed, say that no human action is needed and name the next Primary-owned or Frontier-owned action.
+- Do not end with validation details, command output, file lists, or links alone.

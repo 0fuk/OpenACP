@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "openacp-runtime-boundary.v1",
+  "artifactType": "runtime-boundary",
+  "boundaryId": "RB-001",
+  "workingDirectory": "<working-directory>",
+  "productRepoStatus": "missing",
+  "productRepoPath": "",
+  "baseBranch": "",
+  "sourceRoots": [],
+  "testEntrypoints": [],
+  "worktreePolicy": "unknown",
+  "allowedWritablePaths": [".openacp/**"],
+  "readOnlyPaths": [],
+  "forbiddenPaths": [".git/**"],
+  "externalSideEffects": "none",
+  "dataRisk": "low",
+  "unresolvedOwnerInputs": ["productRepoPath", "baseBranch", "sourceRoots", "testEntrypoints", "worktreePolicy"],
+  "b2DispatchGate": {
+    "state": "coordination_only",
+    "allowsProductWrite": false,
+    "reason": "Product repo fields are unresolved; continue source packaging, review, and coordination-only lane work.",
+    "missingInputs": ["productRepoPath", "baseBranch", "sourceRoots", "testEntrypoints", "worktreePolicy"]
+  }
+}

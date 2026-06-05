@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "openacp-lane-registry.v1",
+  "artifactType": "lane-registry",
+  "registryId": "LANES-001",
+  "projectComplexity": "bootstrap",
+  "frontierDispatchMode": "pre_frontier",
+  "frontierDispatchReason": "Primary has not completed real project CARD and Frontier lane analysis yet.",
+  "lanes": [
+    {
+      "laneId": "primary",
+      "objective": "Coordinate the project.",
+      "role": "primary",
+      "status": "active",
+      "currentPromptId": "<primary-prompt-id>",
+      "authorityLevel": "B3",
+      "assignedCardIds": ["CARD-001"],
+      "runtimeBoundaryRef": ".openacp/coordination/runtime-boundary.json",
+      "childLedgerRef": ".openacp/coordination/child-ledgers/primary.json",
+      "latestConsumeRefs": [],
+      "b2DispatchGate": {
+        "mode": "coordination_only",
+        "state": "ready",
+        "reason": "Primary lane may write coordination artifacts; product-write B2 dispatch requires runtime boundary readiness."
+      },
+      "returnGateStatus": {
+        "state": "not_applicable",
+        "safeWorkRemainingCount": 0,
+        "finalAuthorityGapCount": 0,
+        "explicitlyOutCount": 0,
+        "frontierClosureRef": "",
+        "latestChildLedgerRef": ".openacp/coordination/child-ledgers/primary.json",
+        "latestConsumeRefs": []
+      }
+    }
+  ]
+}

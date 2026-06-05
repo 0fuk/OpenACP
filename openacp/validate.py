@@ -25,19 +25,25 @@ RULESETS = {
     "authority-charter",
     "assumption-ledger",
     "card-registry",
+    "child-ledger",
     "consume-result",
     "current-manifest",
+    "decision-registry",
     "formal-report",
+    "frontier-closure",
     "frontier-contract",
     "handoff",
     "launcher",
     "launcher-output",
+    "lane-registry",
     "machine-summary",
     "prompt-record",
     "review-report",
+    "runtime-boundary",
     "scope-boundary",
     "sequence-registry",
     "source-pack",
+    "source-status-registry",
     "status-report",
     "task-card",
     "public-package",
@@ -151,7 +157,7 @@ REQUIRED_FIELDS: dict[str, list[str]] = {
     "status-report": [
         "schemaVersion",
         "artifactType",
-        "reportId",
+        "responseId",
         "basisRefs",
         "currentState",
         "completedWork",
@@ -175,10 +181,10 @@ REQUIRED_FIELDS: dict[str, list[str]] = {
         "currentSourcePackRef",
         "invalidSourceRefs",
         "deprecatedSourceRefs",
-        "promptRegistryRef",
-        "responseRegistryRef",
-        "handoffRegistryRef",
         "sequenceRegistryRef",
+        "laneRegistryRef",
+        "runtimeBoundaryRef",
+        "sourceStatusRegistryRef",
         "cardRegistryRef",
         "activeLanes",
         "supersededPromptIds",
@@ -231,6 +237,69 @@ REQUIRED_FIELDS: dict[str, list[str]] = {
         "claims",
         "nextActions",
     ],
+    "runtime-boundary": [
+        "schemaVersion",
+        "artifactType",
+        "boundaryId",
+        "workingDirectory",
+        "productRepoStatus",
+        "productRepoPath",
+        "baseBranch",
+        "sourceRoots",
+        "testEntrypoints",
+        "worktreePolicy",
+        "allowedWritablePaths",
+        "readOnlyPaths",
+        "forbiddenPaths",
+        "externalSideEffects",
+        "dataRisk",
+        "unresolvedOwnerInputs",
+        "b2DispatchGate",
+    ],
+    "lane-registry": [
+        "schemaVersion",
+        "artifactType",
+        "registryId",
+        "lanes",
+    ],
+    "child-ledger": [
+        "schemaVersion",
+        "artifactType",
+        "ledgerId",
+        "laneId",
+        "children",
+    ],
+    "source-status-registry": [
+        "schemaVersion",
+        "artifactType",
+        "registryId",
+        "sources",
+    ],
+    "decision-registry": [
+        "schemaVersion",
+        "artifactType",
+        "registryId",
+        "decisions",
+    ],
+    "frontier-closure": [
+        "schemaVersion",
+        "artifactType",
+        "closureId",
+        "laneId",
+        "responseId",
+        "authorityLevel",
+        "branchState",
+        "gapDecisionMatrix",
+        "childLedgerRef",
+        "allChildrenTerminal",
+        "allChildHandoffsConsumedOrRejected",
+        "primaryReadyPacketRef",
+        "remainingB0B1B2SafeWork",
+        "remainingFinalAuthorityGaps",
+        "explicitlyOutGaps",
+        "worktreeDecision",
+        "humanNextStep",
+    ],
 }
 
 ARTIFACT_TYPE_BY_RULESET = {
@@ -245,6 +314,12 @@ ARTIFACT_TYPE_BY_RULESET = {
     "sequence-registry": "sequence-registry",
     "consume-result": "consume-result",
     "machine-summary": "machine-summary",
+    "runtime-boundary": "runtime-boundary",
+    "lane-registry": "lane-registry",
+    "child-ledger": "child-ledger",
+    "source-status-registry": "source-status-registry",
+    "decision-registry": "decision-registry",
+    "frontier-closure": "frontier-closure",
 }
 
 FINAL_STATE_CLAIMS = {
@@ -267,11 +342,23 @@ NON_FINAL_HANDOFF_STATES = {
 AUTHORITY_LEVELS = {"B0", "B1", "B2", "B3"}
 RISK_LEVELS = {"low", "medium", "high"}
 ROLES = {"primary", "frontier", "worker", "reviewer", "discovery", "human-owner"}
+ROLE_MAX_AUTHORITY = {
+    "primary": "B3",
+    "human-owner": "B3",
+    "frontier": "B2",
+    "worker": "B2",
+    "reviewer": "B2",
+    "discovery": "B2",
+    "validation": "B2",
+    "task-card-only": "B1",
+}
+AUTHORITY_RANK = {"B0": 0, "B1": 1, "B2": 2, "B3": 3}
 REVIEW_RECOMMENDATIONS = {"approve", "amend", "split-follow-up", "reject"}
 CONSUME_DECISIONS = {"accepted", "amend", "split-follow-up", "rejected", "blocked"}
 AUTHORITY_SCOPES = {"provisional", "final"}
 VERIFY_RESULTS = {"pass", "fail", "skipped"}
 SOURCE_STATUSES = {"current", "reference", "deprecated"}
+SOURCE_REGISTRY_STATUSES = {"current", "reference", "deprecated", "invalid", "unknown"}
 DATA_RISK_LEVELS = {"none", "low", "medium", "high", "sensitive"}
 EFFECTS_PRESETS = {
     "read_only_handoff",
@@ -288,6 +375,7 @@ PROMPT_RECORD_RE = re.compile(r"(?im)^\s*-\s*Prompt Record\s*:\s*(.+?)\s*$")
 JSON_FENCE_RE = re.compile(r"```(?:json|JSON)?\s*(\{.*?\})\s*```", re.DOTALL)
 PROMPT_FENCE_RE = re.compile(r"```prompt\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 ZH_ITEM = "\u9879"
+ZH_TYPE_STATUS = "\u7c7b\u578b/\u72b6\u6001"
 ZH_FIELD = "\u5b57\u6bb5"
 ZH_PROGRESS = "\u603b\u4f53\u8fdb\u5ea6"
 ZH_EVIDENCE = "\u8bc1\u636e"
@@ -298,9 +386,10 @@ ZH_PASTE = "\u7c98\u8d34"
 ZH_VALIDATION = "\u9a8c\u8bc1"
 ZH_AREA = "\u8303\u56f4"
 
-FORMAL_ROW_SETS = [
-    {"Changed", "Progress", "Gate", "Area", "Goal", "Gaps", "Next"},
-    {
+FORMAL_HEADERS = {("Item/Status", "Content"), (ZH_TYPE_STATUS, "\u5185\u5bb9")}
+FORMAL_ROW_SEQUENCES = [
+    ["Changed", "Progress", "Gate", "Area", "Goal", "Gaps", "Next"],
+    [
         "\u505a\u4e86\u4ec0\u4e48",
         "\u603b\u4f53\u8fdb\u5ea6",
         "\u9a8c\u8bc1",
@@ -308,23 +397,23 @@ FORMAL_ROW_SETS = [
         "\u76ee\u6807",
         "\u7f3a\u53e3",
         "\u4e0b\u4e00\u6b65",
-    },
-    {
+    ],
+    [
         "\u505a\u4e86\u4ec0\u4e48",
         "\u603b\u4f53\u8fdb\u5ea6",
         "Frontier",
         "\u76ee\u6807",
         "\u7f3a\u53e3",
         "\u4e0b\u4e00\u6b65",
-    },
-    {
+    ],
+    [
         "\u505a\u4e86\u4ec0\u4e48",
         "\u603b\u4f53\u8fdb\u5ea6",
         "Lane",
         "\u76ee\u6807",
         "\u7f3a\u53e3",
         "\u4e0b\u4e00\u6b65",
-    },
+    ],
 ]
 
 FULL_PROMPT_MARKERS = [
@@ -512,6 +601,116 @@ def normalize_table_label(raw: str) -> str:
     return cleaned
 
 
+def split_table_cells(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+
+def is_table_separator(cells: list[str]) -> bool:
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell.strip()) for cell in cells)
+
+
+def extract_table_groups(text: str) -> list[list[str]]:
+    groups: list[list[str]] = []
+    current: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("|") and stripped.endswith("|"):
+            current.append(stripped)
+        elif current:
+            groups.append(current)
+            current = []
+    if current:
+        groups.append(current)
+    return groups
+
+
+def parse_formal_table(text: str, report: Report) -> tuple[list[tuple[str, str]], tuple[str, str] | None]:
+    groups = extract_table_groups(text)
+    if len(groups) != 1:
+        report.add("FORMAL_SINGLE_TABLE", "blocking", "fail", "Formal report must contain exactly one Markdown table.")
+        return [], None
+    report.add("FORMAL_SINGLE_TABLE", "blocking", "pass", "Formal report contains exactly one Markdown table.")
+    group = groups[0]
+    if len(group) < 3:
+        report.add("FORMAL_TABLE_SHAPE", "blocking", "fail", "Formal report table must include header, separator, and rows.")
+        return [], None
+    header_cells = [normalize_table_label(cell) for cell in split_table_cells(group[0])]
+    separator_cells = split_table_cells(group[1])
+    if len(header_cells) != 2 or len(separator_cells) != 2:
+        report.add("FORMAL_TWO_COLUMNS", "blocking", "fail", "Formal report table must have exactly two columns.")
+        return [], None
+    if not is_table_separator(separator_cells):
+        report.add("FORMAL_TABLE_SEPARATOR", "blocking", "fail", "Formal report table separator row is invalid.")
+        return [], None
+    report.add("FORMAL_TWO_COLUMNS", "blocking", "pass", "Formal report table has exactly two columns.")
+    header = (header_cells[0], header_cells[1])
+    rows: list[tuple[str, str]] = []
+    for idx, line in enumerate(group[2:], start=3):
+        cells = split_table_cells(line)
+        if len(cells) != 2:
+            report.add("FORMAL_ROW_COLUMNS", "blocking", "fail", "Formal report data rows must have exactly two columns.", f"row {idx}")
+            continue
+        left = normalize_table_label(cells[0])
+        right = cells[1].strip()
+        rows.append((left, right))
+    if all(len(split_table_cells(line)) == 2 for line in group[2:]):
+        report.add("FORMAL_ROW_COLUMNS", "blocking", "pass", "Formal report data rows have exactly two columns.")
+    return rows, header
+
+
+PLACEHOLDER_CELL_VALUES = {
+    "",
+    "-",
+    "--",
+    "n/a",
+    "na",
+    "none",
+    "todo",
+    "tbd",
+    "unknown",
+    "unclear",
+    "yes / no / unclear",
+    "safe / risky / unclear",
+    "<lane-id>",
+    "<card-id>",
+    "<task-id>",
+}
+
+
+def is_meaningful_cell(value: Any) -> bool:
+    text = str(value or "").strip()
+    lowered = text.lower()
+    if lowered in PLACEHOLDER_CELL_VALUES:
+        return False
+    if re.fullmatch(r"<[^>]+>", text):
+        return False
+    return bool(text)
+
+
+def find_table_by_headers(text: str, required_headers: list[str]) -> tuple[list[str], list[list[str]]] | None:
+    required = [header.lower() for header in required_headers]
+    for group in extract_table_groups(text):
+        if len(group) < 3:
+            continue
+        headers = [normalize_table_label(cell).lower() for cell in split_table_cells(group[0])]
+        if all(any(required_header in header for header in headers) for required_header in required):
+            rows: list[list[str]] = []
+            for line in group[2:]:
+                cells = split_table_cells(line)
+                if len(cells) == len(headers):
+                    rows.append(cells)
+            return headers, rows
+    return None
+
+
+def table_index(headers: list[str], candidates: list[str]) -> int | None:
+    lowered_candidates = [candidate.lower() for candidate in candidates]
+    for idx, header in enumerate(headers):
+        if any(candidate in header for candidate in lowered_candidates):
+            return idx
+    return None
+
+
 def extract_table_rows(text: str) -> list[tuple[str, str]]:
     rows: list[tuple[str, str]] = []
     for line in text.splitlines():
@@ -532,19 +731,8 @@ def extract_table_rows(text: str) -> list[tuple[str, str]]:
 
 
 def has_valid_formal_header(text: str) -> bool:
-    for line in text.splitlines():
-        stripped = line.strip()
-        if not stripped.startswith("|") or not stripped.endswith("|"):
-            continue
-        cells = [normalize_table_label(cell) for cell in stripped.strip("|").split("|")]
-        if len(cells) < 2:
-            continue
-        first, second = cells[0], cells[1]
-        if (first, second) in {("Item", "Content"), (ZH_ITEM, "\u5185\u5bb9")}:
-            return True
-        if first in {"---", ""}:
-            continue
-    return False
+    rows, header = parse_formal_table(text, Report("<inline>", "formal-report"))
+    return bool(rows) and header in FORMAL_HEADERS
 
 
 def extract_json_fence_objects(text: str) -> list[dict[str, Any]]:
@@ -607,6 +795,25 @@ def is_primary_prompt_record(text: str) -> bool:
 
 def validate_primary_prompt_contract_text(text: str, report: Report) -> None:
     lowered = text.lower()
+    runtime_terms = [
+        "runtime boundary",
+        "product repo path",
+        "base branch",
+        "source roots",
+        "test entrypoints",
+        "worktree policy",
+        "runtimeboundaryref",
+    ]
+    missing_runtime_terms = [term for term in runtime_terms if term not in lowered.replace("-", " ")]
+    if len(missing_runtime_terms) <= 1 and re.search(r"(?i)(before|prior to).{0,80}Frontier|Frontier.{0,80}(before|prior to)", text):
+        report.add("PRIMARY_RUNTIME_BOUNDARY_GATE", "blocking", "pass", "Primary prompt gates Frontier dispatch on runtime boundary.")
+    else:
+        report.add(
+            "PRIMARY_RUNTIME_BOUNDARY_GATE",
+            "blocking",
+            "fail",
+            "Primary prompt must resolve runtime boundary before Frontier dispatch: product repo path, base branch, source roots, test entrypoints, worktree policy, and runtimeBoundaryRef.",
+        )
     if re.search(r"10\s*[-\u2010-\u2015]\s*20|10\s+to\s+20", text):
         report.add("PRIMARY_CARD_COUNT_RULE", "blocking", "pass", "Primary prompt requires 10-20 CARDs for normal or medium/high complexity.")
     else:
@@ -668,19 +875,80 @@ def validate_card_registry_text(text: str, report: Report) -> None:
         report.add("CARD_REGISTRY_TYPE", "blocking", "pass", "CARD registry artifactType is present.")
     else:
         report.add("CARD_REGISTRY_TYPE", "blocking", "fail", "CARD registry must include artifactType: card-registry.")
-    required_sections = ["Domain Coverage", "CARD List", "Lane Grouping"]
+    required_sections = ["Domain Coverage", "Complexity Assessment", "CARD List", "Lane Grouping"]
     missing_sections = [section for section in required_sections if section.lower() not in text.lower()]
     if missing_sections:
         report.add("CARD_REGISTRY_SECTIONS", "blocking", "fail", "CARD registry missing sections: " + ", ".join(missing_sections))
     else:
         report.add("CARD_REGISTRY_SECTIONS", "blocking", "pass", "CARD registry has required sections.")
-    card_ids = sorted(set(re.findall(r"\bCARD-\d{3,}\b", text)))
+    card_table = find_table_by_headers(text, ["card", "domain", "authority", "status", "objective", "task-card"])
+    card_ids: list[str] = []
+    invalid_card_rows: list[str] = []
+    if card_table is None:
+        report.add("CARD_REGISTRY_CARD_TABLE", "blocking", "fail", "CARD registry must include a CARD List table with CARD, domain, authority, lane, status, objective, source refs, and task-card candidates.")
+    else:
+        headers, rows = card_table
+        card_idx = table_index(headers, ["card"])
+        domain_idx = table_index(headers, ["domain"])
+        authority_idx = table_index(headers, ["authority"])
+        lane_idx = table_index(headers, ["candidate lane", "lane"])
+        status_idx = table_index(headers, ["status"])
+        objective_idx = table_index(headers, ["objective"])
+        source_idx = table_index(headers, ["source refs", "source"])
+        task_idx = table_index(headers, ["task-card candidates", "task-card"])
+        required_indices = {
+            "CARD": card_idx,
+            "Domain": domain_idx,
+            "Authority": authority_idx,
+            "Lane": lane_idx,
+            "Status": status_idx,
+            "Objective": objective_idx,
+            "Source": source_idx,
+            "Task-card candidates": task_idx,
+        }
+        missing_columns = [name for name, idx in required_indices.items() if idx is None]
+        if missing_columns:
+            report.add("CARD_REGISTRY_CARD_TABLE_COLUMNS", "blocking", "fail", "CARD List table missing columns: " + ", ".join(missing_columns))
+        else:
+            for row_number, row in enumerate(rows, start=1):
+                card_cell = row[card_idx]  # type: ignore[index]
+                if not re.fullmatch(r"CARD-\d{3,}", card_cell.strip()):
+                    invalid_card_rows.append(f"row {row_number}: invalid CARD id")
+                    continue
+                required_cells = {
+                    "domain": row[domain_idx],  # type: ignore[index]
+                    "authority": row[authority_idx],  # type: ignore[index]
+                    "lane": row[lane_idx],  # type: ignore[index]
+                    "status": row[status_idx],  # type: ignore[index]
+                    "objective": row[objective_idx],  # type: ignore[index]
+                    "source refs": row[source_idx],  # type: ignore[index]
+                    "task-card candidates": row[task_idx],  # type: ignore[index]
+                }
+                missing_values = [name for name, value in required_cells.items() if not is_meaningful_cell(value)]
+                if missing_values:
+                    invalid_card_rows.append(f"{card_cell}: missing " + ", ".join(missing_values))
+                    continue
+                card_ids.append(card_cell.strip())
+            if invalid_card_rows:
+                report.add("CARD_REGISTRY_CARD_ROWS", "blocking", "fail", "CARD rows must be real dispatch candidates, not placeholders: " + "; ".join(invalid_card_rows[:5]))
+            else:
+                report.add("CARD_REGISTRY_CARD_ROWS", "blocking", "pass", "CARD List rows have real dispatch fields.")
+            duplicate_card_ids = sorted({card_id for card_id in card_ids if card_ids.count(card_id) > 1})
+            if duplicate_card_ids:
+                report.add("CARD_REGISTRY_CARD_IDS_UNIQUE", "blocking", "fail", "CARD ids must be unique: " + ", ".join(duplicate_card_ids[:5]))
+            elif card_ids:
+                report.add("CARD_REGISTRY_CARD_IDS_UNIQUE", "blocking", "pass", "CARD ids are unique.")
     has_small_exception = bool(
-        re.search(r"(?im)^\s*-\s*(small-project-reason|single-lane-reason|explicit-user-request)\s*:\s*\S", text)
-        or re.search(r"(?i)\b(small project|single safe lane|explicit user request)\b.{0,120}\bCARD", text)
+        re.search(r"(?im)^\s*-\s*(starter[- ]package[- ]reason|small[- ]project[- ]reason|single[- ]lane[- ]reason|explicit[- ]user[- ]request)\s*:\s*\S", text)
+        or re.search(r"(?i)\b(starter package|small project|single safe lane|explicit user request)\b.{0,160}\bCARD", text)
     )
-    if len(card_ids) >= 10:
+    has_count_reason = bool(re.search(r"(?im)^\s*-\s*cardCountReason\s*:\s*\S", text) or "card count reason" in text.lower())
+    if 10 <= len(card_ids) <= 20:
         report.add("CARD_REGISTRY_CARD_COUNT", "blocking", "pass", f"CARD registry includes {len(card_ids)} CARD ids.")
+    elif len(card_ids) > 20 and has_count_reason:
+        report.add("CARD_REGISTRY_CARD_COUNT", "warning", "pass", "CARD registry has more than 20 CARDs with a split or approval reason.")
+    elif len(card_ids) > 20:
+        report.add("CARD_REGISTRY_CARD_COUNT", "warning", "fail", "CARD registry has more than 20 CARDs; record a split reason or human approval.")
     elif has_small_exception:
         report.add("CARD_REGISTRY_CARD_COUNT", "blocking", "pass", "CARD registry uses fewer than 10 CARDs with an explicit small/single-lane/user-request reason.")
     else:
@@ -690,18 +958,7 @@ def validate_card_registry_text(text: str, report: Report) -> None:
             "fail",
             f"CARD registry has only {len(card_ids)} CARD ids; normal projects need 10-20 or an explicit small/single-lane/user-request reason.",
         )
-    lowered = text.lower()
-    coverage_terms = ["frontend", "ui", "electron", "backend", "api", "data", "testing", "release"]
-    missing_terms = [term for term in coverage_terms if term not in lowered]
-    if len(missing_terms) <= 1:
-        report.add("CARD_REGISTRY_DOMAIN_SCAN", "blocking", "pass", "CARD registry records broad domain-scan coverage.")
-    else:
-        report.add(
-            "CARD_REGISTRY_DOMAIN_SCAN",
-            "blocking",
-            "fail",
-            "CARD registry must show domain-scan coverage before lane dispatch; missing examples: " + ", ".join(missing_terms[:4]),
-        )
+    validate_card_domain_coverage(text, report)
     if re.search(r"(?i)task[- ]card", text):
         report.add("CARD_REGISTRY_TASK_CARD_CANDIDATES", "blocking", "pass", "CARD registry links CARDs to task-card candidates.")
     else:
@@ -710,6 +967,57 @@ def validate_card_registry_text(text: str, report: Report) -> None:
         report.add("CARD_REGISTRY_LANE_GROUPING", "blocking", "pass", "CARD registry supports Frontier lane grouping.")
     else:
         report.add("CARD_REGISTRY_LANE_GROUPING", "blocking", "fail", "CARD registry must support Frontier lane grouping.")
+
+
+def validate_card_domain_coverage(text: str, report: Report) -> None:
+    domain_table = find_table_by_headers(text, ["domain", "present", "card coverage"])
+    if domain_table is None:
+        report.add("CARD_REGISTRY_DOMAIN_SCAN", "blocking", "fail", "CARD registry must include a Domain Coverage table with present/coverage decisions.")
+        return
+    headers, rows = domain_table
+    domain_idx = table_index(headers, ["domain"])
+    present_idx = table_index(headers, ["present"])
+    source_idx = table_index(headers, ["source refs", "source"])
+    coverage_idx = table_index(headers, ["card coverage"])
+    if domain_idx is None or present_idx is None or coverage_idx is None:
+        report.add("CARD_REGISTRY_DOMAIN_SCAN", "blocking", "fail", "Domain Coverage table must include Domain, Present?, and CARD coverage columns.")
+        return
+    if not rows:
+        report.add("CARD_REGISTRY_DOMAIN_SCAN", "blocking", "fail", "Domain Coverage table must include domain rows.")
+        return
+    invalid_rows: list[str] = []
+    known_rows = 0
+    present_domains = 0
+    placeholder_values = {"yes / no / unclear", "yes/no/unclear", "safe / risky / unclear"}
+    positive_values = {"yes", "present", "current", "true", "needed", "in-scope", "in scope"}
+    neutral_values = {"no", "absent", "false", "out", "out-of-scope", "out of scope", "unclear", "unknown", "n/a", "na"}
+    for row_number, row in enumerate(rows, start=1):
+        domain = row[domain_idx].strip()
+        present_value = row[present_idx].strip().lower()
+        coverage = row[coverage_idx].strip()
+        source = row[source_idx].strip() if source_idx is not None and source_idx < len(row) else ""
+        if not is_meaningful_cell(domain):
+            invalid_rows.append(f"row {row_number}: missing domain")
+            continue
+        if present_value in placeholder_values or not is_meaningful_cell(present_value):
+            invalid_rows.append(f"{domain}: Present? is still a placeholder")
+            continue
+        if present_value not in positive_values and present_value not in neutral_values:
+            invalid_rows.append(f"{domain}: Present? must be yes/no/unclear-style, not `{present_value}`")
+            continue
+        known_rows += 1
+        if present_value in positive_values:
+            present_domains += 1
+            if not is_meaningful_cell(source):
+                invalid_rows.append(f"{domain}: present domain needs source refs")
+            if not is_meaningful_cell(coverage) or not re.search(r"\bCARD-\d{3,}\b", coverage):
+                invalid_rows.append(f"{domain}: present domain needs CARD coverage")
+    if invalid_rows:
+        report.add("CARD_REGISTRY_DOMAIN_SCAN", "blocking", "fail", "Domain Coverage rows must be resolved before Frontier dispatch: " + "; ".join(invalid_rows[:5]))
+    elif known_rows:
+        report.add("CARD_REGISTRY_DOMAIN_SCAN", "blocking", "pass", f"Domain Coverage table has {known_rows} resolved rows and {present_domains} present domains with CARD coverage.")
+    else:
+        report.add("CARD_REGISTRY_DOMAIN_SCAN", "blocking", "fail", "Domain Coverage table has no resolved rows.")
 
 
 def validate_launcher_text(
@@ -861,7 +1169,18 @@ def _long_english_dominant_lines(text: str) -> list[str]:
     return offenders
 
 
-def validate_formal_report_text(text: str, report: Report) -> None:
+def _has_trailing_human_next_step_section(text: str) -> bool:
+    headings = list(re.finditer(r"(?im)^\s{0,3}#{1,6}\s*(?:Human Next Step|\u7ed9\u4eba\u7684\u4e0b\u4e00\u6b65)\s*$", text))
+    if not headings:
+        return False
+    last = headings[-1]
+    after = text[last.end() :].strip()
+    if not after:
+        return False
+    return not bool(re.search(r"(?im)^\s{0,3}#{1,6}\s+\S", after))
+
+
+def validate_formal_report_text(text: str, report: Report, preferred_language: str | None = None) -> None:
     response_ids = RESPONSE_ID_RE.findall(text)
     if not response_ids:
         report.add("RESPONSE_ID", "blocking", "fail", "Formal report must include Response ID.")
@@ -871,17 +1190,17 @@ def validate_formal_report_text(text: str, report: Report) -> None:
         report.add("RESPONSE_LOG_PATH", "blocking", "pass", "Formal report names a response log path.")
     else:
         report.add("RESPONSE_LOG_PATH", "blocking", "fail", "Formal report must include a Response log path line.")
-    if has_valid_formal_header(text):
-        report.add("FORMAL_HEADER", "blocking", "pass", "Formal report uses the standard Item/Content or 项/内容 header.")
+    rows, header = parse_formal_table(text, report)
+    if header in FORMAL_HEADERS:
+        report.add("FORMAL_HEADER", "blocking", "pass", "Formal report uses the standard Item/Status or 类型/状态 header.")
     else:
-        report.add("FORMAL_HEADER", "blocking", "fail", "Formal report must use the standard `| Item | Content |` or `| 项 | 内容 |` header.")
-    rows = extract_table_rows(text)
-    labels = {label for label, _ in rows}
-    if any(required.issubset(labels) for required in FORMAL_ROW_SETS):
-        report.add("FORMAL_ROWS", "blocking", "pass", "Formal report has a known role-aware row set.")
+        report.add("FORMAL_HEADER", "blocking", "fail", "Formal report must use `| Item/Status | Content |` or `| 类型/状态 | 内容 |`.")
+    labels = [label for label, _ in rows]
+    if any(labels == required for required in FORMAL_ROW_SEQUENCES):
+        report.add("FORMAL_ROWS", "blocking", "pass", "Formal report has an exact role-aware row set in the required order.")
     else:
-        report.add("FORMAL_ROWS", "blocking", "fail", "Formal report rows must match a known OpenACP row set.")
-    bad_labels = labels.intersection({"What changed", "Lane or area", "Next step", "Validation", "Checkpoint", "Skill", "CLI", "\u5b89\u88c5"})
+        report.add("FORMAL_ROWS", "blocking", "fail", "Formal report rows must exactly match a known OpenACP row set in order, with no extra rows.")
+    bad_labels = set(labels).intersection({"What changed", "Lane or area", "Next step", "Validation", "Checkpoint", "Skill", "CLI", "\u5b89\u88c5", ZH_ITEM, ZH_FIELD})
     if bad_labels:
         report.add("LEGACY_ROW_LABELS", "blocking", "fail", "Legacy or overlong row labels found: " + ", ".join(sorted(bad_labels)))
     else:
@@ -895,15 +1214,29 @@ def validate_formal_report_text(text: str, report: Report) -> None:
         report.add("EVIDENCE_DETAILS", "blocking", "pass", "Formal report includes evidence or basis details outside the table.")
     else:
         report.add("EVIDENCE_DETAILS", "blocking", "fail", "Formal report must include Evidence Details or basis outside the table.")
+    if _has_trailing_human_next_step_section(text):
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "pass", "Formal report ends with a human-readable next-step section.")
+    elif re.search(r"(?i)Human Next Step|human next step|what happens next", text) or "\u7ed9\u4eba\u7684\u4e0b\u4e00\u6b65" in text:
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Human Next Step must be the final report section.")
+    else:
+        report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Formal reports must end with a human-readable next-step section.")
     if (
         re.search(r"```(?:powershell|pwsh|bash|sh|shell|cmd)\b", text, re.IGNORECASE)
         or re.search(r"(?i)\bPowerShell\b|\bcommands?\s+(?:include|passed)\b|\u9a8c\u8bc1\u901a\u8fc7\u7684\u547d\u4ee4", text)
         or re.search(r"(?im)^\s*(?:[-*]\s*)?(?:python|openacp|openacp-validate|pip|git)\s+[-A-Za-z0-9_.\\/]", text)
+        or re.search(r"`\s*(?:python|openacp|openacp-validate|pip|git)\b[^`]*`", text, re.IGNORECASE)
+        or re.search(r"(?im)^\s*(?:[-*]\s*)?(?:validation|verify|check|run|command|commands|validated)\s*:\s*`?(?:python|openacp|openacp-validate|pip|git)\b", text)
     ):
         report.add("FORMAL_REPORT_NO_COMMAND_DUMP", "blocking", "fail", "Formal reports must not include shell command blocks or command dumps; summarize validation status instead.")
     else:
         report.add("FORMAL_REPORT_NO_COMMAND_DUMP", "blocking", "pass", "No shell command dump found in formal report.")
-    if any(_has_cjk(label) for label in labels):
+    preferred = (preferred_language or "").strip().lower()
+    wants_chinese = preferred in {"chinese", "zh", "zh-cn", "\u4e2d\u6587"} or (header and header[0] == ZH_TYPE_STATUS)
+    if wants_chinese and header and header[0] != ZH_TYPE_STATUS:
+        report.add("PREFERRED_LANGUAGE_HEADER", "blocking", "fail", "Chinese reports must use the Chinese formal-report header.")
+    elif wants_chinese:
+        report.add("PREFERRED_LANGUAGE_HEADER", "blocking", "pass", "Chinese report uses the Chinese formal-report header.")
+    if wants_chinese or any(_has_cjk(label) for label in labels):
         english_offenders = _long_english_dominant_lines(text)
         if english_offenders:
             report.add(
@@ -921,7 +1254,15 @@ def validate_frontier_contract_text(text: str, report: Report) -> None:
         report.add("FRONTIER_B2_AUTHORITY", "blocking", "pass", "Frontier contract grants B2 lane authority.")
     else:
         report.add("FRONTIER_B2_AUTHORITY", "blocking", "fail", "Frontier contract must grant B2 lane authority by default.")
-    required_terms = ["gapDecisionMatrix", "branchReturnGate", "worktreeDecision"]
+    required_terms = [
+        "gapDecisionMatrix",
+        "branchReturnGate",
+        "worktreeDecision",
+        "runtimeBoundaryRef",
+        "laneRegistryRef",
+        "childLedgerRef",
+        "frontierClosureRef",
+    ]
     missing = [term for term in required_terms if term not in text]
     if missing:
         report.add("FRONTIER_CLOSURE_FIELDS", "blocking", "fail", "Frontier contract missing closure fields: " + ", ".join(missing))
@@ -967,14 +1308,27 @@ def validate_frontier_contract_text(text: str, report: Report) -> None:
         )
     else:
         report.add("FRONTIER_CHILD_LAUNCHER_ANTIPATTERN", "blocking", "pass", "No non-fallback child launcher anti-pattern found.")
-    if re.search(r"(?i)child ledger", text) and all(term in text for term in ["promptId", "responseId", "handoffId"]):
-        report.add("FRONTIER_CHILD_LEDGER", "blocking", "pass", "Frontier contract requires child ledger identifiers.")
+    early_return_lines = find_frontier_early_return_antipatterns(text)
+    if early_return_lines:
+        report.add(
+            "FRONTIER_EARLY_RETURN_ANTIPATTERN",
+            "blocking",
+            "fail",
+            "Frontier early-return anti-pattern found: " + " | ".join(early_return_lines[:3]),
+        )
     else:
-        report.add("FRONTIER_CHILD_LEDGER", "blocking", "fail", "Frontier contract must require a child ledger with promptId, responseId, and handoffId.")
-    if re.search(r"(?i)human next step|what the human should do next", text):
-        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "pass", "Frontier contract requires an explicit human next step.")
+        report.add("FRONTIER_EARLY_RETURN_ANTIPATTERN", "blocking", "pass", "No Frontier early-return anti-pattern found.")
+    if re.search(r"(?i)child ledger", text) and all(term in text for term in ["promptId", "taskId", "dispatchStatus", "handoffStatus"]):
+        report.add("FRONTIER_CHILD_LEDGER", "blocking", "pass", "Frontier contract requires child ledger identifiers and lifecycle status.")
     else:
-        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "fail", "Frontier contract must require an explicit human next step.")
+        report.add("FRONTIER_CHILD_LEDGER", "blocking", "fail", "Frontier contract must require a child ledger with promptId, taskId, dispatchStatus, and handoffStatus.")
+    if re.search(r"(?is)(?:every|all)\s+Frontier\s+repl(?:y|ies).{0,160}(?:end|finish).{0,160}human\s+next\s+step", text) or re.search(
+        r"(?is)(?:end|finish).{0,160}(?:every|all)\s+Frontier\s+repl(?:y|ies).{0,160}human\s+next\s+step",
+        text,
+    ):
+        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "pass", "Frontier contract requires every Frontier reply to end with a human next-step paragraph.")
+    else:
+        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "fail", "Frontier contract must require every Frontier reply to end with a human next-step paragraph.")
     if re.search(r"(?i)not\s+return\s+to\s+Primary\s+merely\s+because", text) and re.search(r"(?i)provisional\s+packet|source\s+baseline|consume-result|handoff", text):
         report.add("FRONTIER_NO_PACKET_RETURN", "blocking", "pass", "Frontier contract forbids returning to Primary merely after writing intermediate lane evidence.")
     else:
@@ -1022,6 +1376,7 @@ def validate_frontier_contract_block(text: str, report: Report) -> None:
         "operatingOrder",
         "gapDecisionMatrix",
         "branchReturnGate",
+        "coordinationRefs",
         "worktreeDecision",
         "childLedger",
         "subagentFirst",
@@ -1047,6 +1402,19 @@ def validate_frontier_contract_block(text: str, report: Report) -> None:
             "fail",
             "Contract block authorityLevel must be B2 unless a narrower prompt record is explicitly validated separately.",
         )
+    coordination_refs = contract.get("coordinationRefs")
+    if not isinstance(coordination_refs, dict):
+        report.add("FRONTIER_CONTRACT_COORDINATION_REFS", "blocking", "fail", "coordinationRefs must be an object.")
+    else:
+        missing_refs = [
+            field
+            for field in ["runtimeBoundaryRef", "laneRegistryRef", "childLedgerRef", "frontierClosureRef"]
+            if not str(coordination_refs.get(field, "")).strip()
+        ]
+        if missing_refs:
+            report.add("FRONTIER_CONTRACT_COORDINATION_REFS", "blocking", "fail", "coordinationRefs missing refs: " + ", ".join(missing_refs))
+        else:
+            report.add("FRONTIER_CONTRACT_COORDINATION_REFS", "blocking", "pass", "coordinationRefs names runtime, lane, child-ledger, and closure refs.")
     backlog = contract.get("backlogScope", {})
     if isinstance(backlog, dict) and backlog.get("seedArtifactsPolicy") == "starting_points_not_exhaustive":
         report.add("FRONTIER_SEED_POLICY", "blocking", "pass", "Seed artifacts are marked as non-exhaustive.")
@@ -1075,12 +1443,12 @@ def validate_frontier_contract_block(text: str, report: Report) -> None:
         report.add("FRONTIER_CONTRACT_SUBAGENT_FIRST", "blocking", "fail", "Contract must set subagentFirst true or {enabled: true}.")
     child_ledger = contract.get("childLedger", {})
     ledger_fields = set(child_ledger.get("requiredFields", [])) if isinstance(child_ledger, dict) and isinstance(child_ledger.get("requiredFields"), list) else set()
-    ledger_required = {"promptId", "responseId", "handoffId", "role", "authority", "effects", "terminalStatus", "consumeStatus"}
+    ledger_required = {"promptId", "taskId", "role", "authority", "effects", "dispatchStatus", "handoffStatus", "consumeStatus"}
     missing_ledger = sorted(ledger_required - ledger_fields)
     if missing_ledger:
         report.add("FRONTIER_CONTRACT_CHILD_LEDGER", "blocking", "fail", "childLedger missing fields: " + ", ".join(missing_ledger))
     else:
-        report.add("FRONTIER_CONTRACT_CHILD_LEDGER", "blocking", "pass", "childLedger carries stable child identifiers and terminal status.")
+        report.add("FRONTIER_CONTRACT_CHILD_LEDGER", "blocking", "pass", "childLedger carries stable child identifiers and lifecycle status.")
     branch_gate = contract.get("branchReturnGate", {})
     branch_gate_text = json.dumps(branch_gate, ensure_ascii=False)
     if isinstance(branch_gate, dict) and "needs_final_authority" in branch_gate_text and "explicitly_out" in branch_gate_text:
@@ -1138,6 +1506,26 @@ def find_child_launcher_antipatterns(text: str) -> list[str]:
         if any(child in lowered for child in child_markers) and any(marker in lowered for marker in launcher_markers):
             if not any(marker in lowered for marker in fallback_markers):
                 hits.append(line[:160])
+    return hits
+
+
+def find_frontier_early_return_antipatterns(text: str) -> list[str]:
+    hits: list[str] = []
+    early_return_patterns = [
+        r"(?i)(?:after|once)\s+(?:writing|creating|preparing|finishing).{0,80}(?:packet|prompt|handoff|baseline|matrix).{0,80}(?:return|hand\s*back|send).{0,40}Primary",
+        r"(?i)(?:return|hand\s*back|send).{0,40}Primary.{0,80}(?:after|once).{0,80}(?:packet|prompt|handoff|baseline|matrix)",
+        r"(?i)Frontier-safe work exhausted",
+        r"(?i)(?:blocked on Primary|blocked_on_primary).{0,140}(?:do_now|dispatch_current_thread_subagent|prepare_package|apply_conservative_default)",
+    ]
+    safe_context = re.compile(
+        r"(?i)(?:do\s+not|must\s+not|only\s+when|valid\s+only|return\s+gate|branchReturnGate|remaining\s+gaps)",
+    )
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or safe_context.search(line):
+            continue
+        if any(re.search(pattern, line) for pattern in early_return_patterns):
+            hits.append(line[:160])
     return hits
 
 
@@ -1202,6 +1590,18 @@ def validate_task_card(data: dict[str, Any], report: Report, source_pack: dict[s
         report.add("RISK_LEVEL", "blocking", "pass", "riskLevel is valid.")
     for field_name in ["inputRefs", "acceptanceCriteria", "verificationPlan", "stopConditions"]:
         require_non_empty_array(data, field_name, report)
+    if str(data.get("parentCardId", "")).strip() or isinstance(data.get("cardRefs"), list):
+        report.add("TASK_CARD_PARENT_CARD", "blocking", "pass", "Task card links back to a parent CARD.")
+    else:
+        report.add("TASK_CARD_PARENT_CARD", "blocking", "fail", "Task card must include parentCardId or cardRefs.")
+    if str(data.get("domain", "")).strip():
+        report.add("TASK_CARD_DOMAIN", "blocking", "pass", "Task card names its product or coordination domain.")
+    else:
+        report.add("TASK_CARD_DOMAIN", "blocking", "fail", "Task card must include a domain for CARD traceability.")
+    if str(data.get("sourceStatusNote", "")).strip():
+        report.add("TASK_CARD_SOURCE_STATUS_NOTE", "blocking", "pass", "Task card includes a source status note.")
+    else:
+        report.add("TASK_CARD_SOURCE_STATUS_NOTE", "warning", "fail", "Task card should include sourceStatusNote for source traceability.")
     validate_task_verification_plan(data, report)
     for scope_name in ["allowedScope", "forbiddenScope"]:
         scope = data.get(scope_name)
@@ -1271,6 +1671,16 @@ def check_task_card_source_refs(data: dict[str, Any], source_pack: dict[str, Any
         report.add("TASK_INPUT_REFS_CURRENT", "blocking", "pass", "Task card inputRefs are current sources.")
 
 
+def validate_role_authority(role: Any, authority: Any, report: Report, check_name: str, location: str) -> None:
+    if role not in ROLE_MAX_AUTHORITY or authority not in AUTHORITY_RANK:
+        return
+    max_authority = ROLE_MAX_AUTHORITY[str(role)]
+    if AUTHORITY_RANK[str(authority)] > AUTHORITY_RANK[max_authority]:
+        report.add(check_name, "blocking", "fail", f"{role} authority must not exceed {max_authority}.", location)
+    else:
+        report.add(check_name, "blocking", "pass", f"{role} authority is within {max_authority}.", location)
+
+
 def validate_authority_charter(data: dict[str, Any], report: Report) -> None:
     if data.get("grantedRole") not in ROLES:
         report.add("GRANTED_ROLE", "blocking", "fail", "grantedRole is not a known OpenACP role.")
@@ -1284,6 +1694,7 @@ def validate_authority_charter(data: dict[str, Any], report: Report) -> None:
         report.add("B3_NON_PRIMARY", "blocking", "fail", "B3 final authority should not be granted to non-final roles by default.")
     elif data.get("grantedRole") == "frontier" and data.get("authorityLevel") == "B2":
         report.add("FRONTIER_B2_DEFAULT", "blocking", "pass", "Frontier is granted B2 lane authority.")
+    validate_role_authority(data.get("grantedRole"), data.get("authorityLevel"), report, "ROLE_AUTHORITY_MATRIX", "authority-charter")
     if data.get("dataRiskLimit") not in DATA_RISK_LEVELS:
         report.add("DATA_RISK_LIMIT", "blocking", "fail", "dataRiskLimit must be none, low, medium, high, or sensitive.")
     else:
@@ -1312,10 +1723,10 @@ def validate_current_manifest(data: dict[str, Any], report: Report) -> None:
         "preferredLanguage",
         "workingDirectory",
         "currentSourcePackRef",
-        "promptRegistryRef",
-        "responseRegistryRef",
-        "handoffRegistryRef",
         "sequenceRegistryRef",
+        "laneRegistryRef",
+        "runtimeBoundaryRef",
+        "sourceStatusRegistryRef",
         "cardRegistryRef",
     ]:
         require_non_empty_string(data, field_name, report)
@@ -1351,6 +1762,7 @@ def validate_current_manifest(data: dict[str, Any], report: Report) -> None:
             report.add("ACTIVE_LANE_ROLE", "blocking", "fail", "active lane role must be a known OpenACP role.", loc)
         if lane.get("authorityLevel") not in AUTHORITY_LEVELS:
             report.add("ACTIVE_LANE_AUTHORITY", "blocking", "fail", "active lane authorityLevel must be B0, B1, B2, or B3.", loc)
+        validate_role_authority(lane.get("role"), lane.get("authorityLevel"), report, "ACTIVE_LANE_ROLE_AUTHORITY", loc)
     validate_manifest_refs_exist(data, report)
 
 
@@ -1365,10 +1777,10 @@ def validate_manifest_refs_exist(data: dict[str, Any], report: Report) -> None:
     artifact_base = Path(report.artifact).parent
     for field_name in [
         "currentSourcePackRef",
-        "promptRegistryRef",
-        "responseRegistryRef",
-        "handoffRegistryRef",
         "sequenceRegistryRef",
+        "laneRegistryRef",
+        "runtimeBoundaryRef",
+        "sourceStatusRegistryRef",
         "cardRegistryRef",
     ]:
         value = data.get(field_name)
@@ -1435,6 +1847,29 @@ def validate_sequence_registry(data: dict[str, Any], report: Report) -> None:
         for item in data.get("prompts", [])
         if isinstance(item, dict) and item.get("promptId")
     }
+    lifecycle_statuses = {"created", "startup_provided", "dispatched", "returned", "consumed", "superseded", "cancelled", "invalid", "active", "complete", "present"}
+    for collection_name, id_field in [("prompts", "promptId"), ("responses", "responseId"), ("handoffs", "handoffId")]:
+        for idx, item in enumerate(data.get(collection_name, [])):
+            loc = f"{collection_name}[{idx}]"
+            if not isinstance(item, dict):
+                continue
+            required_item_fields = {
+                "prompts": ["promptId", "path", "role", "status"],
+                "responses": ["responseId", "promptId", "path", "status"],
+                "handoffs": ["handoffId", "taskId", "path", "status"],
+            }[collection_name]
+            missing_item_fields = [field for field in required_item_fields if field not in item or not str(item.get(field, "")).strip()]
+            if missing_item_fields:
+                report.add("SEQUENCE_LOCATOR_FIELDS", "blocking", "fail", f"{collection_name} entry missing locator fields: " + ", ".join(missing_item_fields), loc)
+            status = item.get("status")
+            if status not in lifecycle_statuses:
+                report.add("SEQUENCE_LIFECYCLE_STATUS", "blocking", "fail", f"{collection_name} status is invalid.", loc)
+            if status == "superseded" and not str(item.get("supersededBy", "")).strip():
+                report.add("SEQUENCE_SUPERSEDED_BY", "blocking", "fail", f"{collection_name} superseded entries require supersededBy.", loc)
+            if status == "invalid" and not str(item.get("invalidReason", "")).strip():
+                report.add("SEQUENCE_INVALID_REASON", "blocking", "fail", f"{collection_name} invalid entries require invalidReason.", loc)
+            if id_field not in item:
+                report.add("SEQUENCE_ID_FIELD", "blocking", "fail", f"{collection_name} entry missing {id_field}.", loc)
     if prompt_status.get(str(data.get("currentPromptId"))) in {"deprecated", "invalid", "rejected"}:
         report.add("CURRENT_PROMPT_STATUS", "blocking", "fail", "currentPromptId must not point to deprecated, invalid, or rejected prompt status.")
     else:
@@ -1493,6 +1928,14 @@ def validate_sequence_registry(data: dict[str, Any], report: Report) -> None:
         if not isinstance(lane, dict):
             report.add("SEQ_ACTIVE_LANE_OBJECT", "blocking", "fail", "activeLanes entries must be objects.", loc)
             continue
+        missing_lane_fields = [field for field in ["laneId", "role", "status", "currentPromptId", "authorityLevel"] if field not in lane]
+        if missing_lane_fields:
+            report.add("SEQ_ACTIVE_LANE_FIELDS", "blocking", "fail", "active lane missing fields: " + ", ".join(missing_lane_fields), loc)
+        if lane.get("role") not in ROLES:
+            report.add("SEQ_ACTIVE_LANE_ROLE", "blocking", "fail", "active lane role must be a known OpenACP role.", loc)
+        if lane.get("authorityLevel") not in AUTHORITY_LEVELS:
+            report.add("SEQ_ACTIVE_LANE_AUTHORITY", "blocking", "fail", "active lane authorityLevel must be B0, B1, B2, or B3.", loc)
+        validate_role_authority(lane.get("role"), lane.get("authorityLevel"), report, "SEQ_ACTIVE_LANE_ROLE_AUTHORITY", loc)
         current_prompt = lane.get("currentPromptId")
         if current_prompt and current_prompt not in prompt_ids:
             report.add("SEQ_ACTIVE_LANE_PROMPT", "blocking", "fail", "active lane currentPromptId is not registered.", loc)
@@ -1549,6 +1992,7 @@ def validate_machine_summary(data: dict[str, Any], report: Report) -> None:
         report.add("SUMMARY_AUTHORITY", "blocking", "fail", "authority must be B0, B1, B2, or B3.")
     else:
         report.add("SUMMARY_AUTHORITY", "blocking", "pass", "authority is valid.")
+    validate_role_authority(data.get("role"), data.get("authority"), report, "SUMMARY_ROLE_AUTHORITY", "machine-summary")
     if data.get("effectsPreset") not in EFFECTS_PRESETS:
         report.add("SUMMARY_EFFECTS_PRESET", "blocking", "fail", "effectsPreset is not a known OpenACP effects preset.")
     else:
@@ -1566,6 +2010,560 @@ def validate_machine_summary(data: dict[str, Any], report: Report) -> None:
             report.add("LOCATOR_KIND", "blocking", "fail", "locator.kind is required.", loc)
         if not (str(locator.get("id", "")).strip() or str(locator.get("path", "")).strip()):
             report.add("LOCATOR_TARGET", "blocking", "fail", "locator must include id or path.", loc)
+
+
+def validate_runtime_boundary(data: dict[str, Any], report: Report) -> None:
+    if data.get("artifactType") != "runtime-boundary":
+        report.add("ARTIFACT_TYPE", "blocking", "fail", "artifactType must be runtime-boundary.")
+    else:
+        report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is runtime-boundary.")
+    product_statuses = {"found", "provided", "missing", "not_applicable"}
+    if data.get("productRepoStatus") not in product_statuses:
+        report.add("PRODUCT_REPO_STATUS", "blocking", "fail", "productRepoStatus must be found, provided, missing, or not_applicable.")
+    else:
+        report.add("PRODUCT_REPO_STATUS", "blocking", "pass", "productRepoStatus is valid.")
+    if data.get("productRepoStatus") in {"found", "provided"} and not str(data.get("productRepoPath", "")).strip():
+        report.add("PRODUCT_REPO_PATH", "blocking", "fail", "found/provided product repos require productRepoPath.")
+    else:
+        report.add("PRODUCT_REPO_PATH", "blocking", "pass", "productRepoPath is compatible with productRepoStatus.")
+    if data.get("worktreePolicy") not in {"allowed", "forbidden", "unknown"}:
+        report.add("WORKTREE_POLICY", "blocking", "fail", "worktreePolicy must be allowed, forbidden, or unknown.")
+    else:
+        report.add("WORKTREE_POLICY", "blocking", "pass", "worktreePolicy is valid.")
+    if data.get("externalSideEffects") not in {"none", "local_only", "requires_approval"}:
+        report.add("EXTERNAL_SIDE_EFFECTS", "blocking", "fail", "externalSideEffects must be none, local_only, or requires_approval.")
+    else:
+        report.add("EXTERNAL_SIDE_EFFECTS", "blocking", "pass", "externalSideEffects is valid.")
+    if data.get("dataRisk") not in DATA_RISK_LEVELS:
+        report.add("DATA_RISK", "blocking", "fail", "dataRisk must be none, low, medium, high, or sensitive.")
+    else:
+        report.add("DATA_RISK", "blocking", "pass", "dataRisk is valid.")
+    for field_name in ["sourceRoots", "testEntrypoints", "allowedWritablePaths", "readOnlyPaths", "forbiddenPaths", "unresolvedOwnerInputs"]:
+        if isinstance(data.get(field_name), list):
+            report.add(f"{field_name.upper()}_ARRAY", "blocking", "pass", f"{field_name} is an array.")
+        else:
+            report.add(f"{field_name.upper()}_ARRAY", "blocking", "fail", f"{field_name} must be an array.")
+    gate = data.get("b2DispatchGate")
+    if not isinstance(gate, dict):
+        report.add("B2_DISPATCH_GATE_OBJECT", "blocking", "fail", "b2DispatchGate must be an object.")
+        return
+    report.add("B2_DISPATCH_GATE_OBJECT", "blocking", "pass", "b2DispatchGate is an object.")
+    required_gate = ["state", "allowsProductWrite", "reason", "missingInputs"]
+    missing_gate = [field for field in required_gate if field not in gate]
+    if missing_gate:
+        report.add("B2_DISPATCH_GATE_FIELDS", "blocking", "fail", "b2DispatchGate missing fields: " + ", ".join(missing_gate))
+    else:
+        report.add("B2_DISPATCH_GATE_FIELDS", "blocking", "pass", "b2DispatchGate has required fields.")
+    if gate.get("state") not in {"ready", "coordination_only", "blocked", "not_applicable"}:
+        report.add("B2_DISPATCH_GATE_STATE", "blocking", "fail", "b2DispatchGate.state must be ready, coordination_only, blocked, or not_applicable.")
+    if not isinstance(gate.get("allowsProductWrite"), bool):
+        report.add("B2_DISPATCH_GATE_PRODUCT_WRITE", "blocking", "fail", "b2DispatchGate.allowsProductWrite must be boolean.")
+    if not str(gate.get("reason", "")).strip():
+        report.add("B2_DISPATCH_GATE_REASON", "blocking", "fail", "b2DispatchGate.reason must explain the gate state.")
+    if not isinstance(gate.get("missingInputs"), list):
+        report.add("B2_DISPATCH_GATE_MISSING_INPUTS", "blocking", "fail", "b2DispatchGate.missingInputs must be an array.")
+    ready_for_product_write = gate.get("state") == "ready" or gate.get("allowsProductWrite") is True
+    missing_runtime = []
+    if data.get("productRepoStatus") not in {"found", "provided"}:
+        missing_runtime.append("productRepoStatus")
+    if not str(data.get("productRepoPath", "")).strip():
+        missing_runtime.append("productRepoPath")
+    if not str(data.get("baseBranch", "")).strip():
+        missing_runtime.append("baseBranch")
+    if not data.get("sourceRoots"):
+        missing_runtime.append("sourceRoots")
+    if not data.get("testEntrypoints"):
+        missing_runtime.append("testEntrypoints")
+    if data.get("worktreePolicy") == "unknown":
+        missing_runtime.append("worktreePolicy")
+    if ready_for_product_write and missing_runtime:
+        report.add("B2_PRODUCT_WRITE_RUNTIME_READY", "blocking", "fail", "B2 product-write dispatch requires runtime fields: " + ", ".join(missing_runtime))
+    elif ready_for_product_write:
+        report.add("B2_PRODUCT_WRITE_RUNTIME_READY", "blocking", "pass", "B2 product-write runtime fields are ready.")
+    else:
+        report.add("B2_PRODUCT_WRITE_RUNTIME_READY", "blocking", "pass", "B2 product-write is not allowed by this runtime boundary.")
+
+
+def validate_lane_registry(data: dict[str, Any], report: Report) -> None:
+    if data.get("artifactType") != "lane-registry":
+        report.add("ARTIFACT_TYPE", "blocking", "fail", "artifactType must be lane-registry.")
+    else:
+        report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is lane-registry.")
+    lanes = data.get("lanes")
+    if not isinstance(lanes, list) or not lanes:
+        report.add("LANES_NON_EMPTY", "blocking", "fail", "lanes must be a non-empty array.")
+        return
+    report.add("LANES_NON_EMPTY", "blocking", "pass", "lanes is non-empty.")
+    validate_lane_registry_dispatch_policy(data, lanes, report)
+    statuses = {"prepared", "active", "open", "closed", "blocked_on_primary", "blocked_on_human", "cancelled"}
+    for idx, lane in enumerate(lanes):
+        loc = f"lanes[{idx}]"
+        if not isinstance(lane, dict):
+            report.add("LANE_OBJECT", "blocking", "fail", "lane must be an object.", loc)
+            continue
+        required = [
+            "laneId",
+            "objective",
+            "role",
+            "status",
+            "currentPromptId",
+            "authorityLevel",
+            "assignedCardIds",
+            "runtimeBoundaryRef",
+            "childLedgerRef",
+            "latestConsumeRefs",
+            "returnGateStatus",
+            "b2DispatchGate",
+        ]
+        missing = [field for field in required if field not in lane]
+        if missing:
+            report.add("LANE_REQUIRED_FIELDS", "blocking", "fail", "lane missing fields: " + ", ".join(missing), loc)
+        else:
+            report.add("LANE_REQUIRED_FIELDS", "blocking", "pass", "lane has required fields.", loc)
+        if lane.get("role") not in {"primary", "frontier"}:
+            report.add("LANE_ROLE", "blocking", "fail", "lane role must be primary or frontier.", loc)
+        if lane.get("authorityLevel") not in AUTHORITY_LEVELS:
+            report.add("LANE_AUTHORITY", "blocking", "fail", "lane authorityLevel must be B0, B1, B2, or B3.", loc)
+        validate_role_authority(lane.get("role"), lane.get("authorityLevel"), report, "LANE_ROLE_AUTHORITY", loc)
+        if lane.get("status") not in statuses:
+            report.add("LANE_STATUS", "blocking", "fail", "lane status is not a known OpenACP lane status.", loc)
+        if not isinstance(lane.get("assignedCardIds"), list) or not lane.get("assignedCardIds"):
+            report.add("LANE_ASSIGNED_CARDS", "blocking", "fail", "lane assignedCardIds must be non-empty.", loc)
+        validate_lane_b2_dispatch_gate(lane, report, loc)
+        return_gate = lane.get("returnGateStatus")
+        if not isinstance(return_gate, dict):
+            report.add("LANE_RETURN_GATE_OBJECT", "blocking", "fail", "lane returnGateStatus must be an object.", loc)
+            continue
+        required_gate = [
+            "state",
+            "safeWorkRemainingCount",
+            "finalAuthorityGapCount",
+            "explicitlyOutCount",
+            "frontierClosureRef",
+            "latestChildLedgerRef",
+            "latestConsumeRefs",
+        ]
+        missing_gate = [field for field in required_gate if field not in return_gate]
+        if missing_gate:
+            report.add("LANE_RETURN_GATE_FIELDS", "blocking", "fail", "returnGateStatus missing fields: " + ", ".join(missing_gate), loc)
+        else:
+            report.add("LANE_RETURN_GATE_FIELDS", "blocking", "pass", "returnGateStatus has required fields.", loc)
+        if return_gate.get("state") not in {"not_applicable", "not_ready", "ready_for_primary", "closed", "blocked_on_human"}:
+            report.add("LANE_RETURN_GATE_STATE", "blocking", "fail", "returnGateStatus.state is invalid.", loc)
+        for count_field in ["safeWorkRemainingCount", "finalAuthorityGapCount", "explicitlyOutCount"]:
+            count_value = return_gate.get(count_field)
+            if not isinstance(count_value, int) or count_value < 0:
+                report.add("LANE_RETURN_GATE_COUNTS", "blocking", "fail", f"{count_field} must be a non-negative integer.", loc)
+        if not isinstance(return_gate.get("latestConsumeRefs"), list):
+            report.add("LANE_RETURN_GATE_CONSUMES", "blocking", "fail", "returnGateStatus.latestConsumeRefs must be an array.", loc)
+        validate_lane_return_gate_consistency(lane, return_gate, report, loc)
+
+
+def validate_lane_registry_dispatch_policy(data: dict[str, Any], lanes: list[Any], report: Report) -> None:
+    complexity = str(data.get("projectComplexity", "")).strip().lower()
+    mode = str(data.get("frontierDispatchMode", "")).strip().lower()
+    reason = str(data.get("frontierDispatchReason", "")).strip()
+    valid_complexities = {"bootstrap", "small", "normal", "medium", "medium-high", "high", "unknown"}
+    valid_modes = {"pre_frontier", "single_frontier", "multi_frontier"}
+    if complexity not in valid_complexities:
+        report.add("LANE_DISPATCH_POLICY_COMPLEXITY", "blocking", "fail", "projectComplexity must be bootstrap, small, normal, medium, medium-high, high, or unknown.")
+    else:
+        report.add("LANE_DISPATCH_POLICY_COMPLEXITY", "blocking", "pass", "projectComplexity is recorded.")
+    if mode not in valid_modes:
+        report.add("LANE_DISPATCH_POLICY_MODE", "blocking", "fail", "frontierDispatchMode must be pre_frontier, single_frontier, or multi_frontier.")
+        return
+    if not reason:
+        report.add("LANE_DISPATCH_POLICY_REASON", "blocking", "fail", "frontierDispatchReason must explain the lane count decision.")
+    else:
+        report.add("LANE_DISPATCH_POLICY_REASON", "blocking", "pass", "frontierDispatchReason is recorded.")
+    frontier_count = sum(1 for lane in lanes if isinstance(lane, dict) and lane.get("role") == "frontier" and lane.get("status") != "cancelled")
+    if mode == "pre_frontier":
+        if frontier_count != 0:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "fail", "pre_frontier lane registry should not contain active Frontier lanes.")
+        else:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "pass", "pre_frontier registry has no Frontier lanes yet.")
+        return
+    if mode == "single_frontier":
+        single_reason_ok = bool(re.search(r"(?i)\b(small|single[- ]safe[- ]lane|single safe lane|explicit user request|user requested one)\b", reason))
+        if frontier_count != 1:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "fail", "single_frontier mode requires exactly one Frontier lane.")
+        elif complexity not in {"small", "unknown"} and not single_reason_ok:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "fail", "single Frontier for non-small projects requires a single-safe-lane or explicit-user-request reason.")
+        elif not single_reason_ok:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "fail", "single_frontier mode requires a small-project, single-safe-lane, or explicit-user-request reason.")
+        else:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "pass", "single Frontier mode has an explicit exception reason.")
+        return
+    if mode == "multi_frontier":
+        if 2 <= frontier_count <= 5:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "pass", f"multi_frontier mode has {frontier_count} Frontier lanes.")
+        else:
+            report.add("LANE_DISPATCH_POLICY_COUNT", "blocking", "fail", f"multi_frontier mode requires 2-5 Frontier lanes; found {frontier_count}.")
+
+
+def validate_lane_b2_dispatch_gate(lane: dict[str, Any], report: Report, loc: str) -> None:
+    gate = lane.get("b2DispatchGate")
+    if not isinstance(gate, dict):
+        report.add("LANE_B2_DISPATCH_GATE", "blocking", "fail", "lane b2DispatchGate must be an object.", loc)
+        return
+    required = ["mode", "state", "reason"]
+    missing = [field for field in required if field not in gate or not str(gate.get(field, "")).strip()]
+    if missing:
+        report.add("LANE_B2_DISPATCH_GATE_FIELDS", "blocking", "fail", "b2DispatchGate missing fields: " + ", ".join(missing), loc)
+    else:
+        report.add("LANE_B2_DISPATCH_GATE_FIELDS", "blocking", "pass", "b2DispatchGate has required fields.", loc)
+    mode = gate.get("mode")
+    state = gate.get("state")
+    if mode not in {"coordination_only", "read_only_review", "product_write"}:
+        report.add("LANE_B2_DISPATCH_GATE_MODE", "blocking", "fail", "b2DispatchGate.mode must be coordination_only, read_only_review, or product_write.", loc)
+    if state not in {"ready", "not_ready", "not_applicable"}:
+        report.add("LANE_B2_DISPATCH_GATE_STATE", "blocking", "fail", "b2DispatchGate.state must be ready, not_ready, or not_applicable.", loc)
+    if lane.get("authorityLevel") == "B2" and mode == "product_write":
+        if state != "ready":
+            report.add("LANE_B2_PRODUCT_WRITE_GATE", "blocking", "fail", "B2 product_write lanes require b2DispatchGate.state ready.", loc)
+            return
+        runtime_ref = lane.get("runtimeBoundaryRef")
+        runtime_path = resolve_ref(Path(report.artifact).parent, str(runtime_ref))
+        runtime_report = Report(str(runtime_path), "runtime-boundary")
+        runtime_data = load_json(runtime_path, runtime_report) if runtime_path.exists() else None
+        if not isinstance(runtime_data, dict):
+            report.add("LANE_B2_PRODUCT_WRITE_RUNTIME_REF", "blocking", "fail", "B2 product_write lane requires a readable runtimeBoundaryRef.", str(runtime_path))
+            return
+        runtime_gate = runtime_data.get("b2DispatchGate")
+        if not isinstance(runtime_gate, dict) or runtime_gate.get("state") != "ready" or runtime_gate.get("allowsProductWrite") is not True:
+            report.add("LANE_B2_PRODUCT_WRITE_RUNTIME_GATE", "blocking", "fail", "B2 product_write lane requires runtime b2DispatchGate ready with allowsProductWrite true.", str(runtime_path))
+        else:
+            report.add("LANE_B2_PRODUCT_WRITE_RUNTIME_GATE", "blocking", "pass", "B2 product_write lane is backed by a ready runtime boundary.", str(runtime_path))
+    elif lane.get("authorityLevel") == "B2":
+        report.add("LANE_B2_PRODUCT_WRITE_GATE", "blocking", "pass", "B2 lane is not allowed to write product code by this lane gate.", loc)
+
+
+def validate_lane_return_gate_consistency(lane: dict[str, Any], return_gate: dict[str, Any], report: Report, loc: str) -> None:
+    status = lane.get("status")
+    state = return_gate.get("state")
+    safe_count = return_gate.get("safeWorkRemainingCount")
+    final_count = return_gate.get("finalAuthorityGapCount")
+    closure_ref = str(return_gate.get("frontierClosureRef", "")).strip()
+    if status == "blocked_on_primary":
+        if state != "ready_for_primary":
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "fail", "blocked_on_primary lanes require returnGateStatus.state ready_for_primary.", loc)
+        elif safe_count != 0:
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "fail", "blocked_on_primary lanes cannot have safeWorkRemainingCount > 0.", loc)
+        elif not closure_ref:
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "fail", "blocked_on_primary lanes require frontierClosureRef.", loc)
+        else:
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "pass", "blocked_on_primary lane has a consistent return gate.", loc)
+    elif status == "closed":
+        if state != "closed" or safe_count != 0 or final_count != 0:
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "fail", "closed lanes require state closed with no safe or final-authority gaps.", loc)
+        else:
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "pass", "closed lane has a consistent return gate.", loc)
+    elif status == "blocked_on_human":
+        if state != "blocked_on_human" or safe_count != 0:
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "fail", "blocked_on_human lanes require state blocked_on_human and no remaining safe work.", loc)
+        else:
+            report.add("LANE_RETURN_GATE_CONSISTENCY", "blocking", "pass", "blocked_on_human lane has a consistent return gate.", loc)
+    elif state in {"ready_for_primary", "closed", "blocked_on_human"} and status in {"prepared", "active", "open"}:
+        report.add("LANE_RETURN_GATE_CONSISTENCY", "warning", "fail", "open/prepared lanes should not carry terminal returnGateStatus.state.", loc)
+
+
+def validate_child_ledger(data: dict[str, Any], report: Report) -> None:
+    if data.get("artifactType") != "child-ledger":
+        report.add("ARTIFACT_TYPE", "blocking", "fail", "artifactType must be child-ledger.")
+    else:
+        report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is child-ledger.")
+    children = data.get("children")
+    if not isinstance(children, list):
+        report.add("CHILDREN_ARRAY", "blocking", "fail", "children must be an array.")
+        return
+    report.add("CHILDREN_ARRAY", "blocking", "pass", "children is an array.")
+    dispatch_statuses = {"not_started", "startup_provided", "dispatched", "running", "returned", "failed", "cancelled"}
+    handoff_statuses = {"not_expected", "not_started", "expected", "present", "missing", "invalid"}
+    consume_statuses = {"not_applicable", "not_consumed", "consumed", "rejected"}
+    for idx, child in enumerate(children):
+        loc = f"children[{idx}]"
+        if not isinstance(child, dict):
+            report.add("CHILD_OBJECT", "blocking", "fail", "child must be an object.", loc)
+            continue
+        required = [
+            "promptId",
+            "taskId",
+            "role",
+            "authority",
+            "effects",
+            "subagentIdOrToolStatus",
+            "expectedHandoffPath",
+            "dispatchStatus",
+            "handoffStatus",
+            "consumeStatus",
+            "remainingRisk",
+        ]
+        missing = [field for field in required if field not in child]
+        if missing:
+            report.add("CHILD_REQUIRED_FIELDS", "blocking", "fail", "child missing fields: " + ", ".join(missing), loc)
+        else:
+            report.add("CHILD_REQUIRED_FIELDS", "blocking", "pass", "child has required fields.", loc)
+        if child.get("role") not in {"worker", "reviewer", "discovery", "validation", "task-card-only"}:
+            report.add("CHILD_ROLE", "blocking", "fail", "child role is not a supported downstream role.", loc)
+        if child.get("authority") not in AUTHORITY_LEVELS:
+            report.add("CHILD_AUTHORITY", "blocking", "fail", "child authority must be B0, B1, B2, or B3.", loc)
+        if child.get("authority") == "B3":
+            report.add("CHILD_B3_FORBIDDEN", "blocking", "fail", "Frontier child work must not use B3 authority.", loc)
+        if child.get("dispatchStatus") not in dispatch_statuses:
+            report.add("CHILD_DISPATCH_STATUS", "blocking", "fail", "child dispatchStatus is invalid.", loc)
+        if child.get("handoffStatus") not in handoff_statuses:
+            report.add("CHILD_HANDOFF_STATUS", "blocking", "fail", "child handoffStatus is invalid.", loc)
+        if child.get("consumeStatus") not in consume_statuses:
+            report.add("CHILD_CONSUME_STATUS", "blocking", "fail", "child consumeStatus is invalid.", loc)
+        if child.get("dispatchStatus") in {"returned", "failed", "cancelled"} and not str(child.get("responseId", "")).strip():
+            report.add("CHILD_RESPONSE_ID_LIFECYCLE", "blocking", "fail", "returned, failed, or cancelled child entries must include responseId.", loc)
+        if child.get("handoffStatus") == "present" and not str(child.get("handoffId", "")).strip():
+            report.add("CHILD_HANDOFF_ID_LIFECYCLE", "blocking", "fail", "child entries with handoffStatus present must include handoffId.", loc)
+        if child.get("handoffStatus") == "present" and child.get("consumeStatus") == "not_applicable":
+            report.add("CHILD_CONSUME_LIFECYCLE", "blocking", "fail", "present handoffs must be consumed, rejected, or marked not_consumed.", loc)
+        if child.get("fallbackLauncherReason") and child.get("dispatchStatus") not in {"not_started", "startup_provided"}:
+            report.add("CHILD_FALLBACK_REASON", "blocking", "fail", "fallbackLauncherReason should only be used before direct dispatch succeeds.", loc)
+
+
+def validate_source_status_registry(data: dict[str, Any], report: Report) -> None:
+    if data.get("artifactType") != "source-status-registry":
+        report.add("ARTIFACT_TYPE", "blocking", "fail", "artifactType must be source-status-registry.")
+    else:
+        report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is source-status-registry.")
+    sources = data.get("sources")
+    if not isinstance(sources, list):
+        report.add("SOURCES_ARRAY", "blocking", "fail", "sources must be an array.")
+        return
+    report.add("SOURCES_ARRAY", "blocking", "pass", "sources is an array.")
+    for idx, source in enumerate(sources):
+        loc = f"sources[{idx}]"
+        if not isinstance(source, dict):
+            report.add("SOURCE_STATUS_OBJECT", "blocking", "fail", "source status entry must be an object.", loc)
+            continue
+        required = ["sourceId", "status", "reason", "authority", "locator", "lastReviewedAt"]
+        missing = [field for field in required if field not in source]
+        if missing:
+            report.add("SOURCE_STATUS_FIELDS", "blocking", "fail", "source status missing fields: " + ", ".join(missing), loc)
+        if source.get("status") not in SOURCE_REGISTRY_STATUSES:
+            report.add("SOURCE_REGISTRY_STATUS", "blocking", "fail", "source status must be current, reference, deprecated, invalid, or unknown.", loc)
+        if source.get("status") in {"deprecated", "invalid", "unknown"} and not str(source.get("reason", "")).strip():
+            report.add("SOURCE_STATUS_REASON", "blocking", "fail", "deprecated, invalid, and unknown sources require a reason.", loc)
+
+
+def validate_decision_registry(data: dict[str, Any], report: Report) -> None:
+    if data.get("artifactType") != "decision-registry":
+        report.add("ARTIFACT_TYPE", "blocking", "fail", "artifactType must be decision-registry.")
+    else:
+        report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is decision-registry.")
+    decisions = data.get("decisions")
+    if not isinstance(decisions, list):
+        report.add("DECISIONS_ARRAY", "blocking", "fail", "decisions must be an array.")
+        return
+    report.add("DECISIONS_ARRAY", "blocking", "pass", "decisions is an array.")
+    types = {"owner-question", "primary-decision", "waiver", "out-of-scope"}
+    statuses = {"open", "answered", "superseded", "rejected"}
+    for idx, decision in enumerate(decisions):
+        loc = f"decisions[{idx}]"
+        if not isinstance(decision, dict):
+            report.add("DECISION_OBJECT", "blocking", "fail", "decision must be an object.", loc)
+            continue
+        required = ["decisionId", "type", "status", "question", "basisRefs", "blocks", "safeDefault", "authorityRequired"]
+        missing = [field for field in required if field not in decision]
+        if missing:
+            report.add("DECISION_FIELDS", "blocking", "fail", "decision missing fields: " + ", ".join(missing), loc)
+        if decision.get("type") not in types:
+            report.add("DECISION_TYPE", "blocking", "fail", "decision type is invalid.", loc)
+        if decision.get("status") not in statuses:
+            report.add("DECISION_STATUS", "blocking", "fail", "decision status is invalid.", loc)
+        if decision.get("authorityRequired") not in AUTHORITY_LEVELS:
+            report.add("DECISION_AUTHORITY", "blocking", "fail", "decision authorityRequired must be B0, B1, B2, or B3.", loc)
+        for field_name in ["basisRefs", "blocks"]:
+            if not isinstance(decision.get(field_name), list):
+                report.add("DECISION_ARRAY_FIELDS", "blocking", "fail", f"{field_name} must be an array.", loc)
+
+
+def validate_frontier_closure(data: dict[str, Any], report: Report) -> None:
+    if data.get("artifactType") != "frontier-closure":
+        report.add("ARTIFACT_TYPE", "blocking", "fail", "artifactType must be frontier-closure.")
+    else:
+        report.add("ARTIFACT_TYPE", "blocking", "pass", "artifactType is frontier-closure.")
+    if data.get("authorityLevel") != "B2":
+        report.add("FRONTIER_CLOSURE_AUTHORITY", "blocking", "fail", "frontier-closure should record B2 lane-local authority.")
+    else:
+        report.add("FRONTIER_CLOSURE_AUTHORITY", "blocking", "pass", "frontier-closure records B2 lane-local authority.")
+    states = {"open", "closed", "blocked_on_primary", "blocked_on_human"}
+    if data.get("branchState") not in states:
+        report.add("BRANCH_STATE", "blocking", "fail", "branchState must be open, closed, blocked_on_primary, or blocked_on_human.")
+    else:
+        report.add("BRANCH_STATE", "blocking", "pass", "branchState is valid.")
+    gaps = data.get("gapDecisionMatrix")
+    safe_decisions = {
+        "do_now",
+        "dispatch_current_thread_subagent",
+        "prepare_package",
+        "prepare_package_only_when_dispatch_unavailable",
+        "apply_conservative_default",
+    }
+    remaining_safe_decisions: list[str] = []
+    if not isinstance(gaps, list) or not gaps:
+        report.add("GAP_DECISION_MATRIX", "blocking", "fail", "gapDecisionMatrix must be non-empty.")
+    else:
+        report.add("GAP_DECISION_MATRIX", "blocking", "pass", "gapDecisionMatrix is non-empty.")
+        allowed = {
+            "do_now",
+            "dispatch_current_thread_subagent",
+            "prepare_package",
+            "prepare_package_only_when_dispatch_unavailable",
+            "apply_conservative_default",
+            "needs_final_authority",
+            "explicitly_out",
+        }
+        for idx, item in enumerate(gaps):
+            loc = f"gapDecisionMatrix[{idx}]"
+            if not isinstance(item, dict):
+                report.add("GAP_DECISION_OBJECT", "blocking", "fail", "gap decision must be an object.", loc)
+                continue
+            missing = [field for field in ["gap", "decision", "nextSafeAction"] if field not in item]
+            if missing:
+                report.add("GAP_DECISION_FIELDS", "blocking", "fail", "gap decision missing fields: " + ", ".join(missing), loc)
+            if item.get("decision") not in allowed:
+                report.add("GAP_DECISION_VALUE", "blocking", "fail", "gap decision is not valid.", loc)
+            elif item.get("decision") in safe_decisions:
+                remaining_safe_decisions.append(f"{loc}:{item.get('decision')}")
+    for field_name in ["remainingB0B1B2SafeWork", "remainingFinalAuthorityGaps", "explicitlyOutGaps"]:
+        if isinstance(data.get(field_name), list):
+            report.add(f"{field_name.upper()}_ARRAY", "blocking", "pass", f"{field_name} is an array.")
+        else:
+            report.add(f"{field_name.upper()}_ARRAY", "blocking", "fail", f"{field_name} must be an array.")
+    branch_state = data.get("branchState")
+    if branch_state in {"closed", "blocked_on_primary", "blocked_on_human"} and remaining_safe_decisions:
+        report.add(
+            "FRONTIER_RETURN_GATE_SAFE_DECISIONS",
+            "blocking",
+            "fail",
+            "closed or blocked Frontier closure cannot leave safe gap decisions unresolved: " + ", ".join(remaining_safe_decisions[:5]),
+        )
+    elif branch_state in {"closed", "blocked_on_primary", "blocked_on_human"}:
+        report.add("FRONTIER_RETURN_GATE_SAFE_DECISIONS", "blocking", "pass", "No B0/B1/B2-safe gap decisions remain.")
+    if branch_state == "blocked_on_primary":
+        if data.get("remainingB0B1B2SafeWork"):
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "blocked_on_primary is invalid while B0/B1/B2-safe work remains.")
+        elif not str(data.get("primaryReadyPacketRef", "")).strip():
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "blocked_on_primary requires primaryReadyPacketRef.")
+        elif data.get("allChildrenTerminal") is not True or data.get("allChildHandoffsConsumedOrRejected") is not True:
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "blocked_on_primary requires child work to be terminal and consumed or rejected.")
+        else:
+            report.add("FRONTIER_RETURN_GATE", "blocking", "pass", "blocked_on_primary satisfies Frontier return gate.")
+    elif branch_state == "closed":
+        if data.get("remainingB0B1B2SafeWork"):
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "closed is invalid while B0/B1/B2-safe work remains.")
+        elif data.get("remainingFinalAuthorityGaps"):
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "closed is invalid while final-authority gaps remain.")
+        elif data.get("allChildrenTerminal") is not True or data.get("allChildHandoffsConsumedOrRejected") is not True:
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "closed requires child work to be terminal and consumed or rejected.")
+        else:
+            report.add("FRONTIER_RETURN_GATE", "blocking", "pass", "closed satisfies Frontier return gate.")
+    elif branch_state == "blocked_on_human":
+        if data.get("remainingB0B1B2SafeWork"):
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "blocked_on_human is invalid while B0/B1/B2-safe work remains.")
+        elif not str(data.get("blockedOnHumanReason", "")).strip():
+            report.add("FRONTIER_RETURN_GATE", "blocking", "fail", "blocked_on_human requires blockedOnHumanReason.")
+        else:
+            report.add("FRONTIER_RETURN_GATE", "blocking", "pass", "blocked_on_human names a true human blocker.")
+    else:
+        report.add("FRONTIER_RETURN_GATE", "blocking", "pass", "branchState is not blocked_on_primary.")
+    validate_frontier_primary_ready_packet(data, report)
+    validate_frontier_closure_worktree_decision(data.get("worktreeDecision"), report)
+    validate_frontier_closure_child_ledger(data, report)
+    if not str(data.get("humanNextStep", "")).strip():
+        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "fail", "frontier-closure must include humanNextStep.")
+    else:
+        report.add("FRONTIER_HUMAN_NEXT_STEP", "blocking", "pass", "frontier-closure includes humanNextStep.")
+
+
+def validate_frontier_primary_ready_packet(data: dict[str, Any], report: Report) -> None:
+    if data.get("branchState") != "blocked_on_primary":
+        return
+    ref = str(data.get("primaryReadyPacketRef", "")).strip()
+    if not ref:
+        return
+    packet_path = resolve_ref(Path(report.artifact).parent, ref)
+    if not packet_path.exists():
+        report.add("FRONTIER_PRIMARY_READY_PACKET_REF", "blocking", "fail", "primaryReadyPacketRef must point to an existing Primary-ready packet.", str(packet_path))
+        return
+    if not packet_path.is_file():
+        report.add("FRONTIER_PRIMARY_READY_PACKET_REF", "blocking", "fail", "primaryReadyPacketRef must point to a file.", str(packet_path))
+        return
+    try:
+        packet_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        report.add("FRONTIER_PRIMARY_READY_PACKET_UTF8", "blocking", "fail", "primaryReadyPacketRef must read as UTF-8.", str(packet_path))
+        return
+    report.add("FRONTIER_PRIMARY_READY_PACKET_REF", "blocking", "pass", "primaryReadyPacketRef exists and is UTF-8.", str(packet_path))
+
+
+def validate_frontier_closure_worktree_decision(worktree: Any, report: Report) -> None:
+    if not isinstance(worktree, dict):
+        report.add("FRONTIER_WORKTREE_DECISION", "blocking", "fail", "worktreeDecision must be an object.")
+        return
+    report.add("FRONTIER_WORKTREE_DECISION", "blocking", "pass", "worktreeDecision is an object.")
+    required = ["base", "worktree", "branch", "allowedFiles", "verification", "handoffPath", "dataRisk", "resourceUse", "noDispatchReason"]
+    missing = [field for field in required if field not in worktree]
+    if missing:
+        report.add("FRONTIER_WORKTREE_DECISION_FIELDS", "blocking", "fail", "worktreeDecision missing fields: " + ", ".join(missing))
+    else:
+        report.add("FRONTIER_WORKTREE_DECISION_FIELDS", "blocking", "pass", "worktreeDecision has required fields.")
+    for field_name in ["base", "worktree", "branch", "handoffPath", "resourceUse"]:
+        if field_name in worktree and not str(worktree.get(field_name, "")).strip():
+            report.add("FRONTIER_WORKTREE_DECISION_STRINGS", "blocking", "fail", f"worktreeDecision.{field_name} must be non-empty.")
+    for field_name in ["allowedFiles", "verification"]:
+        if field_name in worktree and (not isinstance(worktree.get(field_name), list) or not worktree.get(field_name)):
+            report.add("FRONTIER_WORKTREE_DECISION_ARRAYS", "blocking", "fail", f"worktreeDecision.{field_name} must be a non-empty array.")
+    if worktree.get("dataRisk") not in DATA_RISK_LEVELS:
+        report.add("FRONTIER_WORKTREE_DECISION_DATA_RISK", "blocking", "fail", "worktreeDecision.dataRisk must be none, low, medium, high, or sensitive.")
+    skipped_markers = {"not_applicable", "not_required", "none", "skipped"}
+    skipped_b2 = any(str(worktree.get(field, "")).strip().lower() in skipped_markers for field in ["base", "worktree", "branch"])
+    if skipped_b2 and not str(worktree.get("noDispatchReason", "")).strip():
+        report.add("FRONTIER_WORKTREE_NO_DISPATCH_REASON", "blocking", "fail", "Skipped B2 dispatch requires noDispatchReason.")
+    elif skipped_b2:
+        report.add("FRONTIER_WORKTREE_NO_DISPATCH_REASON", "blocking", "pass", "Skipped B2 dispatch names noDispatchReason.")
+
+
+def validate_frontier_closure_child_ledger(data: dict[str, Any], report: Report) -> None:
+    ref = data.get("childLedgerRef")
+    if not isinstance(ref, str) or not ref.strip():
+        return
+    ledger_path = resolve_ref(Path(report.artifact).parent, ref)
+    if not ledger_path.exists():
+        report.add("FRONTIER_CLOSURE_CHILD_LEDGER_REF", "warning", "fail", "childLedgerRef was not found for lifecycle cross-check.", str(ledger_path))
+        return
+    ledger_report = Report(str(ledger_path), "child-ledger")
+    ledger = load_json(ledger_path, ledger_report)
+    if not isinstance(ledger, dict):
+        report.add("FRONTIER_CLOSURE_CHILD_LEDGER_LOAD", "blocking", "fail", "childLedgerRef could not be loaded as JSON.", str(ledger_path))
+        return
+    children = ledger.get("children")
+    if not isinstance(children, list):
+        report.add("FRONTIER_CLOSURE_CHILD_LEDGER_CHILDREN", "blocking", "fail", "childLedgerRef children must be an array.", str(ledger_path))
+        return
+    non_terminal = []
+    unconsumed = []
+    for idx, child in enumerate(children):
+        if not isinstance(child, dict):
+            continue
+        loc = f"children[{idx}]"
+        if child.get("dispatchStatus") not in {"returned", "failed", "cancelled"}:
+            non_terminal.append(loc)
+        if child.get("handoffStatus") == "present" and child.get("consumeStatus") not in {"consumed", "rejected"}:
+            unconsumed.append(loc)
+    if data.get("branchState") in {"closed", "blocked_on_primary"} and non_terminal:
+        report.add("FRONTIER_CLOSURE_CHILD_TERMINAL", "blocking", "fail", "child ledger has non-terminal children: " + ", ".join(non_terminal[:5]), str(ledger_path))
+    elif data.get("branchState") in {"closed", "blocked_on_primary"}:
+        report.add("FRONTIER_CLOSURE_CHILD_TERMINAL", "blocking", "pass", "child ledger dispatch lifecycle matches closure state.", str(ledger_path))
+    if data.get("branchState") in {"closed", "blocked_on_primary"} and unconsumed:
+        report.add("FRONTIER_CLOSURE_CHILD_CONSUME", "blocking", "fail", "child ledger has present handoffs not consumed or rejected: " + ", ".join(unconsumed[:5]), str(ledger_path))
+    elif data.get("branchState") in {"closed", "blocked_on_primary"}:
+        report.add("FRONTIER_CLOSURE_CHILD_CONSUME", "blocking", "pass", "child handoffs are consumed or rejected for closure.", str(ledger_path))
 
 
 def validate_handoff(data: dict[str, Any], report: Report, task_card: dict[str, Any] | None) -> None:
@@ -1743,6 +2741,11 @@ def validate_review_report(data: dict[str, Any], report: Report) -> None:
 
 
 def validate_status_report(data: dict[str, Any], report: Report) -> None:
+    require_non_empty_string(data, "responseId", report)
+    if "reportId" in data:
+        report.add("REPORT_ID_DEPRECATED", "warning", "fail", "reportId is deprecated; use responseId for status artifacts.")
+    else:
+        report.add("REPORT_ID_DEPRECATED", "warning", "pass", "No deprecated reportId field found.")
     for field_name in ["basisRefs", "nextActions", "authorityLimits"]:
         require_non_empty_array(data, field_name, report)
     text = json.dumps(data, ensure_ascii=False).lower()
@@ -1861,6 +2864,18 @@ def validate_json_artifact(args: argparse.Namespace) -> Report:
         validate_consume_result(data, report)
     elif args.ruleset == "machine-summary":
         validate_machine_summary(data, report)
+    elif args.ruleset == "runtime-boundary":
+        validate_runtime_boundary(data, report)
+    elif args.ruleset == "lane-registry":
+        validate_lane_registry(data, report)
+    elif args.ruleset == "child-ledger":
+        validate_child_ledger(data, report)
+    elif args.ruleset == "source-status-registry":
+        validate_source_status_registry(data, report)
+    elif args.ruleset == "decision-registry":
+        validate_decision_registry(data, report)
+    elif args.ruleset == "frontier-closure":
+        validate_frontier_closure(data, report)
     return report
 
 
@@ -1894,7 +2909,7 @@ def validate_text_artifact(args: argparse.Namespace) -> Report:
     elif args.ruleset == "launcher-output":
         validate_launcher_output_text(text, report)
     elif args.ruleset == "formal-report":
-        validate_formal_report_text(text, report)
+        validate_formal_report_text(text, report, args.preferred_language)
     elif args.ruleset == "frontier-contract":
         validate_frontier_contract_text(text, report)
     elif args.ruleset == "card-registry":
@@ -1964,6 +2979,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--task-card", help="Optional task card JSON for handoff scope cross-checks.")
     parser.add_argument("--prompt-record", help="Optional full prompt record for launcher Prompt ID cross-checks.")
     parser.add_argument("--expect-prompt-id", help="Expected Prompt ID for prompt-record or launcher validation.")
+    parser.add_argument("--preferred-language", help="Preferred language for formal-report validation.")
     parser.add_argument("--strict", action="store_true", help="Treat warnings as failures.")
     parser.add_argument("--json", action="store_true", help="Emit JSON report.")
     return parser.parse_args(argv)

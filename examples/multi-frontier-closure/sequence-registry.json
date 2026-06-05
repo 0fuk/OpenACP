@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "openacp-sequence-registry.v1",
+  "artifactType": "sequence-registry",
+  "registryId": "SEQ-DEMO-001",
+  "currentPromptId": "PROMPT-FRONTIER-DOCS-001",
+  "latestResponseId": "RESP-FRONTIER-DOCS-001",
+  "prompts": [
+    { "promptId": "PROMPT-PRIMARY-001", "path": "primary.prompt.md", "role": "primary", "status": "dispatched" },
+    { "promptId": "PROMPT-FRONTIER-DOCS-001", "path": "frontier-docs.prompt.md", "role": "frontier", "status": "dispatched" }
+  ],
+  "responses": [
+    { "responseId": "RESP-FRONTIER-DOCS-001", "promptId": "PROMPT-FRONTIER-DOCS-001", "path": "frontier-report.md", "status": "returned" }
+  ],
+  "handoffs": [
+    { "handoffId": "HAND-DOCS-001", "taskId": "TASK-DOCS-001", "cardId": "CARD-001", "path": "handoff-docs.json", "status": "consumed" }
+  ],
+  "cards": [
+    { "cardId": "CARD-001", "status": "ready", "ownerRole": "frontier" }
+  ],
+  "consumes": [
+    { "consumeId": "CONSUME-DOCS-001", "responseId": "RESP-FRONTIER-DOCS-001", "targetHandoffIds": ["HAND-DOCS-001"], "decision": "accepted", "authorityScope": "provisional" }
+  ],
+  "activeLanes": [
+    { "laneId": "frontier-docs", "role": "frontier", "status": "blocked_on_primary", "currentPromptId": "PROMPT-FRONTIER-DOCS-001", "authorityLevel": "B2" }
+  ]
+}

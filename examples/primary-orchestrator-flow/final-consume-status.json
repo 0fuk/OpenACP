@@ -1,7 +1,7 @@
 {
   "schemaVersion": "openacp-status-report.v1",
   "artifactType": "status-report",
-  "reportId": "STAT-PRIMARY-CONSUME-001",
+  "responseId": "STAT-PRIMARY-CONSUME-001",
   "basisRefs": [
     "source-pack.json",
     "authority-charter.json",

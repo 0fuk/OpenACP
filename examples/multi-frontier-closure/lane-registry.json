@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "openacp-lane-registry.v1",
+  "artifactType": "lane-registry",
+  "registryId": "LANES-DEMO-001",
+  "projectComplexity": "small",
+  "frontierDispatchMode": "single_frontier",
+  "frontierDispatchReason": "Small fixture with a single safe Frontier lane for documentation closure.",
+  "lanes": [
+    {
+      "laneId": "frontier-docs",
+      "objective": "Prepare reviewed documentation evidence for Primary consume.",
+      "role": "frontier",
+      "status": "blocked_on_primary",
+      "currentPromptId": "PROMPT-FRONTIER-DOCS-001",
+      "authorityLevel": "B2",
+      "assignedCardIds": ["CARD-001"],
+      "runtimeBoundaryRef": "runtime-boundary.json",
+      "childLedgerRef": "child-ledgers/frontier-docs.json",
+      "latestConsumeRefs": ["CONSUME-DOCS-001"],
+      "b2DispatchGate": {
+        "mode": "coordination_only",
+        "state": "ready",
+        "reason": "This lane only prepares and reviews coordination evidence; product-write dispatch is not allowed."
+      },
+      "returnGateStatus": {
+        "state": "ready_for_primary",
+        "safeWorkRemainingCount": 0,
+        "finalAuthorityGapCount": 1,
+        "explicitlyOutCount": 0,
+        "frontierClosureRef": "frontier-closures/frontier-docs.json",
+        "latestChildLedgerRef": "child-ledgers/frontier-docs.json",
+        "latestConsumeRefs": ["CONSUME-DOCS-001"]
+      }
+    }
+  ]
+}

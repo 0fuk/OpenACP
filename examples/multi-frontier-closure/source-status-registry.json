@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "openacp-source-status-registry.v1",
+  "artifactType": "source-status-registry",
+  "registryId": "SRCSTAT-DEMO-001",
+  "sources": [
+    {
+      "sourceId": "SRC-DEMO-PRD",
+      "status": "current",
+      "reason": "Primary accepted this example PRD as the current source.",
+      "authority": "B3",
+      "locator": "source-pack.json#SRC-DEMO-PRD",
+      "lastReviewedAt": "2026-06-05"
+    }
+  ]
+}

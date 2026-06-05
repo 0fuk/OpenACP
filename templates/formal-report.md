@@ -7,7 +7,7 @@ status: draft
 Response ID:
 Response log path:
 
-| Item | Content |
+| Item/Status | Content |
 |---|---|
 | Changed | |
 | Progress | Include a numeric estimate. |
@@ -21,43 +21,47 @@ Response log path:
 
 Use these rows for a Chinese Primary report:
 
-| 项 | 内容 |
+| 类型/状态 | 内容 |
 |---|---|
-| 做了什么　 | |
-| 总体进度　 | Include a numeric estimate. |
-| Frontier　 | |
-| 目标　　 | |
-| 缺口　　 | |
-| 下一步　 | |
+| 做了什么 | |
+| 总体进度 | Include a numeric estimate. |
+| Frontier | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 
 Use these rows for a Chinese post-install or generic startup report:
 
-| 项 | 内容 |
+| 类型/状态 | 内容 |
 |---|---|
-| 做了什么　 | |
-| 总体进度　 | Include a numeric estimate. |
-| 验证　　 | 验证通过 / 验证失败。 |
-| 范围　　 | |
-| 目标　　 | |
-| 缺口　　 | |
-| 下一步　 | |
+| 做了什么 | |
+| 总体进度 | Include a numeric estimate. |
+| 验证 | 验证通过 / 验证失败。 |
+| 范围 | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 
 Use these rows for a Chinese Frontier report:
 
-| 项 | 内容 |
+| 类型/状态 | 内容 |
 |---|---|
-| 做了什么　 | |
-| 总体进度　 | Include a numeric estimate. |
-| Lane　　　 | |
-| 目标　　 | |
-| 缺口　　 | |
-| 下一步　 | |
+| 做了什么 | |
+| 总体进度 | Include a numeric estimate. |
+| Lane | |
+| 目标 | |
+| 缺口 | |
+| 下一步 | |
 
 ## Evidence Details
 
 - Validation:
 - Artifacts:
 - Notes:
+
+## Human Next Step
+
+Explain what the human should do now. If no human action is needed, say that plainly and name the next Primary-owned or Frontier-owned action.
 
 Do not claim final states without final-authority evidence.
 
@@ -71,7 +75,7 @@ When this report is used immediately after installing OpenACP, the `Next` cell m
 
 ## Mini Example
 
-| Item | Content |
+| Item/Status | Content |
 |---|---|
 | Changed | A worker handoff and reviewer report are ready for final consume. |
 | Progress | 70%. The work is implemented and reviewed, but final authority has not accepted it. |

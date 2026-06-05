@@ -52,12 +52,18 @@ Frontier must not claim final acceptance, merge, publish, release, waive, or mak
   "branchReturnGate": {
     "rule": "Return to Primary only after every visible remaining gap is needs_final_authority or explicitly_out and a Primary-ready packet exists."
   },
+  "coordinationRefs": {
+    "runtimeBoundaryRef": ".openacp/coordination/runtime-boundary.json",
+    "laneRegistryRef": ".openacp/coordination/lane-registry.json",
+    "childLedgerRef": ".openacp/coordination/child-ledgers/<lane-id>.json",
+    "frontierClosureRef": ".openacp/coordination/frontier-closures/<lane-id>.json"
+  },
   "worktreeDecision": {
     "requiredWhen": "creating_or_skipping_B2_worker",
     "requiredFields": ["base", "worktree", "branch", "allowedFiles", "verification", "handoffPath", "dataRisk", "resourceUse", "noDispatchReason"]
   },
   "childLedger": {
-    "requiredFields": ["promptId", "responseId", "taskId", "handoffId", "role", "authority", "effects", "subagentIdOrToolStatus", "expectedHandoffPath", "terminalStatus", "consumeStatus", "remainingRisk"]
+    "requiredFields": ["promptId", "taskId", "role", "authority", "effects", "subagentIdOrToolStatus", "expectedHandoffPath", "dispatchStatus", "handoffStatus", "consumeStatus", "remainingRisk"]
   },
   "subagentFirst": {
     "enabled": true,
@@ -72,7 +78,7 @@ Frontier must not claim final acceptance, merge, publish, release, waive, or mak
 
 ## Reply Contract
 
-Every reply must use `human-explain-openacp` style in the preferred language. Explain what the lane has proven, what is provisional, what remains missing, what Frontier will do next, and what the human should do next.
+Every Frontier reply must use `human-explain-openacp` style in the preferred language and must end with a short `Human Next Step` / `给人的下一步` paragraph. Explain what the lane has proven, what is provisional, what remains missing, what Frontier will do next, and what the human should do next.
 
 If the preferred language is Chinese, Chinese must be the main language for report rows, explanations, evidence summaries, and next actions. Keep English only for stable technical terms and exact names such as `Primary`, `Frontier`, `worker`, `reviewer`, `handoff`, `validator`, `source pack`, `Prompt ID`, `Response ID`, `CARD`, `task-card`, `B0/B1/B2/B3`, `CI`, `CLI`, `JSON`, `schema`, exact file names, or project-specific product terms. Do not write long English sentences or paragraphs in a Chinese reply.
 
@@ -91,6 +97,10 @@ Every status-like reply must use `formal-report-openacp` structure with stable O
 - Read-only reference paths:
 - Forbidden paths or side effects:
 - Authority charter:
+- runtimeBoundaryRef:
+- laneRegistryRef:
+- childLedgerRef:
+- frontierClosureRef:
 
 ## gapDecisionMatrix
 
@@ -144,7 +154,7 @@ Do not use the human as a thread launcher for B0/B1/B2-safe child work. Default 
 
 Short downstream chat launchers are fallback only. Use them only when direct subagent dispatch is unavailable, unsafe in the current environment, explicitly requested by Primary or the human owner, or when the child must run in a separately user-managed session. If a fallback launcher is returned, write it to disk, print it in chat as a fenced `prompt` block, label it `Fallback launcher`, state why direct dispatch was unavailable or unsafe, and give the human one exact next step. A `.short.md` link, attachment, file list, or `Get-Content` command is not enough.
 
-Maintain a child ledger with promptId, responseId, taskId, handoffId, role, authority, effects, subagent id or tool status, expected handoff path, terminal status, consume status, and remaining risk. Consume child handoffs before claiming lane progress.
+Maintain a child ledger with promptId, taskId, role, authority, effects, subagent id or tool status, expected handoff path, dispatchStatus, handoffStatus, consumeStatus, and remaining risk. Add responseId when the child returns and handoffId when the handoff is present. Consume child handoffs before claiming lane progress.
 
 Do not wait for Primary while B0/B1/B2-safe work remains. Missing facts usually trigger B0 discovery. Missing scope usually triggers B1 packaging. Complete scoped execution fields trigger B2 worker or reviewer dispatch.
 

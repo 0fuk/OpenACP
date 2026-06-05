@@ -24,15 +24,47 @@
     "latestResponseId": { "type": "string", "minLength": 1 },
     "prompts": {
       "type": "array",
-      "items": { "type": "object", "required": ["promptId", "path", "role", "status"], "additionalProperties": true }
+      "items": {
+        "type": "object",
+        "required": ["promptId", "path", "role", "status"],
+        "properties": {
+          "promptId": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["created", "startup_provided", "dispatched", "returned", "consumed", "superseded", "cancelled", "invalid", "active", "complete", "present"] },
+          "supersededBy": { "type": "string" },
+          "invalidReason": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
     },
     "responses": {
       "type": "array",
-      "items": { "type": "object", "required": ["responseId", "promptId", "path", "status"], "additionalProperties": true }
+      "items": {
+        "type": "object",
+        "required": ["responseId", "promptId", "path", "status"],
+        "properties": {
+          "responseId": { "type": "string", "minLength": 1 },
+          "promptId": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["created", "startup_provided", "dispatched", "returned", "consumed", "superseded", "cancelled", "invalid", "active", "complete", "present"] },
+          "supersededBy": { "type": "string" },
+          "invalidReason": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
     },
     "handoffs": {
       "type": "array",
-      "items": { "type": "object", "required": ["handoffId", "taskId", "path", "status"], "additionalProperties": true }
+      "items": {
+        "type": "object",
+        "required": ["handoffId", "taskId", "path", "status"],
+        "properties": {
+          "handoffId": { "type": "string", "minLength": 1 },
+          "taskId": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["created", "startup_provided", "dispatched", "returned", "consumed", "superseded", "cancelled", "invalid", "active", "complete", "present"] },
+          "supersededBy": { "type": "string" },
+          "invalidReason": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
     },
     "cards": {
       "type": "array",
@@ -58,6 +90,23 @@
       "items": {
         "type": "object",
         "required": ["laneId", "role", "status", "currentPromptId", "authorityLevel"],
+        "properties": {
+          "laneId": { "type": "string", "minLength": 1 },
+          "role": { "enum": ["primary", "frontier", "worker", "reviewer", "discovery", "human-owner"] },
+          "status": { "type": "string", "minLength": 1 },
+          "currentPromptId": { "type": "string", "minLength": 1 },
+          "authorityLevel": { "enum": ["B0", "B1", "B2", "B3"] }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "role": { "const": "frontier" } } },
+            "then": { "properties": { "authorityLevel": { "enum": ["B0", "B1", "B2"] } } }
+          },
+          {
+            "if": { "properties": { "role": { "enum": ["worker", "reviewer", "discovery"] } } },
+            "then": { "properties": { "authorityLevel": { "enum": ["B0", "B1", "B2"] } } }
+          }
+        ],
         "additionalProperties": true
       }
     }
