@@ -18,7 +18,7 @@ Confirmed release metadata for the first public candidate:
 - [ ] Run `twine check` on built artifacts.
 - [ ] Install the built wheel in a clean environment and run a validator smoke test.
 - [ ] Install the built sdist in a clean environment and run a validator smoke test.
-- [ ] Confirm packaged schemas mirror the root `schemas/` directory.
+- [ ] Confirm packaged schemas under `openaccp/schemas/` are the only schema source of truth.
 - [ ] Check no local paths or private identifiers appear.
 - [ ] Check examples are project-neutral.
 - [ ] Check README presents Bootstrap and Coordination paths.

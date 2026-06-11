@@ -90,11 +90,11 @@ Recommended file names:
 
 - `primary-orchestrator.prompt.md`
 
-The install-startup chat output must include only one short copyable Primary launcher that points to the on-disk Primary prompt record. Do not paste full prompt bodies into chat.
+The install-startup output must include only one short Primary launcher seed that points to the on-disk Primary prompt record. Do not paste full prompt bodies into chat.
 
-The short launcher must be written to disk and printed in the Codex chat as a fenced `prompt` block. Writing `primary-orchestrator.short.md` is required for audit, but a file link, attachment, file list, or `Get-Content` command is not enough. The user must be able to copy the launcher directly from chat without opening a file.
+The short launcher must be written to disk. When the runtime supports agent/thread spawn or one-click launch, dispatch Primary directly and record the dispatch channel. When direct dispatch is unavailable, print `primary-orchestrator.short.md` in chat as a fenced `prompt` block and clearly label it as manual fallback. A file link, attachment, file list, or `Get-Content` command is not enough for manual fallback.
 
-Before the short launcher block, guide the user in natural language to create a new thread from the left sidebar and paste the short launcher there. The short launcher must name the prompt record path, Prompt ID, preferred language or language fallback, explicit UTF-8 read rule, and stop rule for read failure, missing Prompt ID, or corrupted text.
+For manual fallback, guide the user in natural language to create a new thread from the left sidebar and paste the short launcher there. The short launcher must name the prompt record path, Prompt ID, preferred language or language fallback, explicit UTF-8 read rule, and stop rule for read failure, missing Prompt ID, or corrupted text.
 
 Use `templates/primary-orchestrator-launcher.md` for the full on-disk Primary prompt record. Use `templates/short-chat-launcher.md` for the chat launcher. Do not create Frontier launchers during install startup. Do not create a demo package by default. Use bootstrap only when the user has no source pack, PRD, spec, facts path, or uploaded project materials and explicitly approves creating starter artifacts.
 
@@ -125,12 +125,12 @@ When the Primary thread starts from the short launcher, it must:
 12. Scan the source facts for domain coverage before finalizing CARDs: product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops. Create a CARD for a domain only when the facts mention or imply it; do not invent UI/Electron/mobile/compliance work for projects that do not have it. If the spec explicitly mentions UI, frontend, Electron, desktop shell, mobile, or another surface, CARD coverage for that surface is required.
 13. Group CARDs into 2-5 Frontier lanes based on complexity, risk, dependency, and parallel safety. Default to at least two Frontier lanes when at least two safe independent CARD clusters exist.
 14. Grant Frontier B2 lane-local authority by default, with B3 forbidden.
-15. Write full Frontier prompt records to disk and return short Frontier launchers only for the selected lanes.
+15. Write full Frontier prompt records and short Frontier launcher seeds to disk for the selected lanes.
 16. Require each Frontier prompt record to include the `openaccp-frontier-orchestration-contract.v1` JSON block and references to `runtimeBoundaryRef`, `laneRegistryRef`, `childLedgerRef`, and `frontierClosureRef`.
-17. Validate each Frontier prompt record with `openaccp-validate --artifact <frontier-prompt-record> --ruleset frontier-contract --strict` before returning its short launcher.
+17. Validate each Frontier prompt record with `openaccp-validate --artifact <frontier-prompt-record> --ruleset frontier-contract --strict` before direct dispatch or manual fallback.
 18. Require each Frontier prompt record to use subagent-first child dispatch: worker, reviewer, discovery, validation, and task-card-only child work should be dispatched by the Frontier through available subagent or delegation tools when B0/B1/B2-safe. Human-managed child launchers are fallback only and must explain why direct dispatch was unavailable or unsafe.
 
-For every selected Frontier, Primary must write the short Frontier launcher to disk and print it in its own fenced `prompt` block in chat. File links alone are invalid. Before each block, say which new left-sidebar thread the user should create and paste that block into.
+For every selected Frontier, Primary must write the short Frontier launcher to disk. Primary dispatches Frontier lanes directly when the runtime supports agent/thread spawn or one-click launch and records `dispatchChannel: agent_thread_spawn` or `dispatchChannel: one_click` in the lane registry and response evidence. If direct dispatch is unavailable, Primary records `dispatchChannel: manual_paste`, explains why fallback is needed, and prints each short Frontier launcher in its own fenced `prompt` block. File links alone are invalid for manual fallback.
 
 Primary should not hard-code exactly two Frontier lanes, but it should not under-dispatch by default. Launch one Frontier only when the project is clearly small, only one safe independent CARD cluster exists, or the user explicitly asks for a single lane; record the reason in the report. For medium or high complexity, launch two to five Frontiers when parallel lane work can reduce risk. More than five lanes requires explicit user approval.
 

@@ -583,17 +583,7 @@ def schema_path_for_ruleset(ruleset: str) -> Path | None:
     if ruleset not in JSON_SCHEMA_RULESETS:
         return None
     package_schema = resources.files("openaccp").joinpath("schemas", f"{ruleset}.schema.json")
-    if package_schema.is_file():
-        return Path(str(package_schema))
-    root = Path(__file__).resolve().parents[1]
-    candidates = [
-        root / "schemas" / f"{ruleset}.schema.json",
-        Path.cwd() / "schemas" / f"{ruleset}.schema.json",
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return candidates[0]
+    return Path(str(package_schema))
 
 
 def resolve_schema_ref(ref: str, root_schema: dict[str, Any]) -> dict[str, Any] | None:
@@ -1346,10 +1336,32 @@ def validate_launcher_text(
             )
 
 
+def launcher_output_dispatch_channel(text: str) -> str:
+    explicit = re.search(
+        r"(?im)^\s*(?:[-*]\s*)?(?:dispatchChannel|dispatch\s+channel)\s*[:：]\s*`?([A-Za-z0-9_-]+)`?\s*$",
+        text,
+    )
+    if explicit:
+        raw = explicit.group(1).strip().lower().replace("-", "_")
+        if raw in {"agent_thread_spawn", "one_click", "manual_paste"}:
+            return raw
+    lower_text = text.lower()
+    if re.search(r"\bagent_thread_spawn\b", lower_text):
+        return "agent_thread_spawn"
+    if re.search(r"\bone_click\b", lower_text):
+        return "one_click"
+    return "manual_paste"
+
+
 def validate_launcher_output_text(text: str, report: Report) -> None:
+    dispatch_channel = launcher_output_dispatch_channel(text)
+    direct_dispatch = dispatch_channel in {"agent_thread_spawn", "one_click"}
+    report.add("DISPATCH_CHANNEL", "blocking", "pass", f"Launcher output dispatch channel is {dispatch_channel}.")
     prompt_blocks = [match.group(1).strip() for match in PROMPT_FENCE_RE.finditer(text)]
-    if not prompt_blocks:
+    if not prompt_blocks and not direct_dispatch:
         report.add("PROMPT_FENCE", "blocking", "fail", "Launcher output must include at least one fenced ```prompt block with the copyable short launcher.")
+    elif not prompt_blocks:
+        report.add("PROMPT_FENCE", "blocking", "pass", f"No prompt block required for {dispatch_channel} dispatch output.")
     else:
         report.add("PROMPT_FENCE", "blocking", "pass", f"Found {len(prompt_blocks)} fenced prompt launcher block(s).")
     lower_text = text.lower()
@@ -1360,15 +1372,17 @@ def validate_launcher_output_text(text: str, report: Report) -> None:
         (english_has_left_sidebar and english_has_new_thread and english_has_paste_action)
         or (ZH_LEFT_SIDEBAR in text and ZH_NEW_THREAD in text and ZH_PASTE in text)
     )
-    if has_human_instruction:
+    if direct_dispatch:
+        report.add("HUMAN_THREAD_INSTRUCTION", "blocking", "pass", f"{dispatch_channel} output does not require left-sidebar paste instructions.")
+    elif has_human_instruction:
         report.add("HUMAN_THREAD_INSTRUCTION", "blocking", "pass", "Output tells the human where to paste the short launcher.")
     else:
         report.add("HUMAN_THREAD_INSTRUCTION", "blocking", "fail", "Output must tell the human to create a new left-sidebar thread and paste the short launcher there.")
-    if "get-content" in lower_text and not prompt_blocks:
+    if "get-content" in lower_text and not prompt_blocks and not direct_dispatch:
         report.add("GET_CONTENT_SUBSTITUTE", "blocking", "fail", "A Get-Content command is not a copyable chat launcher.")
     else:
         report.add("GET_CONTENT_SUBSTITUTE", "blocking", "pass", "No Get-Content-only launcher substitute found.")
-    if re.search(r"(?i)\.short\.md", text) and not prompt_blocks:
+    if re.search(r"(?i)\.short\.md", text) and not prompt_blocks and not direct_dispatch:
         report.add("FILE_LINK_ONLY", "blocking", "fail", "Launcher output names short launcher files but does not include copyable prompt blocks.")
     else:
         report.add("FILE_LINK_ONLY", "blocking", "pass", "Output is not file-link-only.")
@@ -1415,25 +1429,8 @@ def validate_launcher_output_text(text: str, report: Report) -> None:
                 )
 
 
-def _non_code_lines(text: str) -> list[str]:
-    without_fences = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
-    return [line.strip() for line in without_fences.splitlines() if line.strip()]
-
-
 def _has_cjk(text: str) -> bool:
     return bool(re.search(r"[\u4e00-\u9fff]", text))
-
-
-def _long_english_dominant_lines(text: str) -> list[str]:
-    offenders: list[str] = []
-    for line in _non_code_lines(text):
-        if line.startswith("|") or re.match(r"^[-*]\s*`?[\w.-]+`?\s*:", line):
-            continue
-        english_words = re.findall(r"\b[A-Za-z][A-Za-z0-9_-]*\b", line)
-        cjk_chars = re.findall(r"[\u4e00-\u9fff]", line)
-        if len(english_words) >= 10 and len(english_words) > len(cjk_chars):
-            offenders.append(line[:120])
-    return offenders
 
 
 def _trailing_report_section_heading(text: str, pattern: str) -> str | None:
@@ -1450,7 +1447,7 @@ def _trailing_report_section_heading(text: str, pattern: str) -> str | None:
 
 
 def _trailing_recommended_next_step_heading(text: str) -> str | None:
-    return _trailing_report_section_heading(text, r"Recommended Next Step|\u4e0b\u4e00\u6b65\u5efa\u8bae")
+    return _trailing_report_section_heading(text, r"Recommended Next Step|Human Next Step|\u4e0b\u4e00\u6b65\u5efa\u8bae")
 
 
 def _has_heading(text: str, pattern: str) -> bool:
@@ -1504,16 +1501,16 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
     else:
         report.add("EVIDENCE_DETAILS", "blocking", "fail", "Formal report must include Evidence and Validation or basis outside the table.")
     trailing_next_step = _trailing_recommended_next_step_heading(text)
-    has_legacy_next_step = _has_heading(text, r"Human Next Step|\u7ed9\u4eba\u7684\u4e0b\u4e00\u6b65")
+    has_bad_chinese_next_step = _has_heading(text, r"\u7ed9\u4eba\u7684\u4e0b\u4e00\u6b65")
     if wants_chinese and trailing_next_step == ZH_RECOMMENDED_NEXT_STEP:
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "pass", "Formal report ends with a human-readable next-step section.")
-    elif wants_chinese and has_legacy_next_step:
+    elif has_bad_chinese_next_step:
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Chinese formal reports must use `下一步建议`, not `给人的下一步`.")
     elif wants_chinese and trailing_next_step:
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Chinese formal reports must end with `下一步建议`.")
     elif wants_chinese:
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Chinese formal reports must end with a `下一步建议` section.")
-    elif trailing_next_step == "Recommended Next Step":
+    elif trailing_next_step in {"Recommended Next Step", "Human Next Step"}:
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "pass", "Formal report ends with a human-readable next-step section.")
     elif re.search(r"(?i)Recommended Next Step|recommended next step|what happens next|Human Next Step|human next step", text):
         report.add("HUMAN_NEXT_STEP_SUMMARY", "blocking", "fail", "Recommended Next Step must be the final report section.")
@@ -1537,17 +1534,6 @@ def validate_formal_report_text(text: str, report: Report, preferred_language: s
         report.add("FORMAL_REPORT_NO_HTML_NOWRAP", "blocking", "fail", "Formal reports must not use <nobr> or HTML no-wrap wrappers.")
     else:
         report.add("FORMAL_REPORT_NO_HTML_NOWRAP", "blocking", "pass", "Formal report does not use HTML no-wrap wrappers.")
-    if wants_chinese or any(_has_cjk(label) for label in labels):
-        english_offenders = _long_english_dominant_lines(text)
-        if english_offenders:
-            report.add(
-                "PREFERRED_LANGUAGE_CONTRACT",
-                "blocking",
-                "fail",
-                "Chinese formal reports must not contain long English-dominant prose lines: " + " | ".join(english_offenders[:3]),
-            )
-        else:
-            report.add("PREFERRED_LANGUAGE_CONTRACT", "blocking", "pass", "Chinese formal report is not dominated by long English prose.")
 
 
 def validate_frontier_contract_text(text: str, report: Report) -> None:
@@ -2513,9 +2499,11 @@ def validate_lane_registry(data: dict[str, Any], report: Report) -> None:
 def validate_lane_registry_dispatch_policy(data: dict[str, Any], lanes: list[Any], report: Report) -> None:
     complexity = str(data.get("projectComplexity", "")).strip().lower()
     mode = str(data.get("frontierDispatchMode", "")).strip().lower()
+    channel = str(data.get("dispatchChannel", "")).strip().lower()
     reason = str(data.get("frontierDispatchReason", "")).strip()
     valid_complexities = {"bootstrap", "small", "normal", "medium", "medium-high", "high", "unknown"}
     valid_modes = {"pre_frontier", "single_frontier", "multi_frontier"}
+    valid_channels = {"", "agent_thread_spawn", "one_click", "manual_paste"}
     if complexity not in valid_complexities:
         report.add("LANE_DISPATCH_POLICY_COMPLEXITY", "blocking", "fail", "projectComplexity must be bootstrap, small, normal, medium, medium-high, high, or unknown.")
     else:
@@ -2523,6 +2511,10 @@ def validate_lane_registry_dispatch_policy(data: dict[str, Any], lanes: list[Any
     if mode not in valid_modes:
         report.add("LANE_DISPATCH_POLICY_MODE", "blocking", "fail", "frontierDispatchMode must be pre_frontier, single_frontier, or multi_frontier.")
         return
+    if channel not in valid_channels:
+        report.add("LANE_DISPATCH_CHANNEL", "blocking", "fail", "dispatchChannel must be agent_thread_spawn, one_click, or manual_paste when present.")
+    else:
+        report.add("LANE_DISPATCH_CHANNEL", "blocking", "pass", "dispatchChannel is valid or intentionally omitted.")
     if not reason:
         report.add("LANE_DISPATCH_POLICY_REASON", "blocking", "fail", "frontierDispatchReason must explain the lane count decision.")
     else:

@@ -4,6 +4,8 @@
 
 OpenACCP is an open workflow protocol for coordinating multi-agent software work.
 
+OpenACCP is source-driven and facts-source anchored: agents start from classified project facts, then carry authority, task cards, handoffs, reviews, and acceptance decisions through a recoverable workflow.
+
 OpenACCP focuses on the coordination layer around agent runtimes, model frameworks, IDE tools, and graph frameworks. It works alongside Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK. Those tools help agents run, code, call tools, or build graphs. OpenACCP keeps parallel agent work organized once several threads start moving at the same time:
 
 - Which materials are current facts, reference-only material, deprecated material, or invalid sources.
@@ -17,7 +19,7 @@ In one sentence: **AI agents can do work; OpenACCP keeps the work coordinated, r
 
 ## Pre-1.0 Compatibility
 
-Before v1.0, artifact schemas may introduce breaking changes without changing `schemaVersion`. After upgrading, re-run the validator on stored artifacts and check `CHANGELOG.md` for the migration note.
+Before v1.0, breaking artifact schema changes bump that artifact's `schemaVersion` suffix. After upgrading, re-run the validator on stored artifacts and check `CHANGELOG.md` for the migration note.
 
 ## Who This Is For
 
@@ -64,16 +66,16 @@ After you provide those inputs:
 
 1. Startup writes one full Primary prompt record to your working directory.
 2. Startup writes one short Primary launcher file beside it.
-3. Startup returns one copyable short Primary launcher in the current chat as a fenced `prompt` block.
-4. Startup tells you, in natural language, to create a new thread from the left sidebar and paste only that short launcher there.
+3. Startup dispatches the Primary thread directly when the runtime supports agent/thread spawn.
+4. If direct dispatch is unavailable, Startup returns one copyable short Primary launcher in chat as a fenced `prompt` block and clearly labels it as the manual fallback.
 
-The full prompt body belongs on disk. Chat contains the copyable short launcher itself, with file links or attachments used only as supporting references.
+The full prompt body belongs on disk. Chat carries only the short launcher seed when manual fallback is needed, with file links or attachments used only as supporting references.
 
 ## What Happens After Startup
 
-GitHub install startup creates **one Primary launcher first**. Primary creates Frontier launchers later after workspace review, CARD creation, and lane analysis.
+GitHub install startup creates **one Primary prompt record first**. Primary creates and dispatches Frontier lanes later after workspace review, CARD creation, and lane analysis.
 
-The Primary thread starts after you paste the short Primary launcher into a new thread. Primary then reviews the real workspace and facts before deciding how much parallel coordination is useful.
+The Primary thread starts directly when the runtime supports agent/thread spawn. If manual fallback is the only available channel, paste the short Primary launcher into a new thread. Primary then reviews the real workspace and facts before deciding how much parallel coordination is useful.
 
 Primary does the coordination work:
 
@@ -84,7 +86,7 @@ Primary does the coordination work:
 5. Split the project into CARDs before dispatching Frontier lanes.
 6. Decide how many Frontier lanes are useful based on project complexity, dependencies, risk, and parallel safety.
 7. Write full Frontier prompt records and short Frontier launchers for selected lanes.
-8. Print each selected Frontier launcher in chat as a copyable fenced `prompt` block.
+8. Dispatch selected Frontier lanes directly when the runtime supports it; otherwise print fallback Frontier launchers as copyable fenced `prompt` blocks.
 
 Primary defaults to **at least two Frontier lanes** for normal or medium-complexity projects when two safe independent CARD clusters exist. It launches one Frontier only when the project is clearly small, only one safe lane exists, or the user explicitly asks for a single lane. Broad or medium-high-complexity projects normally receive two to five Frontier lanes. More than five requires explicit user approval.
 
@@ -102,7 +104,7 @@ Working directory: <where OpenACCP may write .openaccp coordination files>
 Repo path: <actual product Git repository path, or "no repo yet">
 Preferred language: <English / Chinese / your choice>
 
-First review the facts, coordination workbench, and product repo path. Create or refresh the source pack, scope boundary, assumptions ledger, runtime boundary, current manifest, source status registry, lane registry, decision registry, sequence registry, and CARD registry. Infer base branch, source roots, test entrypoints, and worktree policy from the repo before B2 Frontier dispatch; ask only for ambiguous or risky runtime choices. Split the project into enough CARDs to support useful parallel Frontier lanes. Then return a human-readable status report and copyable short Frontier launchers for selected lanes.
+First review the facts, coordination workbench, and product repo path. Create or refresh the source pack, scope boundary, assumptions ledger, runtime boundary, current manifest, source status registry, lane registry, decision registry, sequence registry, and CARD registry. Infer base branch, source roots, test entrypoints, and worktree policy from the repo before B2 Frontier dispatch; ask only for ambiguous or risky runtime choices. Split the project into enough CARDs to support useful parallel Frontier lanes. Then return a human-readable status report, dispatch selected Frontier lanes directly when possible, and provide manual fallback launchers only when direct dispatch is unavailable.
 ```
 
 Manual Frontier launcher:
@@ -124,12 +126,12 @@ If a full prompt record already exists, use a short launcher. The short launcher
 
 ## How Orchestrators Communicate
 
-OpenACCP uses project artifacts as the shared memory between orchestrators.
+OpenACCP uses classified project facts as the coordination anchor. Artifacts are the audit trail and control surface that keep those facts, authority boundaries, handoffs, and decisions visible across orchestrators.
 
 ```text
 Primary
   -> writes CARDs, authority charters, and Frontier prompt records
-  -> returns short Frontier launchers
+  -> dispatches Frontier lanes or records fallback launchers
 
 Frontier
   -> reads assigned CARDs and source pack
@@ -164,10 +166,10 @@ Important artifacts:
 | `task card` | A bounded executable task with scope, acceptance, verification, and stop conditions. |
 | `authority charter` | The permission contract: who can read, who can write, allowed effects, forbidden effects, and data risk. |
 | `prompt record` | The full role prompt saved on disk and executed by Prompt ID. |
-| `short launcher` | The copyable chat block that points a new thread to the full prompt record. |
+| `short launcher` | A compact seed that points a thread to the full prompt record. It is printed in chat only when manual fallback is needed. |
 | `handoff` | Evidence from a worker, reviewer, or discovery agent. It proves some things and leaves other things unproven. |
 | `consume result` | The orchestrator decision about what a handoff actually proves before acceptance. |
-| `lane-progress packet` | A stage packet showing useful Frontier progress. It is evidence for the lane and does not require Primary consume by default. |
+| `lane-progress packet` | A stage packet showing useful Frontier progress. It stays inside the lane by default and becomes Primary evidence only when closure is ready. |
 | `frontier closure` | The gate proof for whether a Frontier can keep working, close, or return to Primary. A Primary-ready packet is valid only when this proof shows that all visible remaining gaps are final-authority-only or explicitly out. |
 | `formal report` | Human-readable status: what changed, progress, area, goal, gaps, next action, and evidence. |
 | `machine summary` | Compact locators for downstream agents and validators. |
@@ -319,7 +321,7 @@ When the minimum package inputs are missing, start with `bootstrap-openaccp` so 
 ```text
 docs/        Concepts, role model, authority model, bootstrap, coordination, validator rules.
 templates/   Reusable Markdown templates for source packs, specs, prompts, reports, handoffs.
-schemas/     Minimal JSON Schemas for machine-checkable coordination artifacts.
+openaccp/    Python package, CLI, validator, and packaged JSON Schemas under openaccp/schemas/.
 tools/       Validator and helper CLI.
 skills/      Portable agent skills for using OpenACCP workflows.
 examples/    Strict fixtures and concept examples.
@@ -358,16 +360,13 @@ openaccp init ./my-openaccp-package --write
 
 `openaccp init` is a dry run by default. It is a bootstrap fallback. For real projects, install the skills first, then let Primary create project-specific prompt records and launchers from your facts input, working directory, and repo path.
 
-## Positioning
+## How It Compares
 
-OpenACCP can be used with Claude Workflow, SuperClaude, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, the OpenAI Agents SDK, Codex, or a custom agent stack.
+OpenACCP sits beside the tools that run agents.
 
-The difference:
-
-- Runtime and coding-agent tools make agents run, call tools, and write code.
-- OpenACCP makes multi-agent work traceable, reviewable, handoff-ready, and authority-aware.
-
-One layer executes work. The other coordinates project truth.
+- Codex, Claude Code, Aider, OpenHands, and SWE-agent are strong places to run coding work. OpenACCP gives that work a shared source pack, CARDs, authority boundaries, handoffs, reviews, and consume decisions.
+- LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK help teams build agent runtimes, flows, graphs, tools, and application-level agent behavior. OpenACCP adds the project delivery layer: which facts count, who can act, what evidence came back, and who can accept it.
+- Teams can keep their current coding agent or agent framework. OpenACCP gives the surrounding workflow a protocol so parallel work stays traceable, reviewable, and recoverable.
 
 ## Public Package Hygiene
 

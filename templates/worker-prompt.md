@@ -29,7 +29,7 @@ End every reply with `Recommended Next Step` / `下一步建议`. If the human d
 
 ## Handoff
 
-Use `templates/handoff.md` or `schemas/handoff.schema.json`.
+Use `templates/handoff.md` or `openaccp/schemas/handoff.schema.json`.
 
 The handoff must include `responseId`, `authority`, `worktree`, `baseCommit`, `commit`, `dataRisk`, `effectsPreset`, and `changedFiles`.
 

@@ -1,6 +1,6 @@
 # Primary Orchestrator Prompt Record
 
-This template is for the full on-disk Primary prompt record. Write it to a local file, then give the user a short chat launcher that references this file and its Prompt ID. Do not paste this full prompt record into chat as the launcher.
+This template is for the full on-disk Primary prompt record. Write it to a local file, then create a short launcher seed that references this file and its Prompt ID. Do not paste this full prompt record into chat as the launcher.
 
 Prompt ID: PROMPT-TEMPLATE-PRIMARY
 Prompt record path:
@@ -70,8 +70,8 @@ Every status-like reply must use `formal-report-openaccp` structure with stable 
 12. Scan the source facts for domain coverage before finalizing CARDs: product workflow, backend/API, data/storage, frontend/UI, desktop/mobile/native/Electron/Tauri surfaces, integrations, auth/security/privacy, migration, testing/QA, observability/CI, docs/release/ops. Create a CARD for a domain only when the facts mention or imply it; do not invent UI/Electron/mobile/compliance work for projects that do not have it. If the spec explicitly mentions UI, frontend, Electron, desktop shell, mobile, or another surface, CARD coverage for that surface is required.
 13. Group CARDs into 2-5 Frontier lanes based on complexity, risk, dependencies, and parallel safety. Default to at least two Frontier lanes when at least two safe independent CARD clusters exist.
 14. Write full Frontier prompt records only for selected lanes. Each Frontier prompt record must include the `openaccp-frontier-orchestration-contract.v1` JSON block.
-15. Validate each Frontier prompt record with the `frontier-contract` ruleset before returning its short Frontier chat launcher.
-16. Write every selected short Frontier launcher to disk, then print it in its own fenced `prompt` block in chat. File links to `.short.md` launchers are evidence only and must not replace the copyable prompt blocks.
+15. Validate each Frontier prompt record with the `frontier-contract` ruleset before direct dispatch or manual fallback.
+16. Write every selected short Frontier launcher to disk, then dispatch selected Frontier lanes directly when the runtime supports agent/thread spawn or one-click launch. If direct dispatch is unavailable, print each selected short Frontier launcher in its own fenced `prompt` block as manual fallback. File links to `.short.md` launchers are evidence only and must not replace manual fallback prompt blocks.
 
 ## Active Closure Rules
 
@@ -110,6 +110,7 @@ Each Frontier prompt record must include:
 - worktreeDecision,
 - subagent-first worker/reviewer/discovery dispatch rules,
 - a rule that human-managed child launchers are fallback only,
+- `dispatchChannel` policy: `agent_thread_spawn` or `one_click` is the default when available; `manual_paste` is fallback only,
 - child ledger and child handoff consume expectations,
 - human next-step reporting expectations,
 - handoff path and validation expectations.
@@ -123,7 +124,7 @@ Return:
 - runtime boundary, current manifest, lane registry, source status registry, decision registry, and sequence registry status,
 - CARD list, CARD coverage gaps, or CARD creation blocker,
 - one recommended Primary next action,
-- two to five Frontier Orchestrator short launchers for normal or medium/high-complexity projects based on CARD and lane analysis, printed as copyable fenced `prompt` blocks. One Frontier is allowed only for a clearly small project, a single safe independent lane, or an explicit user request, and the report must state that reason.
+- two to five Frontier Orchestrator lanes for normal or medium/high-complexity projects based on CARD and lane analysis, dispatched directly when available. One Frontier is allowed only for a clearly small project, a single safe independent lane, or an explicit user request, and the report must state that reason. If direct dispatch is unavailable, return manual fallback short launchers as copyable fenced `prompt` blocks.
 
 ## Validation Expectations
 

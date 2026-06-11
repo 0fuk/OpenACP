@@ -75,7 +75,7 @@ For Chinese chat reports, use the pure Markdown header `类型和状态`. Do not
 
 ## Post-Install Startup Note
 
-When this report is used immediately after installing OpenACCP, the `Next` cell must ask for three setup inputs: facts input, working directory, and repo path. The facts input can be a source pack, PRD, spec, design document, facts folder, or uploaded project materials. The working directory is the local agent coordination workbench where OpenACCP may write `.openaccp`, launchers, coordination files, reports, handoffs, CARD registry, and source-pack artifacts. The `repo path` is the actual product code repository path; Primary uses it to infer Git branch, base branch, writable scope, test entrypoints, worktree policy, and worker-editable files. Do not end with only "send paths"; explain the difference between the coordination workbench and product repo. Preferred language is optional; if omitted, keep the current conversation language.
+When this report is used immediately after installing OpenACCP, keep the `Next` cell short, for example: `Ask for the three project setup inputs.` Put the actual numbered input request in the final `Recommended Next Step` / `下一步建议` section. The final section asks for facts input, working directory, and repo path; explains that the working directory is the local agent coordination workbench; explains that the `repo path` is the actual product code repository path; and says preferred language is optional. Do not end with only "send paths"; explain what will happen after the user provides the inputs.
 
 ## Mini Example
 

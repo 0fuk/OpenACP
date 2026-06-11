@@ -282,6 +282,7 @@ def valid_lane_registry() -> dict:
         "registryId": "LANES-001",
         "projectComplexity": "bootstrap",
         "frontierDispatchMode": "pre_frontier",
+        "dispatchChannel": "agent_thread_spawn",
         "frontierDispatchReason": "Bootstrap registry before Frontier dispatch.",
         "lanes": [
             {
@@ -1024,6 +1025,60 @@ def assert_text_rules(tmp: Path) -> None:
     )
     assert_exit("valid launcher output blocks", run(["--artifact", str(launcher_output_path), "--ruleset", "launcher-output", "--strict"]), 0)
 
+    auto_launcher_output_path = tmp / "auto-launcher-output.md"
+    auto_launcher_output_path.write_text(
+        "\n".join(
+            [
+                "Dispatch channel: agent_thread_spawn",
+                "Primary directly spawned Frontier 01 from the on-disk prompt record.",
+                "Prompt ID: openaccp-frontier-demo-lane-01",
+                "Spawn result: dispatched.",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    assert_exit("launcher output allows auto dispatch without paste block", run(["--artifact", str(auto_launcher_output_path), "--ruleset", "launcher-output", "--strict"]), 0)
+
+    missing_prompt_manual_output_path = tmp / "missing-prompt-manual-launcher-output.md"
+    missing_prompt_manual_output_path.write_text(
+        "\n".join(
+            [
+                "Dispatch channel: manual_paste",
+                "Create a new thread from the left sidebar and paste the short launcher there.",
+                "frontier-01.short.md",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    assert_exit("manual launcher output rejects file-only fallback", run(["--artifact", str(missing_prompt_manual_output_path), "--ruleset", "launcher-output", "--strict"]), 1)
+
+    direct_unavailable_file_only_path = tmp / "direct-unavailable-file-only-launcher-output.md"
+    direct_unavailable_file_only_path.write_text(
+        "\n".join(
+            [
+                "Direct dispatch is unavailable here.",
+                "frontier-01.short.md",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    assert_exit("launcher output rejects direct-dispatch-unavailable file-only fallback", run(["--artifact", str(direct_unavailable_file_only_path), "--ruleset", "launcher-output", "--strict"]), 1)
+
+    missing_thread_manual_output_path = tmp / "missing-thread-manual-launcher-output.md"
+    missing_thread_manual_output_path.write_text(
+        "\n".join(
+            [
+                "Dispatch channel: manual_paste",
+                "",
+                "```prompt",
+                frontier_01_launcher.read_text(encoding="utf-8"),
+                "```",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    assert_exit("manual launcher output rejects missing paste guidance", run(["--artifact", str(missing_thread_manual_output_path), "--ruleset", "launcher-output", "--strict"]), 1)
+
     bad_launcher_output_path = tmp / "bad-launcher-output.md"
     bad_launcher_output_path.write_text(
         "\n".join(
@@ -1136,6 +1191,13 @@ def assert_text_rules(tmp: Path) -> None:
     )
     assert_exit("valid English formal report", run(["--artifact", str(formal_report_path), "--ruleset", "formal-report", "--strict"]), 0)
 
+    human_next_step_report_path = tmp / "human-next-step-formal-report.md"
+    human_next_step_report_path.write_text(
+        formal_report_path.read_text(encoding="utf-8").replace("## Recommended Next Step", "## Human Next Step"),
+        encoding="utf-8",
+    )
+    assert_exit("English formal report accepts Human Next Step", run(["--artifact", str(human_next_step_report_path), "--ruleset", "formal-report", "--strict"]), 0)
+
     zh_frontier_report_path = tmp / "zh-frontier-formal-report.md"
     zh_frontier_report_path.write_text(
         "\n".join(
@@ -1213,13 +1275,13 @@ def assert_text_rules(tmp: Path) -> None:
     bad_tail_report_path.write_text(zh_frontier_report_path.read_text(encoding="utf-8") + "\n## Extra Section\n- This should not appear after Recommended Next Step.\n", encoding="utf-8")
     assert_exit("formal report requires trailing recommended next step", run(["--artifact", str(bad_tail_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
 
-    bad_english_report_path = tmp / "bad-english-formal-report.md"
-    bad_english_report_path.write_text(
+    english_dominant_zh_report_path = tmp / "english-dominant-zh-formal-report.md"
+    english_dominant_zh_report_path.write_text(
         zh_frontier_report_path.read_text(encoding="utf-8")
         + "\nSource classification summary: current sources are final specification, product requirements, platform checklist, and migration readiness notes.\n",
         encoding="utf-8",
     )
-    assert_exit("Chinese formal report rejects English-dominant prose", run(["--artifact", str(bad_english_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 1)
+    assert_exit("Chinese formal report does not structurally reject English prose", run(["--artifact", str(english_dominant_zh_report_path), "--ruleset", "formal-report", "--preferred-language", "Chinese", "--strict"]), 0)
 
     frontier_contract_path = tmp / "frontier-contract.md"
     frontier_contract_path.write_text(
@@ -1417,44 +1479,13 @@ def assert_cli_entrypoints(tmp: Path) -> None:
     assert_exit("python -m openaccp init refuses overwrite", overwrite_proc, 1)
 
 
-def assert_packaged_schemas_mirror_root() -> None:
-    root_schema_dir = ROOT / "schemas"
-    package_schema_dir = ROOT / "openaccp" / "schemas"
-    root_names = {path.name for path in root_schema_dir.glob("*.schema.json")}
-    package_names = {path.name for path in package_schema_dir.glob("*.schema.json")}
-    missing: list[str] = []
-    extra: list[str] = []
-    mismatched: list[str] = []
-    for name in sorted(root_names - package_names):
-        missing.append(name)
-    for name in sorted(package_names - root_names):
-        extra.append(name)
-    for root_schema in sorted(root_schema_dir.glob("*.schema.json")):
-        packaged_schema = package_schema_dir / root_schema.name
-        if not packaged_schema.exists():
-            continue
-        root_text = root_schema.read_text(encoding="utf-8")
-        packaged_text = packaged_schema.read_text(encoding="utf-8")
-        if root_text != packaged_text:
-            mismatched.append(root_schema.name)
-    if missing or extra or mismatched:
-        if missing:
-            print("FAIL packaged schemas missing: " + ", ".join(missing))
-        if extra:
-            print("FAIL packaged schemas extra: " + ", ".join(extra))
-        if mismatched:
-            print("FAIL packaged schemas drifted: " + ", ".join(mismatched))
-        raise SystemExit(1)
-    print("PASS packaged schemas mirror root schemas")
-
-
 def assert_required_fields_cover_schema() -> None:
     sys.path.insert(0, str(ROOT))
     from openaccp.validate import JSON_SCHEMA_RULESETS, REQUIRED_FIELDS
 
     missing_by_ruleset: list[str] = []
     for ruleset in sorted(JSON_SCHEMA_RULESETS):
-        schema_path = ROOT / "schemas" / f"{ruleset}.schema.json"
+        schema_path = ROOT / "openaccp" / "schemas" / f"{ruleset}.schema.json"
         if not schema_path.exists() or ruleset not in REQUIRED_FIELDS:
             continue
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -1477,7 +1508,6 @@ def main() -> int:
         assert_text_rules(tmp)
         assert_public_package_rules(tmp)
         assert_cli_entrypoints(tmp)
-        assert_packaged_schemas_mirror_root()
         assert_required_fields_cover_schema()
     return 0
 

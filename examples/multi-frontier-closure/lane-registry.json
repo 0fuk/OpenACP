@@ -4,6 +4,7 @@
   "registryId": "LANES-DEMO-001",
   "projectComplexity": "small",
   "frontierDispatchMode": "single_frontier",
+  "dispatchChannel": "agent_thread_spawn",
   "frontierDispatchReason": "Small fixture with a single safe Frontier lane for documentation closure.",
   "lanes": [
     {

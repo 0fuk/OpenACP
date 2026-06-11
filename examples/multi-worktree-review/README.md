@@ -7,7 +7,7 @@ Workers use disjoint scopes and separate branches.
 | Worker | Scope | Branch | Handoff |
 |---|---|---|---|
 | docs worker | `docs/**` | `docs/guide` | `handoff-docs.json` |
-| schema worker | `schemas/**` | `schemas/contracts` | `handoff-schema.json` |
+| schema worker | `openaccp/schemas/**` | `schema-contracts` | `handoff-schema.json` |
 
 Reviewers check each handoff independently. Final authority decides integration order.
 

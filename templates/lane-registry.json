@@ -4,6 +4,7 @@
   "registryId": "LANES-001",
   "projectComplexity": "bootstrap",
   "frontierDispatchMode": "pre_frontier",
+  "dispatchChannel": "agent_thread_spawn",
   "frontierDispatchReason": "Primary has not completed real project CARD and Frontier lane analysis yet.",
   "lanes": [
     {

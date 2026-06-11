@@ -2,7 +2,7 @@
 
 This example shows the expected output shape after a Primary thread has inspected the project facts, coordination workbench, product repo path, created CARDs, and decided that two Frontier lanes are useful.
 
-GitHub install startup returns one short Primary launcher. Frontier launchers are created later by Primary after CARD and lane analysis.
+GitHub install startup creates one Primary prompt record first. Frontier launchers are created later by Primary after CARD and lane analysis.
 
 ## Required Primary Inputs
 
@@ -37,17 +37,17 @@ Write the full launcher prompt records to disk first, preferably under:
 <working-directory>/.openaccp/launchers/
 ```
 
-Then return short copyable launchers in chat. Do not paste the full prompt bodies into chat.
+Then dispatch selected Frontier lanes directly when the runtime supports agent/thread spawn or one-click launch. Do not paste the full prompt bodies into chat.
 
-The short launcher files may also be written to disk, but the chat response must include the exact short launcher text in fenced `prompt` blocks. Do not give only file links, attachments, file lists, or `Get-Content` commands.
+The short launcher files must also be written to disk for audit. If direct dispatch is unavailable, the chat response must include the exact short launcher text in fenced `prompt` blocks as manual fallback. Do not give only file links, attachments, file lists, or `Get-Content` commands.
 
-Before each short launcher block, tell the user where to use it:
+For manual fallback, before each short launcher block, tell the user where to use it:
 
 ```text
 Create a new thread from the left sidebar, paste the short Frontier launcher below, and start that thread.
 ```
 
-Then print the short launcher in a fenced `prompt` block. Repeat the same pattern for `Frontier 01` and `Frontier 02`.
+Then print the short launcher in a fenced `prompt` block. Repeat the same pattern for `Frontier 01` and `Frontier 02` only when fallback is needed.
 
 Example short chat launcher:
 

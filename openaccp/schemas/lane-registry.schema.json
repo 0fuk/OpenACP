@@ -10,6 +10,7 @@
     "registryId": { "type": "string", "minLength": 1 },
     "projectComplexity": { "enum": ["bootstrap", "small", "normal", "medium", "medium-high", "high", "unknown"] },
     "frontierDispatchMode": { "enum": ["pre_frontier", "single_frontier", "multi_frontier"] },
+    "dispatchChannel": { "enum": ["agent_thread_spawn", "one_click", "manual_paste"] },
     "frontierDispatchReason": { "type": "string", "minLength": 1 },
     "lanes": {
       "type": "array",

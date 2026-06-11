@@ -220,6 +220,7 @@ def starter_files(target: Path) -> dict[Path, str]:
                 "registryId": "LANES-001",
                 "projectComplexity": "bootstrap",
                 "frontierDispatchMode": "pre_frontier",
+                "dispatchChannel": "agent_thread_spawn",
                 "frontierDispatchReason": "Generated bootstrap starter; Primary has not reviewed real project facts or dispatched Frontier lanes yet.",
                 "lanes": [
                     {
