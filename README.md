@@ -1,25 +1,31 @@
-# OpenACCP
+# OpenACCP - Coordinate AI Coding Agents From PRD to Accepted Code
 
-**OpenACCP: Agentic Continuous Coordination Protocol**
+**Agentic Continuous Coordination Protocol**
 
-OpenACCP is an open workflow protocol for coordinating multi-agent software work.
+**Keep multi-agent software delivery coordinated, reviewable, and recoverable.**
 
-OpenACCP is source-driven and facts-source anchored: agents start from classified project facts, then carry authority, task cards, handoffs, reviews, and acceptance decisions through a recoverable workflow.
+OpenACCP is an open workflow protocol for teams using multiple AI coding agents on real software projects. It gives Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK a shared delivery layer for project facts, task cards, authority boundaries, handoffs, reviews, worktrees, and final acceptance.
 
-OpenACCP focuses on the coordination layer around agent runtimes, model frameworks, IDE tools, and graph frameworks. It works alongside Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK. Those tools help agents run, code, call tools, or build graphs. OpenACCP keeps parallel agent work organized once several threads start moving at the same time:
+Use OpenACCP when a PRD, a repo, and several agent threads need one clear path from source facts to accepted work.
 
-- Which materials are current facts, reference-only material, deprecated material, or invalid sources.
-- Which agent may only read, which agent may prepare packages, and which agent may execute scoped work.
-- What a worker handoff proves, and which acceptance step remains.
-- Whether a reviewer recommendation is final, or only provisional evidence.
-- How multiple threads, worktrees, handoffs, review reports, and launchers connect.
-- When the human owner must make a final decision, and when agents can keep moving without interrupting the human.
+## Why Teams Use OpenACCP
 
-In one sentence: **AI agents can do work; OpenACCP keeps the work coordinated, reviewable, and recoverable.**
+- **Start from source facts.** Classify project material as current, reference-only, deprecated, invalid, or unknown before agents act on it.
+- **Give every agent a job.** Primary, Frontier, worker, reviewer, discovery, and validator roles each get a clear lane and authority boundary.
+- **Keep Frontier lanes moving.** Frontiers continue B0/B1/B2-safe closure, dispatch subagents when useful, and return to Primary only when the lane is truly ready.
+- **Turn output into evidence.** Handoffs, review reports, consume results, and machine summaries show what is proven, provisional, rejected, or still missing.
+- **Separate doing from accepting.** Worker output, reviewer recommendations, validator passes, Primary consume, and human final authority stay distinct.
+- **Recover from long-running work.** Prompt records, Response IDs, CARD registries, manifests, and coordination files make agent work restartable after thread or context loss.
 
-## Pre-1.0 Compatibility
+## What You Get
 
-Before v1.0, breaking artifact schema changes bump that artifact's `schemaVersion` suffix. After upgrading, re-run the validator on stored artifacts and check `CHANGELOG.md` for the migration note.
+| Need | OpenACCP gives you |
+|---|---|
+| Several agents working at once | Primary/Frontier lanes, CARDs, task cards, child ledgers, and handoffs. |
+| A rough PRD or scattered notes | Bootstrap flow for source packs, assumptions, open questions, starter specs, and first CARDs. |
+| Real code changes | Authority charters, worktree policy, scoped worker dispatch, verification evidence, and reviewer loops. |
+| Clear acceptance | Consume results that say what evidence proves before final acceptance or release decisions. |
+| Tool-neutral workflow | A protocol layer that can sit beside Codex, Claude Code, Aider, OpenHands, SWE-agent, LangGraph, CrewAI, AutoGen, or your own agent stack. |
 
 ## Who This Is For
 
@@ -70,6 +76,10 @@ After you provide those inputs:
 4. If direct dispatch is unavailable, Startup returns one copyable short Primary launcher in chat as a fenced `prompt` block and clearly labels it as the manual fallback.
 
 The full prompt body belongs on disk. Chat carries only the short launcher seed when manual fallback is needed, with file links or attachments used only as supporting references.
+
+## Pre-1.0 Compatibility
+
+Before v1.0, breaking artifact schema changes bump that artifact's `schemaVersion` suffix. After upgrading, re-run the validator on stored artifacts and check `CHANGELOG.md` for the migration note.
 
 ## What Happens After Startup
 

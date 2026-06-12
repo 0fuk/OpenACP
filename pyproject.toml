@@ -5,12 +5,24 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "openaccp"
 dynamic = ["version"]
-description = "OpenACCP is an open workflow protocol for coordinating multi-agent software work."
+description = "Coordinate multi-agent software delivery across source facts, task cards, handoffs, reviews, worktrees, and final acceptance."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "Vyqo AI" }]
-keywords = ["agents", "workflow", "coordination", "handoff", "validator"]
+keywords = [
+  "ai-agents",
+  "agentic-workflow",
+  "multi-agent",
+  "software-delivery",
+  "coordination",
+  "handoff",
+  "task-cards",
+  "worktrees",
+  "validator",
+  "codex",
+  "claude-code",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -22,6 +34,12 @@ classifiers = [
   "Topic :: Software Development :: Quality Assurance",
 ]
 dependencies = ["jsonschema>=4.18"]
+
+[project.urls]
+Homepage = "https://github.com/0fuk/OpenACCP"
+Repository = "https://github.com/0fuk/OpenACCP"
+Documentation = "https://github.com/0fuk/OpenACCP#readme"
+Issues = "https://github.com/0fuk/OpenACCP/issues"
 
 [project.scripts]
 openaccp = "openaccp.cli:main"

@@ -1,8 +1,8 @@
 # Positioning
 
-OpenACCP is a coordination protocol and workflow kit for multi-agent engineering.
+OpenACCP is the delivery protocol around AI coding agents.
 
-It works as the coordination layer around:
+It helps teams turn parallel agent work into source-driven, reviewable, and recoverable software delivery. It fits around:
 
 - an agent runtime,
 - an IDE assistant,
@@ -12,11 +12,11 @@ It works as the coordination layer around:
 
 ## Compared With Coding Assistants
 
-Aider, Codex-style coding agents, and IDE assistants help edit code. OpenACCP defines when an agent may edit, what it may touch, what evidence it must return, and who may accept the result.
+Aider, Codex-style coding agents, and IDE assistants help edit code. OpenACCP gives that code work a source pack, task card, authority boundary, handoff path, reviewer loop, and acceptance gate.
 
 ## Compared With Agent Frameworks
 
-LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK help build agent systems. OpenACCP defines source-of-truth handling, authority boundaries, task cards, handoffs, reviews, and status reporting around those systems.
+LangGraph, CrewAI, AutoGen, and the OpenAI Agents SDK help build agent systems. OpenACCP adds the project delivery layer around those systems: source status, authority, task cards, handoffs, reviews, and status reporting.
 
 ## Compared With Autonomous SWE Tools
 
